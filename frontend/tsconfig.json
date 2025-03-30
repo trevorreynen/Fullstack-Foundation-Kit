@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Path Aliases */
+    "paths": {
+      "@/*": ["./src/*"] // Simplifies imports using aliases
+    }
+  },
+  "exclude": ["webpack.config.js", "node_modules"]
+}
