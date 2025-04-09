@@ -5,7 +5,7 @@ import { JSX, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { SidebarState, useCommonStore } from '@/hooks/common-context'
+import { SidebarState, useGlobalUI } from '@/hooks/common-context'
 
 // =========================< IMPORTS: COMPONENTS >============================
 
@@ -57,8 +57,8 @@ const menuItems: SidebarItem[] = [
         label: 'Item 1 (w/ placeholder)',
         iconClass: '',
         children: [
-          { type: 'link', key: '1', label: 'Option 1', path: '/option-1', iconClass: 'icon-link' },
-          { type: 'link', key: '2', label: 'Option 2', path: '/option-2', iconClass: 'icon-link' }
+          { type: 'link', key: '1', label: 'Test Page 1', path: '/test-page-1', iconClass: 'icon-link' },
+          { type: 'link', key: '2', label: 'Test Page 2', path: '/test-page-2', iconClass: 'icon-link' }
         ]
       },
       {
@@ -67,8 +67,8 @@ const menuItems: SidebarItem[] = [
         label: 'Item 2 (w/ no icon)',
         iconClass: 'no-icon',
         children: [
-          { type: 'link', key: '3', label: 'Option 3', path: '/option-3', iconClass: 'icon-link' },
-          { type: 'link', key: '4', label: 'Option 4', path: '/option-4', iconClass: 'icon-link' }
+          { type: 'link', key: '3', label: 'Test Page 3', path: '/test-page-3', iconClass: 'icon-link' },
+          { type: 'link', key: '4', label: 'Test Page 4', path: '/test-page-4', iconClass: 'icon-link' }
         ]
       }
     ]
@@ -79,16 +79,16 @@ const menuItems: SidebarItem[] = [
     label: 'Navigation Two',
     iconClass: '',
     children: [
-      { type: 'link', key: '5', label: 'Option 5', path: '/option-5', iconClass: 'icon-link' },
-      { type: 'link', key: '6', label: 'Option 6', path: '/option-6', iconClass: 'icon-link' },
+      { type: 'link', key: '5', label: 'Test Page 5', path: '/test-page-5', iconClass: 'icon-link' },
+      { type: 'link', key: '6', label: 'Test Page 6', path: '/test-page-6', iconClass: 'icon-link' },
       {
         type: 'submenu',
         key: 'submenu1',
         label: 'Submenu',
         iconClass: 'icon-down-right-2',
         children: [
-          { type: 'link', key: '7', label: 'Option 7', path: '/option-7', iconClass: 'icon-link' },
-          { type: 'link', key: '8', label: 'Option 8', path: '/option-8', iconClass: 'icon-link' }
+          { type: 'link', key: '7', label: 'Test Page 7', path: '/test-page-7', iconClass: 'icon-link' },
+          { type: 'link', key: '8', label: 'Test Page 8', path: '/test-page-8', iconClass: 'icon-link' }
         ]
       }
     ]
@@ -99,10 +99,10 @@ const menuItems: SidebarItem[] = [
     label: 'Navigation Three',
     iconClass: 'icon-settings',
     children: [
-      { type: 'link', key: '9', label: 'Option 9', path: '/option-9', iconClass: 'icon-link' },
-      { type: 'link', key: '10', label: 'Option 10', path: '/option-10', iconClass: 'icon-link' },
-      { type: 'link', key: '11', label: 'Option 11', path: '/option-11', iconClass: 'icon-link' },
-      { type: 'link', key: '12', label: 'Option 12', path: '/option-12', iconClass: 'icon-link' }
+      { type: 'link', key: '9', label: 'Test Page 9', path: '/test-page-9', iconClass: 'icon-link' },
+      { type: 'link', key: '10', label: 'Test Page 10', path: '/test-page-10', iconClass: 'icon-link' },
+      { type: 'link', key: '11', label: 'Test Page 11', path: '/test-page-11', iconClass: 'icon-link' },
+      { type: 'link', key: '12', label: 'Test Page 12', path: '/test-page-12', iconClass: 'icon-link' }
     ]
   },
   {
@@ -111,15 +111,15 @@ const menuItems: SidebarItem[] = [
     label: 'Group',
     iconClass: 'no-icon',
     children: [
-      { type: 'link', key: '13', label: 'Option 13', path: '/option-13', iconClass: 'icon-link' },
-      { type: 'link', key: '14', label: 'Option 14', path: '/option-14', iconClass: 'icon-link' }
+      { type: 'link', key: '13', label: 'Test Page 13', path: '/test-page-13', iconClass: 'icon-link' },
+      { type: 'link', key: '14', label: 'Test Page 14', path: '/test-page-14', iconClass: 'icon-link' }
     ]
   }
 ]
 
 
 export default function Sidebar() {
-  const { sidebarState } = useCommonStore()
+  const { sidebarState } = useGlobalUI()
 
   const location = useLocation() // Get current route
 

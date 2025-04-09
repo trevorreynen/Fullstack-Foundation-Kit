@@ -12,7 +12,7 @@
   &.hidden,
   &.minimal { display: none; }
 
-  // Hide text labels while keeping icons visible
+  /* Hide text labels while keeping icons visible */
   &.collapsed {
     width: 64px;
 
@@ -66,19 +66,14 @@
       span { display: none; }
     }
 
-    // Indentation for links inside dropdown.
+    /* Indentation for links inside dropdown. */
     .sidebar-dropdown .sidebar-dropdown-children .sidebar-link-wrapper .sidebar-link { margin-left: 0; }
-    // Indentation for links inside dropdown inside submenu.
+    /* Indentation for links inside dropdown inside submenu. */
     .sidebar-dropdown .sidebar-dropdown-children .sidebar-submenu .sidebar-submenu-children .sidebar-link-wrapper .sidebar-link { margin-left: 0; }
-    // Indentation for links inside a group.
+    /* Indentation for links inside a group. */
     .sidebar-group .sidebar-link-wrapper .sidebar-link { margin-left: 0; }
 
   }
-
-
-
-
-
 
 
   .sidebar-dropdown,
@@ -123,7 +118,10 @@
   .sidebar-group {
     min-height: 38px;
 
-    &:not(:first-child) { margin-top: 16px; border-top: 1px solid #888; }
+    &:not(:first-child) {
+      margin-top: 16px;
+      border-top: 1px solid #888;
+    }
 
     .sidebar-group-label {
       @include mixins.Flex;
@@ -165,11 +163,11 @@
     }
   }
 
-  // Indentation for links inside dropdown.
+  /* Indentation for links inside dropdown. */
   .sidebar-dropdown .sidebar-dropdown-children .sidebar-link-wrapper .sidebar-link { margin-left: 16px; }
-  // Indentation for links inside dropdown inside submenu.
+  /* Indentation for links inside dropdown inside submenu. */
   .sidebar-dropdown .sidebar-dropdown-children .sidebar-submenu .sidebar-submenu-children .sidebar-link-wrapper .sidebar-link { margin-left: 32px; }
-  // Indentation for links inside a group.
+  /* Indentation for links inside a group. */
   .sidebar-group .sidebar-link-wrapper .sidebar-link { margin-left: 16px; }
 
   .icon-placeholder {

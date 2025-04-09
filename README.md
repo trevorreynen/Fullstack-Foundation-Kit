@@ -1,4 +1,6 @@
 # Modular React + Custom Webpack App (WIP)
+### React Fullstack Template Project
+
 
 This project is a frontend-first, modular web app built with React, SCSS modules, and a fully custom Webpack setup. It emphasizes long-term scalability, strict styling separation, and dynamic UI systems like dropdowns, tables, and multi-state sidebars.
 
@@ -28,9 +30,7 @@ frontend/
 │   ├── Loading/
 │   │   ├── DelayedFallback.tsx
 │   │   └── FullPageLoader.tsx
-│   ├── Sidebar/
-│   ├── UniversalTable/
-│   └── WidthTooltip/
+│   └── Sidebar/
 ├── pages/
 │   ├── LandingPage/
 │   ├── HomePage/
@@ -139,7 +139,6 @@ If a custom backend is added, it will follow:
 This project is **Work in Progress** and not even close to production-ready.  
 No backend connected. No data persisted.
 
-If you're reading this — you're probably me. 🙂
 
----
+
 

@@ -1,33 +1,33 @@
-// @use '@/styles/mixins.scss';
-// @include mixins.scrollable();
-// @include mixins.ScreenWrapper;
+/* @use '@/styles/mixins.scss'; */
+/* @include mixins.scrollable(); */
+/* @include mixins.ScreenWrapper; */
 
 @mixin scrollable($overflowRule: auto) {
   overflow-x: hidden;
   overflow-y: $overflowRule;
 
   &::-webkit-scrollbar {
+    width: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
-    width: 8px; // Width of the vertical scrollbar
   }
 
   &::-webkit-scrollbar-thumb {
     margin-top: 5px;
     margin-bottom: 5px;
-    background: #464749; // Default color of the scrollbar thumb
-    border-radius: 4px; // Round the scrollbar thumb edges
+    background: #464749; /* Default color of the scrollbar thumb */
+    border-radius: 4px;
   }
 
   &::-webkit-scrollbar-track {
     margin-top: 5px;
     margin-bottom: 5px;
-    background: #949596; // Background color of the scrollbar track
-    border-radius: 4px; // Round the scrollbar track edges
+    background: #949596; /* Background color of the scrollbar track */
+    border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #545657; // Darker color when the thumb is hovered
+    background: #545657;
   }
 }
 
@@ -36,21 +36,21 @@
 @mixin UseScrollBar() {
   @include scrollable();
   overflow-y: auto;
-  overflow-x: hidden; // Hide overflow content that leads outside of element, horizontally (left or right)
+  overflow-x: hidden; /* Hide overflow content that leads outside of element, horizontally (left or right) */
   flex-shrink: 0;
   height: 100%;
 }
 
 @mixin FlexSpaceBetween() {
-  display: flex; // Flexbox for layout
-  justify-content: space-between; // Puts empty space between child divs
-  align-items: center; // Vertically centers child divs
+  display: flex; /* Flexbox for layout */
+  justify-content: space-between; /* Puts empty space between child divs */
+  align-items: center; /* Vertically centers child divs */
 }
 
 @mixin FlexCenter() {
-  display: flex; // Flexbox for layout
-  justify-content: center; // Horizontally centers child elements
-  align-items: center; // Vertically centers child divs
+  display: flex; /* Flexbox for layout */
+  justify-content: center; /* Horizontally centers child elements */
+  align-items: center; /* Vertically centers child divs */
 }
 
 @mixin Flex() {
@@ -66,7 +66,7 @@
   mask-position: center;
   mask-size: contain;
   background-color: #fff;
-  transition: transform 0.2s ease-in-out; // Smooth transition effect
+  transition: transform 0.2s ease-in-out; /* Smooth transition effect */
 
   &.open-it { transform: rotate(0deg); }
   &.close-it { transform: rotate(180deg); }
@@ -80,7 +80,7 @@
   mask-position: center;
   mask-size: contain;
 
-  // Only apply background when it's a real icon
+  /* Only apply background when it's a real icon */
   &:not(.empty-placeholder-icon) {
     background-color: #fff;
   }

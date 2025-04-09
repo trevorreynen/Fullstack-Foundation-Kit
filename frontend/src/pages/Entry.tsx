@@ -1,9 +1,10 @@
 // =========================< IMPORTS: REACT >=================================
 import React from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { CommonStoreProvider } from '@/hooks/common-context'
+import { GlobalUIProvider, UserProvider } from '@/hooks/common-context'
 
 
 // =========================< IMPORTS: PAGES >=================================
@@ -14,10 +15,14 @@ const root = document.getElementById('root')
 if (root) {
   createRoot(root).render(
     <React.StrictMode>
-      <CommonStoreProvider>
-        <App />
-      </CommonStoreProvider>
-    </React.StrictMode>,
+      <BrowserRouter>
+        <UserProvider>
+          <GlobalUIProvider>
+            <App />
+          </GlobalUIProvider>
+        </UserProvider>
+      </BrowserRouter>
+    </React.StrictMode>
   )
 }
 

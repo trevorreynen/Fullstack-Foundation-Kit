@@ -2,9 +2,10 @@
 
 // =========================< IMPORTS: REACT >=================================
 import { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { SidebarState, useCommonStore } from '@/hooks/common-context'
+import { SidebarState, useGlobalUI, useUser } from '@/hooks/common-context'
 
 // =========================< IMPORTS: COMPONENTS >============================
 import DropdownMenu from '@/components/DropdownMenu/DropdownMenu'
@@ -14,8 +15,11 @@ import './Header.scss'
 
 
 export default function Header() {
-  const { sidebarState, setSidebarState } = useCommonStore()
-  const [signedIn, setSignedIn] = useState(true)
+  const navigate = useNavigate()
+
+  const { sidebarState, setSidebarState } = useGlobalUI()
+  const [signedIn, setSignedIn] = useState(false)
+  const { user, setUser } = useUser()
 
   const leftRef = useRef<HTMLDivElement>(null)
   const centerRef = useRef<HTMLDivElement>(null)
@@ -121,7 +125,7 @@ export default function Header() {
                 ]}
               />
 
-              <button className='sign-in-btn'>Sign In</button>
+              <button className='sign-in-btn' onClick={() => navigate('/login')}>Sign In</button>
             </>
           ) : (
             <div className='signed-in-actions'>
@@ -144,7 +148,7 @@ export default function Header() {
                   {
                     type: 'item',
                     label: 'Sign Out',
-                    onClick: () => setSignedIn(false),
+                    onClick: () => {setSignedIn(false); setUser(null); navigate('/')},
                     iconClass: 'icon-signout'
                   },
                   { type: 'divider' },
