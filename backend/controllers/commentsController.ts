@@ -7,7 +7,7 @@ import User from '../models/User'
 
 
 
-// POST: Create comment.
+// (For POST) Create comment.
 export const createComment = async (req: Request, res: Response) => {
   const { userId, postId, content } = req.body
   if (!userId || !postId || !content) {
@@ -29,7 +29,7 @@ export const createComment = async (req: Request, res: Response) => {
 }
 
 
-// GET: Get comments by post Id.
+// (For GET) Get comments by post Id.
 export const getCommentsByPost = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId, 10)
 
@@ -51,7 +51,7 @@ export const getCommentsByPost = async (req: Request, res: Response) => {
 }
 
 
-// PATCH: Edit comment.
+// (For PATCH) Edit comment.
 export const editComment = async (req: Request, res: Response) => {
   const commentId = parseInt(req.params.commentId, 10)
   const { content } = req.body
@@ -77,7 +77,7 @@ export const editComment = async (req: Request, res: Response) => {
 }
 
 
-// DELETE: Delete comment.
+// (For DELETE) Delete comment.
 export const deleteComment = async (req: Request, res: Response) => {
   const commentId = parseInt(req.params.commentId, 10)
 

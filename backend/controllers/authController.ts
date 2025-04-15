@@ -5,12 +5,13 @@ import { Request, Response } from 'express'
 import { Op } from 'sequelize'
 import User from '../models/User'
 import UserSettings from '../models/UserSettings'
+import { generateToken } from '../utils/jwt'
 
 // Helper regex to enforce password rules
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{5,}$/
 
 
-// POST: Register a user.
+// (For POST) Register a user.
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body
   if (!username || !email || !password) {
@@ -58,7 +59,8 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 }
 
-// POST: Sign in to account.
+
+// (For POST) Sign in to account.
 export const loginUser = async (req: Request, res: Response) => {
   // identifier = username or email as intended
   const { identifier, password } = req.body
@@ -80,6 +82,8 @@ export const loginUser = async (req: Request, res: Response) => {
       return
     }
 
+    const token = generateToken({ id: user.id })
+
     const isMatch = await user.checkPassword(password)
     if (!isMatch) {
       res.status(401).json({ error: 'Invalid username or password.' })
@@ -89,10 +93,13 @@ export const loginUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: 'Login successful',
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      profileIconUrl: user.profileIconUrl,
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        profileIconUrl: user.profileIconUrl,
+      },
     })
     return
   } catch (err) {
@@ -102,3 +109,29 @@ export const loginUser = async (req: Request, res: Response) => {
     return
   }
 }
+
+
+// (For GET) Get authenticated user.
+export const getAuthenticatedUser = async (req: Request, res: Response) => {
+  try {
+    const user = req.user
+    if (!user) {
+      res.status(401).json({ error: 'Not authenticated' })
+      return
+    }
+
+    res.status(200).json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      profileIconUrl: user.profileIconUrl,
+    })
+    return
+  } catch (err) {
+    console.error(err)
+
+    res.status(500).json({ error: 'Failed to fetch user data' })
+    return
+  }
+}
+

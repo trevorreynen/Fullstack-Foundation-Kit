@@ -2,7 +2,6 @@
   display: inline-block;
   position: relative;
 
-
   .dropdown-trigger {
     display: flex;
     justify-content: center;
@@ -14,12 +13,12 @@
     z-index: 3000 !important;
     position: absolute;
     top: calc(100% + 6px);
-    right: 0;
+    right: 0px;
     min-width: 220px;
-    padding: 8px 0;
+    padding: 8px 0px;
     background: #202020;
     border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 2px 12px rgb(0, 0, 0, 0.5);
   }
 
   .dropdown-item {
@@ -30,7 +29,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgb(255, 255, 255, 0.1);
     }
 
     .icon-placeholder {
@@ -49,10 +48,9 @@
 
   .dropdown-divider {
     height: 1px;
-    margin: 6px 0;
-    background-color: rgba(255, 255, 255, 0.2);
+    margin: 6px 0px;
+    background-color: rgb(255, 255, 255, 0.2);
   }
-
 
   .dropdown-profile-header {
     display: flex;
@@ -63,7 +61,7 @@
       width: 40px;
       height: 40px;
       margin-right: 10px;
-      background-color: white;
+      background-color: #fff;
       border-radius: 50%;
     }
 
@@ -72,7 +70,7 @@
       flex-direction: column;
 
       .username {
-        color: white;
+        color: #fff;
         font-weight: bold;
       }
 

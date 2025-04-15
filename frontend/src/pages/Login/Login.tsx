@@ -17,25 +17,6 @@ export default function Login() {
   const navigate = useNavigate()
   const { setUser } = useUser()
 
-  const [identifier, setIdentifier] = useState('')
-  const [password, setPassword] = useState('')
-  const [fieldErrors, setFieldErrors] = useState<{ identifier?: string; password?: string }>({})
-
-
-  const validate = () => {
-    const errors: typeof fieldErrors = {}
-
-    if (!identifier.trim()) {
-      errors.identifier = 'Required'
-    }
-
-    if (!password.trim()) {
-      errors.password = 'Required'
-    }
-
-    return errors
-  }
-
 
   const handleSubmit = async (
     values: { identifier: string; password: string },
@@ -47,16 +28,17 @@ export default function Login() {
         body: { identifier: values.identifier, password: values.password }
       })
 
-      // TODO: Remove console.logs eventually.
+      // TODO: Remove console.log eventually.
       console.log('Login success:', res)
 
-      setUser(res.user)
-
       if (rememberMe) {
-        localStorage.setItem('user', JSON.stringify(res.user))
+        localStorage.setItem('token', res.token)
+      } else {
+        sessionStorage.setItem('token', res.token)
       }
 
-      navigate('/')
+      setUser(res.user)
+      navigate('/home')
 
       return null
     } catch (err: any) {

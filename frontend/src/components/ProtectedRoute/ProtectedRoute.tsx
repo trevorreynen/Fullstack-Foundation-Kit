@@ -7,6 +7,9 @@ import { Navigate } from 'react-router-dom'
 // =========================< IMPORTS: OTHER >=================================
 import { useUser } from '@/hooks/useUser'
 
+// =========================< IMPORTS: COMPONENTS >============================
+import FullPageLoader from '@/components/Loading/FullPageLoader'
+
 
 interface ProtectedRouteProps {
   children: JSX.Element
@@ -14,7 +17,11 @@ interface ProtectedRouteProps {
 
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user } = useUser()
+  const { user, loading, isLoggingOut } = useUser()
+
+  if (loading || isLoggingOut) {
+    return <FullPageLoader />
+  }
 
   // If user is not logged in, they cannot view the element wrapped by this component. Send to login page.
   if (!user) {
@@ -23,3 +30,4 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   return children
 }
+

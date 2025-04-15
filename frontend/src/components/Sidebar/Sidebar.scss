@@ -25,7 +25,7 @@
           .icon-placeholder {
             width: 26px;
             height: 26px;
-            margin-right: 0;
+            margin-right: 0px;
           }
 
           .item-label { display: none; }
@@ -56,10 +56,10 @@
       .icon-placeholder {
         width: 26px;
         height: 26px;
-        margin-right: 0;
+        margin-right: 0px;
 
         &.empty-placeholder-icon {
-          margin-right: 0;
+          margin-right: 0px;
         }
       }
 
@@ -67,14 +67,13 @@
     }
 
     /* Indentation for links inside dropdown. */
-    .sidebar-dropdown .sidebar-dropdown-children .sidebar-link-wrapper .sidebar-link { margin-left: 0; }
+    .sidebar-dropdown .sidebar-dropdown-children .sidebar-link-wrapper .sidebar-link { margin-left: 0px; }
     /* Indentation for links inside dropdown inside submenu. */
-    .sidebar-dropdown .sidebar-dropdown-children .sidebar-submenu .sidebar-submenu-children .sidebar-link-wrapper .sidebar-link { margin-left: 0; }
+    .sidebar-dropdown .sidebar-dropdown-children .sidebar-submenu .sidebar-submenu-children .sidebar-link-wrapper .sidebar-link { margin-left: 0px; }
     /* Indentation for links inside a group. */
-    .sidebar-group .sidebar-link-wrapper .sidebar-link { margin-left: 0; }
+    .sidebar-group .sidebar-link-wrapper .sidebar-link { margin-left: 0px; }
 
   }
-
 
   .sidebar-dropdown,
   .sidebar-submenu {
@@ -85,7 +84,7 @@
       @include mixins.FlexSpaceBetween;
       min-height: 38px;
       margin: 4px;
-      padding: 0 12px 0 8px;
+      padding: 0px 12px 0px 8px;
       border-radius: 8px;
       cursor: pointer;
 
@@ -108,7 +107,7 @@
     }
 
     .sidebar-dropdown-children {
-      padding: 2px 0;
+      padding: 2px 0px;
       background-color: #151b23;
       border-top: 1px solid #888;
       border-bottom: 1px solid #888;
@@ -127,7 +126,7 @@
       @include mixins.Flex;
       min-height: 38px;
       margin: 4px;
-      padding: 0 12px 0 8px;
+      padding: 0px 12px 0px 8px;
       border-radius: 8px;
 
       .icon-placeholder { margin-right: 8px; }
@@ -138,7 +137,7 @@
     @include mixins.Flex;
     min-height: 38px;
     margin: 4px;
-    padding: 0 12px 0 8px;
+    padding: 0px 12px 0px 8px;
     text-decoration: none;
     border-radius: 8px;
 

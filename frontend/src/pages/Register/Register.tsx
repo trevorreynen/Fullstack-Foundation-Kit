@@ -34,6 +34,7 @@ export default function Register() {
       })
 
       console.log('Registration success:', res)
+
       navigate('/login')
       return null
     } catch (err: any) {

@@ -19,6 +19,7 @@
     display: flex;
     align-items: center;
     flex: 0 0 auto;
+    position: relative;
   }
 
   .header-left-side-sidebar-button {
@@ -49,14 +50,13 @@
 
   .header-center-content {
     position: absolute;
-    top: 50%;
     left: 50%;
     opacity: 0;
     visibility: hidden;
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
     transform: translateX(-50%);
-    transform: translate(-50%, -50%);
     pointer-events: none; /* Ensures no interference. */
     white-space: nowrap;
 
@@ -151,7 +151,6 @@
       border-radius: 3px;
     }
   }
-
 
   &.minimal {
     position: absolute;

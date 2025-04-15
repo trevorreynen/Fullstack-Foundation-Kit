@@ -8,7 +8,7 @@
 
 
 // =========================< IMPORTS: COMPONENTS >============================
-import PublicHeader from '@/components/PublicHeader/PublicHeader'
+import Header from '@/components/Header/Header'
 
 // =========================< IMPORTS: STYLES >================================
 import './Landing.scss'
@@ -19,7 +19,7 @@ export default function Landing() {
     <div className='Landing'>
 
 
-      <PublicHeader />
+      <Header />
 
       <div className='content'>
         <p>Hello! This is the Landing Page!</p>

@@ -11,8 +11,10 @@ interface ApiOptions {
   queryParams?: Record<string, any>
 }
 
+
 export async function api(endpoint: string, { method = 'GET', body, headers = {}, queryParams }: ApiOptions = {}) {
   const url = new URL(`${API_BASE}${endpoint}`)
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
 
   if (queryParams) {
     Object.entries(queryParams).forEach(([key, value]) => url.searchParams.append(key, String(value)))
@@ -22,10 +24,11 @@ export async function api(endpoint: string, { method = 'GET', body, headers = {}
     method,
     headers: {
       'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
-    credentials: 'include', // support future cookies/sessions
+    credentials: 'include',
   })
 
   const contentType = response.headers.get('content-type')

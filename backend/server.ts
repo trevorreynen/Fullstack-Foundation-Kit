@@ -1,4 +1,5 @@
 // ./backend/server.ts
+/// <reference path="./types/express.d.ts" />
 
 // Imports
 import express from 'express'
