@@ -5,7 +5,8 @@ import { JSX, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { SidebarState, useGlobalUI } from '@/hooks/common-context'
+import { useGlobalUI } from '@/hooks/useGlobalUI'
+import { SidebarState } from '@/contexts/GlobalUIContext'
 
 // =========================< IMPORTS: COMPONENTS >============================
 

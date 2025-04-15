@@ -4,7 +4,7 @@
 import { Outlet } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { useGlobalUI } from '@/hooks/common-context'
+import { useGlobalUI } from '@/hooks/useGlobalUI'
 
 // =========================< IMPORTS: COMPONENTS >============================
 import Header from '@/components/Header/Header'

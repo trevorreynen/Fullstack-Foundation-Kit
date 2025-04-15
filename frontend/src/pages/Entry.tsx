@@ -4,8 +4,8 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { GlobalUIProvider, UserProvider } from '@/hooks/common-context'
-
+import { GlobalUIProvider } from '@/contexts/GlobalUIContext'
+import { UserProvider } from '@/contexts/UserContext'
 
 // =========================< IMPORTS: PAGES >=================================
 import App from './App'

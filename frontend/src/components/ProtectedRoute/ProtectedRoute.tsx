@@ -5,7 +5,7 @@ import { JSX } from 'react'
 import { Navigate } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { useUser } from '@/hooks/common-context'
+import { useUser } from '@/hooks/useUser'
 
 
 interface ProtectedRouteProps {

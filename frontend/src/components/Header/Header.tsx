@@ -5,7 +5,9 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
-import { SidebarState, useGlobalUI, useUser } from '@/hooks/common-context'
+import { useGlobalUI } from '@/hooks/useGlobalUI'
+import { SidebarState } from '@/contexts/GlobalUIContext'
+import { useUser } from '@/hooks/useUser'
 
 // =========================< IMPORTS: COMPONENTS >============================
 import DropdownMenu from '@/components/DropdownMenu/DropdownMenu'

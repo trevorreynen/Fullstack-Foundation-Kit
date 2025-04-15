@@ -24,11 +24,10 @@ export const useRoutesConfig = (): RouteObject[] => {
   return useMemo(() => {
 
     const mainLayoutRoutes: RouteObject = {
-      element: <MainLayout />,
+      element: <ProtectedRoute><MainLayout /></ProtectedRoute>,
       children: [
-        { path: '/', element: withSuspense(lazy(() => import('@/pages/Landing/Landing'))) },
-        { path: '/home', element: (<ProtectedRoute>{withSuspense(lazy(() => import('@/pages/Home/Home')))}</ProtectedRoute>) },
-        { path: '/settings', element: (<ProtectedRoute>{withSuspense(lazy(() => import('@/pages/Settings/Settings')))}</ProtectedRoute>) },
+        { path: '/home', element: withSuspense(lazy(() => import('@/pages/Home/Home'))) },
+        { path: '/settings', element: withSuspense(lazy(() => import('@/pages/Settings/Settings'))) },
         { path: '/:username', element: withSuspense(lazy(() => import('@/pages/Profile/Profile'))) },
       ]
     }
@@ -36,6 +35,7 @@ export const useRoutesConfig = (): RouteObject[] => {
     const emptyLayoutRoutes: RouteObject = {
       element: <EmptyLayout />,
       children: [
+        { path: '/', element: withSuspense(lazy(() => import('@/pages/Landing/Landing'))) },
         { path: '/login', element: withSuspense(lazy(() => import('@/pages/Login/Login'))) },
         { path: '/register', element: withSuspense(lazy(() => import('@/pages/Register/Register'))) },
       ]

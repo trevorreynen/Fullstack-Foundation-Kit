@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 // =========================< IMPORTS: OTHER >=================================
 import { api } from '@/utils/api'
-import { useUser } from '@/hooks/common-context'
+import { useUser } from '@/hooks/useUser'
 
 // =========================< IMPORTS: COMPONENTS >============================
 import AuthForm from '@/components/AuthForm/AuthForm'
