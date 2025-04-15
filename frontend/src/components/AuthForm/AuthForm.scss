@@ -1,0 +1,250 @@
+@use '@/styles/mixins';
+
+.AuthForm {
+  @include mixins.FlexCenter;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+
+  button {
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+    outline: none;
+  }
+
+  .auth-form-wrapper {
+    width: 50%;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 40px;
+    background: #222;
+    border-radius: 16px;
+    box-shadow: 0px 15px 25px rgb(0, 0, 0, 0.7);
+
+    h2 {
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 40px;
+      text-align: center;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-top: 30px;
+
+      input {
+        width: 100%;
+        padding: 6px 0px;
+        color: #fff;
+        font-size: 16px;
+        background: none;
+        border: none;
+        outline: none;
+        transition: 0.3s 0.2s ease;
+
+        &:focus ~ .line {
+          &::after {
+            transform: scaleX(1);
+          }
+        }
+      }
+
+      input:focus ~ label,
+      input:valid ~ label {
+        top: -26px;
+        left: 0px;
+        color: #9400d3;
+        font-size: 16px;
+      }
+
+      label {
+        position: absolute;
+        top: -2px;
+        left: 0px;
+        padding: 6px 0px;
+        color: #fff;
+        font-size: 16px;
+        transition: 0.4s;
+        pointer-events: none;
+      }
+
+      .line {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        height: 2px;
+        background-color: #fff;
+
+        &::after {
+          content: '';
+          position: absolute;
+          float: right;
+          width: 100%;
+          height: 2px;
+
+          background-color: #9400d3;
+          transform: scaleX(0);
+          transition: transform 0.4s ease;
+        }
+      }
+
+      &.error .line { background-color: #f00; }
+
+      .show-pass-wrapper {
+        z-index: 500;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4px;
+        position: absolute;
+        top: 2px;
+        right: 0px;
+        cursor: pointer;
+
+        .show-icon {
+          @include mixins.IconPlaceholder(20px);
+        }
+
+        .show-password-btn {
+          color: #9400d3;
+          font-size: 14px;
+          font-weight: bold;
+          background: none;
+          border: none;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .input-wrapper:nth-last-of-type(3) {
+      margin-bottom: 20px;
+    }
+
+    .forgot-password-btn-wrapper {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 20px;
+
+      .forgot-password-btn {
+        margin-left: 4px;
+        color: #9400d3;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: left;
+        cursor: pointer;
+      }
+    }
+
+    .remember-me-container {
+      @include mixins.Flex;
+      width: 100%;
+      margin-bottom: 10px;
+
+      .remember-me-wrapper {
+        @include mixins.Flex;
+        cursor: pointer !important;
+
+        input[type='checkbox'] {
+          position: relative;
+          width: 20px;
+          height: 20px;
+          margin-right: 6px;
+          color: #000;
+          mask: url('../../assets/icons/selection-box-off\ \(Smoothie\).svg');
+          mask-repeat: no-repeat;
+          mask-position: center;
+          mask-size: contain;
+          background-color: #ccc;
+          outline: none;
+          cursor: pointer;
+          appearance: none;
+
+          &:checked {
+            mask: url('../../assets/icons/selection-box-on\ \(Smoothie\).svg');
+            mask-repeat: no-repeat;
+            mask-position: center;
+            mask-size: contain;
+          }
+        }
+
+        input[type='checkbox']:focus-visible {
+          outline: none;
+        }
+
+        input[type='checkbox']:focus-visible + span {
+          padding: 4px 6px;
+          border-radius: 6px;
+          outline: 2px solid #9400d3;
+          outline-offset: 2px;
+        }
+
+        &:hover input[type='checkbox'] {
+          background-color: #9400d3;
+        }
+      }
+    }
+
+    .submit-btn-wrapper {
+      @include mixins.FlexCenter;
+      width: 100%;
+      margin-top: 20px;
+
+      .submit-btn {
+        padding: 10px 20px;
+        color: #9400d3;
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border: 2px solid #9400d3;
+        border-radius: 8px;
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+
+      .submit-btn:disabled {
+        color: rgb(148, 0, 211, 0.5);
+        border: 2px solid rgb(148, 0, 211, 0.5);
+        cursor: default;
+
+        &:hover {
+          transform: none;
+        }
+      }
+    }
+  }
+
+  .error-message {
+    width: 100%;
+    color: #f00;
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .footer {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 12px;
+    text-align: center;
+
+    .register-here-btn {
+      margin-left: 2px;
+      color: #9400d3;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
+
+
+  input:focus-visible,
+  button:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid #9400d3;
+    outline-offset: 2px;
+  }
+}

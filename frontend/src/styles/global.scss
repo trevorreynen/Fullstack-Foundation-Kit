@@ -1,6 +1,7 @@
+@use '@/styles/mixins.scss';
 
 /* Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap');
 
 *,
 *:before,
@@ -10,7 +11,9 @@
   padding: 0px;
 }
 
-body {
+html, body {
+  @include mixins.UseScrollBar;
+
   color: #fff;
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
@@ -23,12 +26,12 @@ body {
   height: 100vh;
 }
 
-.App-Wrapper {
+.App-Wrapper { /* Fill remaining vertical space below the header */
+  @include mixins.UseScrollBar;
   z-index: 1;
   display: grid;
   grid-template-columns: 240px 1fr;
-  flex: 1; /* Fill remaining vertical space below the header */
-  overflow: hidden;
+  flex: 1;
 
   &.collapsed { grid-template-columns: 64px 1fr; }
   &.hidden { grid-template-columns: 1fr; }

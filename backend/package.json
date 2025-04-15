@@ -2,7 +2,7 @@
   "name": "react-fullstack-backend-template",
   "main": "dist/server.js",
   "scripts": {
-    "start": "nodemon --watch '**/*.ts' --exec ts-node server.ts",
+    "start": "cmd /c cls && nodemon --watch '**/*.ts' --exec ts-node server.ts",
     "prod": "ts-node server.ts"
   },
   "dependencies": {

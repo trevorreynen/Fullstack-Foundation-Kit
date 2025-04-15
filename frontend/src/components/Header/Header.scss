@@ -1,15 +1,15 @@
-@use '@/styles/mixins.scss';
+@use '@/styles/mixins';
 
 .Header {
   @include mixins.FlexSpaceBetween;
   position: relative; /* Enables absolute positioning for child elements. */
   width: 100%;
   height: 56px;
-  padding: 0 16px;
+  padding: 0px 16px;
   color: #fff;
   /* background-color: #010409; */
-  background-image: linear-gradient(to bottom right, #610429, #ad1216);
-  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(to bottom right, #610429, #ad1216);
+  box-shadow: 0px 5px 5px rgb(0, 0, 0, 0.25);
   white-space: nowrap; /* Prevent wrapping. */
   border-bottom: 1px solid #888;
   user-select: none;
@@ -41,7 +41,7 @@
       }
 
       &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgb(255, 255, 255, 0.1);
         border-radius: 24px;
       }
     }
@@ -81,7 +81,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgb(255, 255, 255, 0.1);
     }
   }
 
@@ -97,7 +97,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgb(255, 255, 255, 0.1);
     }
   }
 
@@ -141,7 +141,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgb(255, 255, 255, 0.1);
     }
 
     .white-square-icon {
@@ -155,10 +155,10 @@
 
   &.minimal {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 100%;
-    height: 0; /* Explicitly declare layout intent. */
+    height: 0px; /* Explicitly declare layout intent. */
     min-height: 56px;
     background-image: none;
     border: none;

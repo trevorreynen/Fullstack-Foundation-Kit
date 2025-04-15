@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-//const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const dotenv = require('dotenv')
 
 
@@ -11,6 +11,10 @@ dotenv.config({path: '../.env'})
 
 // The APP_TITLE is imported via env variables.
 const APP_TITLE = process.env.FRONTEND_WEBSITE_TITLE
+
+
+const isProduction = process.env.MODE === 'production'
+
 
 
 const makeHTMLTemplate = ({ htmlWebpackPlugin }) => `
@@ -81,21 +85,25 @@ module.exports = async () => {
         },
         {
           test: /\.scss$/,
-          use: ['style-loader', 'css-loader', 'sass-loader'], // 'style-loader': Injects styles into the DOM, 'css-loader': Resolves CSS imports, 'sass-loader': Compiles SCSS to CSS
+          use: [
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            'sass-loader'
+          ], // 'style-loader': Injects styles into the DOM, 'css-loader': Resolves CSS imports, 'sass-loader': Compiles SCSS to CSS
           //use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
           test: /\.(svg|png|jpg|jpeg|gif|ico)$/i, // Handle images and SVGs
           type: 'asset/resource',
           generator: {
-            filename: 'assets/images/[name][ext]', // Customize output folder for images
+            filename: 'assets/images/[path]-[name]-[hash][ext]', // Customize output folder for images
           },
         },
         {
           test: /\.(woff(2)?|eot|ttf|otf|mp3|mp4|webm)$/i, // Handle fonts and media
           type: 'asset/resource',
           generator: {
-            filename: 'assets/fonts-and-media/[name][ext]', // Customize output folder
+            filename: 'assets/fonts-and-media/[path]-[name]-[hash][ext]', // Customize output folder
           },
         },
       ],
@@ -105,11 +113,7 @@ module.exports = async () => {
         'process.env.API_BASE': JSON.stringify(process.env.API_BASE),
       }),
       makeHTMLPlugin(),
-      /*
-      new MiniCssExtractPlugin({
-        filename: '[name].[contenthash].css',
-      }),
-      */
+      ...(isProduction ? [new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' })] : []),
     ],
     devServer: {
       static: './dist', // Serve files from 'dist'

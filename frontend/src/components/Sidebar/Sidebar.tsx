@@ -45,76 +45,9 @@ type SidebarItem =
 
 
 const menuItems: SidebarItem[] = [
-  {
-    type: 'dropdown',
-    key: 'nav1',
-    label: 'Navigation One',
-    iconClass: 'icon-home',
-    children: [
-      {
-        type: 'group',
-        key: 'group1',
-        label: 'Item 1 (w/ placeholder)',
-        iconClass: '',
-        children: [
-          { type: 'link', key: '1', label: 'Test Page 1', path: '/test-page-1', iconClass: 'icon-link' },
-          { type: 'link', key: '2', label: 'Test Page 2', path: '/test-page-2', iconClass: 'icon-link' }
-        ]
-      },
-      {
-        type: 'group',
-        key: 'group2',
-        label: 'Item 2 (w/ no icon)',
-        iconClass: 'no-icon',
-        children: [
-          { type: 'link', key: '3', label: 'Test Page 3', path: '/test-page-3', iconClass: 'icon-link' },
-          { type: 'link', key: '4', label: 'Test Page 4', path: '/test-page-4', iconClass: 'icon-link' }
-        ]
-      }
-    ]
-  },
-  {
-    type: 'dropdown',
-    key: 'nav2',
-    label: 'Navigation Two',
-    iconClass: '',
-    children: [
-      { type: 'link', key: '5', label: 'Test Page 5', path: '/test-page-5', iconClass: 'icon-link' },
-      { type: 'link', key: '6', label: 'Test Page 6', path: '/test-page-6', iconClass: 'icon-link' },
-      {
-        type: 'submenu',
-        key: 'submenu1',
-        label: 'Submenu',
-        iconClass: 'icon-down-right-2',
-        children: [
-          { type: 'link', key: '7', label: 'Test Page 7', path: '/test-page-7', iconClass: 'icon-link' },
-          { type: 'link', key: '8', label: 'Test Page 8', path: '/test-page-8', iconClass: 'icon-link' }
-        ]
-      }
-    ]
-  },
-  {
-    type: 'dropdown',
-    key: 'nav3',
-    label: 'Navigation Three',
-    iconClass: 'icon-settings',
-    children: [
-      { type: 'link', key: '9', label: 'Test Page 9', path: '/test-page-9', iconClass: 'icon-link' },
-      { type: 'link', key: '10', label: 'Test Page 10', path: '/test-page-10', iconClass: 'icon-link' },
-      { type: 'link', key: '11', label: 'Test Page 11', path: '/test-page-11', iconClass: 'icon-link' },
-      { type: 'link', key: '12', label: 'Test Page 12', path: '/test-page-12', iconClass: 'icon-link' }
-    ]
-  },
-  {
-    type: 'group',
-    key: 'bottom-group',
-    label: 'Group',
-    iconClass: 'no-icon',
-    children: [
-      { type: 'link', key: '13', label: 'Test Page 13', path: '/test-page-13', iconClass: 'icon-link' },
-      { type: 'link', key: '14', label: 'Test Page 14', path: '/test-page-14', iconClass: 'icon-link' }
-    ]
-  }
+  { type: 'link', key: '1', label: 'Home', path: '/home', iconClass: 'icon-link' },
+  { type: 'link', key: '2', label: 'Explore', path: '/explore', iconClass: 'icon-link' },
+  { type: 'link', key: '3', label: 'Admin', path: '/admin', iconClass: 'icon-link' },
 ]
 
 

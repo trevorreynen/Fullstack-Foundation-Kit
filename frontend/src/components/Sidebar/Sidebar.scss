@@ -1,4 +1,4 @@
-@use '@/styles/mixins.scss';
+@use '@/styles/mixins';
 
 .Sidebar {
   @include mixins.UseScrollBar;
@@ -175,7 +175,7 @@
     margin-right: 8px;
 
     &.empty-placeholder-icon {
-      border: 1px dashed rgba(255, 255, 255, 0.5);
+      border: 1px dashed rgb(255, 255, 255, 0.5);
       border-radius: 4px;
     }
   }

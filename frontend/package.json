@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "webpack serve --mode development",
-    "build": "webpack --mode production",
+    "start": "cmd /c cls && webpack serve --mode development",
+    "build": "cmd /c cls && webpack --mode production",
     "type-check": "tsc --noEmit",
     "server": "node server.js"
   },
@@ -29,9 +29,14 @@
     "css-loader": "^7.1.2",
     "globals": "^15.14.0",
     "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
     "portfinder": "^1.0.32",
     "sass": "^1.83.4",
     "style-loader": "^4.0.0",
+    "stylelint": "^16.18.0",
+    "stylelint-config-recommended-scss": "^14.1.0",
+    "stylelint-config-standard": "^38.0.0",
+    "stylelint-scss": "^6.11.1",
     "typescript": "^5.7.3",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1",

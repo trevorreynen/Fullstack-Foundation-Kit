@@ -1,44 +1,57 @@
-/* @use '@/styles/mixins.scss'; */
-/* @include mixins.scrollable(); */
-/* @include mixins.ScreenWrapper; */
+/* @use '@/styles/mixins'; */
+/* @include mixins.UseScrollBar; */
+/* @include mixins.FlexSpaceBetween; */
 
-@mixin scrollable($overflowRule: auto) {
+@mixin Scrollable($overflowRule: auto) {
   overflow-x: hidden;
   overflow-y: $overflowRule;
 
   &::-webkit-scrollbar {
     width: 8px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 4px;
+    margin-bottom: 4px;
     background: #464749; /* Default color of the scrollbar thumb */
     border-radius: 4px;
   }
 
   &::-webkit-scrollbar-track {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 4px;
+    margin-bottom: 4px;
     background: #949596; /* Background color of the scrollbar track */
-    border-radius: 4px;
+    border-radius: 4px; /* Round the scrollbar track edges */
+    cursor: pointer;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #545657;
+    background: #545657; /* Darker color when the thumb is hovered */
+    cursor: pointer;
   }
 }
 
 
 
 @mixin UseScrollBar() {
-  @include scrollable();
-  overflow-y: auto;
+  @include Scrollable();
   overflow-x: hidden; /* Hide overflow content that leads outside of element, horizontally (left or right) */
+  overflow-y: auto;
   flex-shrink: 0;
   height: 100%;
+}
+
+@mixin HideHorizontalScrollbar() {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @mixin FlexSpaceBetween() {
@@ -54,14 +67,14 @@
 }
 
 @mixin Flex() {
-  display: flex;
-  align-items: center;
+  display: flex; /* Flexbox for layout */
+  align-items: center; /* Vertically centers child divs */
 }
 
-@mixin SidebarArrowStyle() {
-  width: 24px;
-  height: 24px;
-  mask-image: url('../../assets/icons/caret-down-md\ \(Coolicons\).svg');
+@mixin SidebarArrowStyle($size: 24px) {
+  width: $size;
+  height: $size;
+  mask-image: url('@/assets/icons/caret-down-md\ \(Coolicons\).svg');
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
@@ -85,17 +98,20 @@
     background-color: #fff;
   }
 
-  &.icon-home { mask-image: url('../../assets/icons/home\ \(Calcite\).svg'); }
-  &.icon-settings { mask-image: url('../../assets/icons/settings-cog\ \(Smoothie\).svg'); }
-  &.icon-bug { mask-image: url('../../assets/icons/bug\ \(Dazzle\).svg'); }
-  &.icon-link { mask-image: url('../../assets/icons/link-2\ \(Xnix\).svg'); }
-  &.icon-alert { mask-image: url('../../assets/icons/alert\ \(Uxaspects\).svg'); }
-  &.icon-alert-filled { mask-image: url('../../assets/icons/alert-filled\ \(Uxaspects\).svg'); }
-  &.icon-alert-square-circle { mask-image: url('../../assets/icons/alert-square\ \(Micions\).svg'); }
-  &.icon-add { mask-image: url('../../assets/icons/add\ \(Xnix\).svg'); }
-  &.icon-down-right-1 { mask-image: url('../../assets/icons/arrow-right-corner-down\ \(Minimal\).svg'); }
-  &.icon-down-right-2 { mask-image: url('../../assets/icons/arrow-square-down-right\ \(Dazzle\).svg'); }
-  &.icon-menu { mask-image: url('../../assets/icons/burger-menu\ \(Start\).svg'); }
+  &.icon-home { mask-image: url('@/assets/icons/home\ \(Calcite\).svg'); }
+  &.icon-settings { mask-image: url('@/assets/icons/settings-cog\ \(Smoothie\).svg'); }
+  &.icon-bug { mask-image: url('@/assets/icons/bug\ \(Dazzle\).svg'); }
+  &.icon-link { mask-image: url('@/assets/icons/link-2\ \(Xnix\).svg'); }
+  &.icon-alert { mask-image: url('@/assets/icons/alert\ \(Uxaspects\).svg'); }
+  &.icon-alert-filled { mask-image: url('@/assets/icons/alert-filled\ \(Uxaspects\).svg'); }
+  &.icon-alert-square-circle { mask-image: url('@/assets/icons/alert-square\ \(Micions\).svg'); }
+  &.icon-add { mask-image: url('@/assets/icons/add\ \(Xnix\).svg'); }
+  &.icon-down-right-1 { mask-image: url('@/assets/icons/arrow-right-corner-down\ \(Minimal\).svg'); }
+  &.icon-down-right-2 { mask-image: url('@/assets/icons/arrow-square-down-right\ \(Dazzle\).svg'); }
+  &.icon-menu { mask-image: url('@/assets/icons/burger-menu\ \(Start\).svg'); }
+  &.icon-close { mask-image: url('@/assets/icons/close-md\ \(Coolicons\).svg'); }
+  &.icon-hide { mask-image: url('@/assets/icons/eye-hide\ \(Start\).svg'); }
+  &.icon-show { mask-image: url('@/assets/icons/eye\ \(Dazzle\).svg'); }
 }
 
 

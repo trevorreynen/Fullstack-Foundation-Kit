@@ -1,144 +1,237 @@
-# Modular React + Custom Webpack App (WIP)
-### React Fullstack Template Project
+# Modular React + Express Fullstack Template (WIP)
+### React + Node.js + MySQL Fullstack Project
 
+This project is a fullstack, modular web application built using a custom React + Webpack frontend and an Express + Sequelize + MySQL backend. The goal is to showcase scalable architecture, modern feature integration, and tight frontend/backend communication. It serves as a template for building production-grade fullstack applications and acts as a portfolio centerpiece to demonstrate end-to-end understanding.
 
-This project is a frontend-first, modular web app built with React, SCSS modules, and a fully custom Webpack setup. It emphasizes long-term scalability, strict styling separation, and dynamic UI systems like dropdowns, tables, and multi-state sidebars.
-
-> ⚠️ Backend integration coming soon (Firebase Auth with a custom backend or fully custom auth + backend).
 
 ---
+
 
 ## 📑 Table of Contents
 
-- [📁 Folder Structure](#📁-project-structure-frontend)
-- [💡 Features](#💡-current-features)
-- [🎨 Styling Philosophy](#🎨-scss--styling-philosophy)
-- [🔐 Backend Strategy (Not Added Yet)](#🔐-backend-strategy-not-added-yet)
-- [🧪 Planned Pages / Routes](#🧪-planned-pages-/-routes)
-- [✅ What's Included](#✅-whats-included-so-far)
-- [🚧 Status](#🚧-status)
+- [📊 Tracking & Feature Overview](#tracking-and-feature-overview)
+- [📋 Why I Use a Spreadsheet](#why-i-use-spreadsheets)
+- [📁 Project Structure](#project-structure)
+- [🧭 Route Overview](#route-overview)
+- [💡 Key Features](#key-features)
+- [🔐 Backend Architecture](#backend-architecture)
+- [🎨 SCSS + Styling Philosophy](#styling-philosophy)
+- [🚧 Status](#project-status)
+
 
 ---
 
-## 📁 Project Structure (Frontend)
+
+## 📊 Tracking & Feature Overview <a name="tracking-and-feature-overview"></a>
+
+My [detailed project spreadsheet](https://docs.google.com/spreadsheets/d/11VOvwZ5hVu4gsFAM9Fex8Rb-AQQ5IQZTMSrlPBczVkI/edit?usp=sharing) tracks all features, components, models, endpoints, and logic across frontend and backend. This includes:
+
+- Frontend: pages, layouts, components, hooks, utils, contexts
+- Backend: models, routes, controllers, middleware, jobs
+- Shared: feature/bug submission forms with status tracking
+
+This system replaces manual documentation and allows large-scale planning with version-friendly visibility.
+
+
+## 📋 Why I Use a Spreadsheet <a name="why-i-use-spreadsheets"></a>
+
+To track and manage all parts of this fullstack project as a solo developer, I built a spreadsheet system that reflects how I think and organize best. Trello and similar tools didn't fit my workflow — I found them too slow and fragmented for deep planning.
+
+This spreadsheet allows me to:
+- Centralize frontend and backend structures in one place
+- Reuse the same format across future projects
+- Maintain consistency, control, and speed when planning features
+- Avoid scattered tools or one-off notes
+
+Everything from components, routes, models, and endpoints to feature planning and bug triage is accounted for. Possibly will expand the spreadsheet in the future but for now this works well.
+
+
+---
+
+
+## 📁 Project Structure <a name="project-structure"></a>
+
+NOTE: Might not be 100% updated.
 
 ```
-frontend/
-├── components/
-│   ├── DropdownMenu/
-│   ├── Header/
-│   ├── Loading/
-│   │   ├── DelayedFallback.tsx
-│   │   └── FullPageLoader.tsx
-│   └── Sidebar/
-├── pages/
-│   ├── LandingPage/
-│   ├── HomePage/
-│   ├── Page1/
-│   ├── Page2/
-│   ├── ExamplePage1/
-│   ├── ExamplePage2/
-│   ├── App.tsx
-│   └── Entry.tsx
-├── hooks/
-├── styles/
-├── config/
-├── utils/
-├── .babelrc
-├── package.json
-├── tsconfig.json
-└── webpack.config.js
+project/
+├── backend/
+│   ├── config/
+│   │   └── database.ts
+│   ├── models/
+│   │   ├── Comment.ts
+│   │   ├── Like.ts
+│   │   ├── Post.ts
+│   │   ├── User.ts
+│   │   └── UserSettings.ts
+│   ├── routes/
+│   │   ├── account.ts
+│   │   ├── auth.ts
+│   │   ├── comments.ts
+│   │   ├── index.ts
+│   │   ├── likes.ts
+│   │   ├── posts.ts
+│   │   └── settings.ts
+│   ├── package.json
+│   ├── server.ts
+│   └── tsconfig.json
+├── frontend/
+│   ├── src/
+│   │   ├── assets/
+│   │   │   └── icons/
+│   │   ├── components/
+│   │   │   ├── AuthForm/
+│   │   │   ├── DropdownMenu/
+│   │   │   ├── Header/
+│   │   │   ├── Loading/
+│   │   │   ├── ProtectedRoute/
+│   │   │   └── Sidebar/
+│   │   ├── config/
+│   │   │   └── routesConfig.tsx
+│   │   ├── hooks/
+│   │   │   └── common-context.tsx
+│   │   ├── layouts/
+│   │   │   ├── EmptyLayout.tsx
+│   │   │   └── MainLayout.tsx
+│   │   ├── pages/
+│   │   │   ├── Home/
+│   │   │   ├── Landing/
+│   │   │   ├── Login/
+│   │   │   ├── Profile/
+│   │   │   ├── Register/
+│   │   │   ├── Settings/
+│   │   │   ├── App.tsx
+│   │   │   └── Entry.tsx
+│   │   ├── styles/
+│   │   │   ├── global.scss
+│   │   │   └── mixins.scss
+│   │   └── utils/
+│   │   │   ├── api.tsx
+│   │   │   └── usefulFunctions.ts
+│   ├── .babelrc
+│   ├── .stylelinttc.json
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── webpack.config.js
+├── .env.example
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── LICENSE
+└── README.md
+
+Also, things that I have in my gitignore:
+├── .!other/   # Simply contains old files and some notes, etc.
+├── .vscode/
+└── .env
 ```
 
-> - Pages are scoped by folder with `.tsx + .scss` per view
-> - Components follow the same pattern for modularity and maintainability
-> - `mixins.scss` contains shared styling helpers
-> - SVG icons are managed manually in a flat asset folder
-> - Some pages or components wont have styling if not needed.
+- Pages and components are folder-scoped (`.tsx + .scss`)
+   - Sometimes no `.scss` file if it isn't needed.
+- Custom layouts allow public/private route separation
+- Common state is shared via `common-context.tsx`
+
 
 ---
 
-## 💡 Current Features
 
-- ✅ Multi-state Sidebar (`full`, `collapsed`, `hidden`, `minimal`)
-- ✅ Custom Header with responsive overlap detection
-- ✅ Fully editable spreadsheet-style table (UniversalTable)
-- ✅ Tooltips for overflowing content (WidthTooltip)
-- ✅ Dropdown menu component with icon + section + divider support
-- ✅ Full-page fallback loader with delay logic
-- ✅ Route-based rendering using `react-router-dom`
+## 🧭 Route Overview <a name="route-overview"></a>
+
+A complete list of all defined routes, their layouts, file paths, auth requirements, and usage context can be found in the [📄 Pages / Routes Spreadsheet Section](https://docs.google.com/spreadsheets/d/11VOvwZ5hVu4gsFAM9Fex8Rb-AQQ5IQZTMSrlPBczVkI/edit?gid=1493879846#gid=1493879846&range=J5:J25).
+
+
+## 💡 Key Features <a name="key-features"></a>
+
+- ✅ Responsive header with auth state awareness
+- ✅ Dynamic sidebar with multiple visibility modes
+- ✅ Auth system with JWT login, register, and logout
+- ✅ Form validation with error display and field feedback
+- ✅ Protected routes with `useAuthGuard` and layout guards
+- ✅ Reusable `<AuthForm />` shared across login/register flows
+- ✅ Create Post, Like, Comment models with full backend routes
+- ✅ User profile page (`/@username`) with posts and comments view
+- ✅ Settings page with profile updates and optional dummy UI preferences
+- ✅ Image upload for profile icons (in progress)
+- ✅ Default profile icon logic for new users
+- ✅ Route-based lazy loading via React Suspense
+- ✅ SCSS modules with custom design system
+- ✅ FullPageLoader + DelayedFallback system
+- ✅ Modular API utility for backend communication
+- ✅ Context-driven layout and user state
+
+
+## 🔐 Backend Architecture <a name="backend-architecture"></a>
+
+Fully custom backend built with:
+
+- Express.js + Sequelize + MySQL
+- Secure user model with bcrypt password hashing
+- JWT for stateless auth with "Remember Me" session support
+- Protected routes via middleware (`req.user` injection)
+- Feature routes: posts, comments, likes, settings, auth
+- Auto-created `createdAt` / `updatedAt` on all models
+- File upload logic for profile images (to be completed)
+- Centralized `.env` config for porting between environments
+
+
+## 🎨 SCSS + Styling Philosophy <a name="styling-philosophy"></a>
+
+- Local `.scss` files scoped per page/component (if needed)
+- `mixins.scss` contains shared mixin utilities
+- Masked SVG icons used for styling precision
+- Header is reserved for actions (create, profile, theme, sign in/out)
+- Sidebar is reserved for section navigation (feed, settings, etc.)
+
+
+## 🚧 Status <a name="project-status"></a>
+
+This project is **actively in development** with all major systems scaffolded.
+Focus is on building a reusable project structure for fullstack applications with integrated frontend/backend planning.
+
+> ⚠️ All placeholder routes/components are being phased out as feature pages are implemented
+
 
 ---
 
-## 🎨 SCSS + Styling Philosophy
 
-This project uses custom Webpack rules to allow:
-- Global SCSS imports
-- Local `.scss` files for every component/page (if needed)
-- Wrapper class naming to scope styles without CSS Modules
-- `mixins.scss` contains utility mixins used across the project
-- Icons are manually added as masked SVGs (not through libraries), though this may change.
+## 🎯 Minimum Viable Version (v1.0)
 
-This gives pixel-level control over layout and allows scaling the UI system with precision.
+This project is being developed as a feature-complete fullstack template, showing how to structure and implement a complete web app from scratch.
 
----
-
-## 🔐 Backend Strategy (Not Added Yet)
-
-Initial plan is to use **Google Firebase Auth** for:
-- Secure, managed authentication
-- Optional OAuth login support
-
----
-
-If a custom backend is added, it will follow:
-- ✅ bcrypt for password hashing
-- ✅ JWT for stateless sessions
-- ✅ Rate-limited login attempts
-- ✅ Centralized `.env` secret config
-- ✅ Input validation + sanitization
-- ✅ Optional logging of login attempts / IP addresses
-- ✅ Future ideas: "total shutdown" on multiple failed attempts
-
----
-
-## 🧪 Planned Pages / Routes
-
-- Planned Pages / Routes - Auth Related
-  - `/login` — email or username login form
-  - `/register` — new user registration with validation
-  - `/settings` — change username/email/password/icon
-  - `/@username` — public profile page via handle-style routing
-- Planned Pages / Routes NOT related to Auth:
-  - `*` — 404 page with return to home and optional search
-  - TBD
-
-> Route tree is defined in `routesConfig.ts` and uses React Suspense for lazy loading
-
----
-
-## ✅ What's Included So Far
-
-- 🔧 Custom Webpack + Babel + TypeScript setup
-- ⚛️ React core + routing system
-- 🎨 SCSS pipeline with strict file boundaries
-- 🧱 Header + Sidebar layout system
-- 🧠 Context-driven layout state (`common-context.tsx`)
-- 🧁 Reusable DropdownMenu with support for icons and grouped items
-- ⏳ FullPageLoader with DelayedFallback (Included but not fully tested)
-- 📊 UniversalTable (Very W.I.P. still)
-  - Column + row spans
-  - Custom types (checkbox, dropdown, editable text)
-  - Keyboard interactions
-  - Future styling flexibility
-
----
-
-## 🚧 Status
-
-This project is **Work in Progress** and not even close to production-ready.  
-No backend connected. No data persisted.
+The following scope represents the intended "v1.0" release — a well-rounded foundation suitable for showcasing in portfolios, cloning for future projects, or extending into larger applications.
 
 
+### 👤 Authentication & User
+- User registration and login
+- "Remember Me" JWT token support
+- Logout functionality
+- Update account settings (username, email, password)
+- Upload and display profile image
 
+### 📝 Content System
+- Create basic text-based posts
+- Comment on posts
+- Like posts
+- Timestamps for post/comment creation + editing
+- View a user's posts and comments on their profile
+
+### 🌍 Routing & Layouts
+- Public: Landing, Login, Register (no sidebar)
+- Protected: Profile, Settings, Feed
+- Multiple layout support (public vs authenticated views)
+
+### ✅ UI Polish & Extras
+- Skeleton loaders or spinners for async pages
+- Clean route structure with layout guards
+- Centralized API handler (`api.ts`)
+- SCSS modules for scoped styling
+- Form error handling with real-time validation
+- Responsive header with dynamic auth state
+
+### 💡 Post-MVP (Optional Future Features)
+- Follow/follower system
+- Private profiles or post visibility control
+- Feed filtered by followed users
+- Notifications (likes/comments)
+- Explore/search page
 
