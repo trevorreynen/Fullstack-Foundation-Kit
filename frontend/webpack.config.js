@@ -62,6 +62,7 @@ module.exports = async () => {
           use: [
             isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
+            'postcss-loader',
             'sass-loader'
           ], // 'style-loader': Injects styles into the DOM, 'css-loader': Resolves CSS imports, 'sass-loader': Compiles SCSS to CSS
           //use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],

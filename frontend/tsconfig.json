@@ -16,5 +16,5 @@
       "@/*": ["./src/*"] // Simplifies imports using aliases
     }
   },
-  "exclude": ["webpack.config.js", "node_modules"]
+  "exclude": ["webpack.config.js", "node_modules", "postcss.config.js", "tailwind.config.js"]
 }

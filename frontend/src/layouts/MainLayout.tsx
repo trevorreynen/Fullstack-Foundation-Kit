@@ -1,7 +1,7 @@
 // import MainLayout from '@/layouts/MainLayout'
 
 // ====================< IMPORTS: REACT >=================================
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================

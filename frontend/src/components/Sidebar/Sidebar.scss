@@ -5,10 +5,10 @@
   /*width: 240px;*/
   width: 140px;
   padding: 2px;
-  color: var(--text-1);
-  background-color: var(--bg-4);
+  color: #fff;
+  background-color: #181a1d;
   user-select: none;
-  border-right: 1px solid var(--border-gray-1);
+  border-right: 1px solid #888;
 
   &.hidden,
   &.minimal { display: none; }
@@ -89,8 +89,8 @@
     height: 100vh;
     max-height: 100dvh; // support modern mobile units
     padding: 60px;
-    background-color: var(--bg-5);
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    background-color: #242629;
+    box-shadow: 0px 0px 10px rgb(0, 0, 0, 0.5);
     transform: translateX(0%);
     transition: transform 0.3s ease, opacity 0.3s ease;
     flex: 1;
@@ -126,7 +126,7 @@
       border-radius: 8px;
       cursor: pointer;
 
-      &:hover { background-color: var(--bg-hover-3); }
+      &:hover { background-color: rgb(255, 255, 255, 0.2); }
 
       .label-left {
         @include mixins.Flex;
@@ -146,9 +146,9 @@
 
     .sidebar-dropdown-children {
       padding: 2px 0px;
-      background-color: var(--bg-5);
-      border-top: 1px solid var(--border-gray-1);
-      border-bottom: 1px solid var(--border-gray-1);
+      background-color: #242629;
+      border-top: 1px solid #888;
+      border-bottom: 1px solid #888;
     }
   }
 
@@ -157,7 +157,7 @@
 
     &:not(:first-child) {
       margin-top: 16px;
-      border-top: 1px solid var(--border-gray-1);
+      border-top: 1px solid #888;
     }
 
     .sidebar-group-label {
@@ -181,16 +181,16 @@
 
     .sidebar-link {
       @include mixins.Flex;
-      color: var(--text-1);
+      color: #fff;
       font-size: 14px;
     }
 
-    &.selected { background-color: var(--bg-hover-3); }
-    &:hover { background-color: var(--bg-hover-3); }
+    &.selected { background-color: rgb(255, 255, 255, 0.2); }
+    &:hover { background-color: rgb(255, 255, 255, 0.2); }
   }
 
   .sidebar-submenu {
-    border-top: 1px solid var(--border-gray-1);
+    border-top: 1px solid #888;
 
     .sidebar-submenu-label .label-left { margin-left: 16px; }
 

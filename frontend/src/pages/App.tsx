@@ -22,7 +22,6 @@ import { useRoutesConfig } from '@/config/routesConfig'
 
 // ====================< IMPORTS: STYLES >================================
 import '@/styles/global.scss'
-import '@/styles/_variables.css'
 
 
 export default function App() {
