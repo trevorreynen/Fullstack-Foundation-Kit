@@ -1,26 +1,36 @@
 // import Header from '@/components/Header/Header'
 
-// =========================< IMPORTS: REACT >=================================
+// ====================< IMPORTS: REACT >=================================
 import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
-import { useGlobalUI } from '@/hooks/useGlobalUI'
-import { SidebarState } from '@/contexts/GlobalUIContext'
-import { useUser } from '@/hooks/useUser'
+// ====================< IMPORTS: LAYOUT >================================
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
 import DropdownMenu from '@/components/DropdownMenu/DropdownMenu'
 
-// =========================< IMPORTS: CSS >===================================
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+import { SidebarState } from '@/contexts/GlobalUIContext'
+import { useGlobalUI } from '@/hooks/useGlobalUI'
+import { useUser } from '@/hooks/useUser'
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './Header.scss'
 
 
 export default function Header() {
   const navigate = useNavigate()
 
-  const { sidebarState, setSidebarState } = useGlobalUI()
-  const { user, setUser, logoutUser } = useUser()
+  const { theme, setTheme, sidebarState, setSidebarState, isMobile, isMobileMenuOpen, setIsMobileMenuOpen } = useGlobalUI()
+  const { user, logoutUser } = useUser()
 
   const leftRef = useRef<HTMLDivElement>(null)
   const centerRef = useRef<HTMLDivElement>(null)
@@ -30,6 +40,11 @@ export default function Header() {
 
 
   const toggleSidebar = () => {
+    if (isMobile) {
+      setIsMobileMenuOpen(!isMobileMenuOpen)
+      return
+    }
+
     let nextState
 
     switch (sidebarState) {
@@ -51,7 +66,6 @@ export default function Header() {
     setSidebarState(nextState)
   }
 
-
   const checkOverlap = () => {
     const left = leftRef.current?.getBoundingClientRect()
     const center = centerRef.current?.getBoundingClientRect()
@@ -66,8 +80,6 @@ export default function Header() {
     setHideCenter(centerOverlapsLeft || centerOverlapsRight)
     setHideRight(rightTooClose)
   }
-
-
 
   useLayoutEffect(() => {
     const resizeObserver = new ResizeObserver(checkOverlap)
@@ -90,8 +102,6 @@ export default function Header() {
     }
   }, [sidebarState])
 
-
-
   // Resets the header center and right divs to reappear after exiting minimal state.
   useEffect(() => {
     if (sidebarState !== 'minimal') {
@@ -108,71 +118,93 @@ export default function Header() {
       <div ref={leftRef} className='header-left-side-sidebar-button'>
         {user && (
           <button className='sidebar-header-state-btn' onClick={toggleSidebar}>
-            <div className='menu-icon' />
+            <div className={isMobile && isMobileMenuOpen ? 'close-icon' : 'menu-icon'} />
           </button>
         )}
       </div>
 
 
-      <div ref={centerRef} className={`header-center-content ${hideCenter ? '' : 'visible'}`}>
+      <div ref={centerRef} className={`header-center-content ${hideCenter ? 'hidden' : 'visible'}`}>
         <h2>Test Project by Trevor Reynen</h2>
       </div>
 
 
-      {!hideRight && (
-        <div ref={rightRef} className='header-right-side-content'>
-          {!user ? (
-            <>
-              <DropdownMenu
-                button={<div className='menu-ellipsis-btn'>⋮</div>}
-                items={[
-                  { type: 'item', label: 'Appearance', onClick: () => {}, iconClass: 'icon-appearance' },
-                  { type: 'divider' },
-                  { type: 'item', label: 'Settings', onClick: () => {}, iconClass: 'icon-settings' }
-                ]}
-              />
+      <div
+        ref={rightRef}
+        className={`header-right-side-content ${hideRight ? 'hidden' : 'visible'}`}
+      >
+        {!user ? (
+          <>
+            <DropdownMenu
+              button={<div className='menu-ellipsis-btn'>⋮</div>}
+              items={[
+                {
+                  type: 'submenu',
+                  label: 'Appearance',
+                  iconClass: 'icon-appearance',
+                  submenu: [
+                    { type: 'item-text', label: 'Setting applies to this browser only' },
+                    { type: 'item', label: 'Dark theme', iconClass: theme === 'dark' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('dark') },
+                    { type: 'item', label: 'Light theme', iconClass: theme === 'light' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('light') },
+                  ]
+                },
+                { type: 'divider' },
+                { type: 'item', label: 'Settings', onClick: () => {}, iconClass: 'icon-settings' }
+              ]}
+            />
 
-              <button className='sign-in-btn' onClick={() => navigate('/login')}>Sign In</button>
-            </>
-          ) : (
-            <div className='signed-in-actions'>
-              <button className='create-btn'>+ Create</button>
+            <button className='sign-in-btn' onClick={() => navigate('/login')}>Sign In</button>
+          </>
+        ) : (
+          <div className='signed-in-actions'>
+            <button className='create-post-btn' onClick={() => navigate('/create')}>Post</button>
 
-              <div className='notifications-icon'>
-                {/* Replace with real SVG/icon later */}
-                <div className='white-square-icon' />
-              </div>
-
-              <DropdownMenu
-                button={<div className='profile-avatar-placeholder' />}
-                items={[
-                  {
-                    type: 'header',
-                    username: user.username,
-                    onViewProfile: () => {}
+            <DropdownMenu
+              button={<img
+                        src={`${process.env.API_BASE!.replace('/api', '')}${user.profileIconUrl || '/uploads/default-profile-icon.png'}`}
+                        className='profile-avatar'
+                        onError={(e) => e.currentTarget.src = `${process.env.API_BASE!.replace('/api', '')}/uploads/default-profile-icon.png`}
+                        draggable={false}
+                      />
+              }
+              items={[
+                {
+                  type: 'header',
+                  username: user.username,
+                  profileIconUrl: user.profileIconUrl,
+                  onViewProfile: () => navigate(`/user/${user.username}`)
+                },
+                { type: 'divider' },
+                {
+                  type: 'item',
+                  label: 'Sign Out',
+                  onClick: () => {
+                    logoutUser()
                   },
-                  { type: 'divider' },
-                  {
-                    type: 'item',
-                    label: 'Sign Out',
-                    onClick: () => {
-                      logoutUser()
-                    },
-                    iconClass: 'icon-signout'
-                  },
-                  { type: 'divider' },
-                  {
-                    type: 'item',
-                    label: 'Settings',
-                    onClick: () => {},
-                    iconClass: 'icon-settings'
-                  }
-                ]}
-              />
-            </div>
-          )}
-        </div>
-      )}
+                  iconClass: 'icon-logout-uxasp'
+                },
+                { type: 'divider' },
+                {
+                  type: 'submenu',
+                  label: 'Appearance',
+                  iconClass: 'icon-appearance',
+                  submenu: [
+                    { type: 'item-text', label: 'Setting applies to this browser only' },
+                    { type: 'item', label: 'Dark theme', iconClass: theme === 'dark' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('dark') },
+                    { type: 'item', label: 'Light theme', iconClass: theme === 'light' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('light') },
+                  ]
+                },
+                {
+                  type: 'item',
+                  label: 'Settings',
+                  iconClass: 'icon-settings',
+                  onClick: () => navigate('/settings')
+                }
+              ]}
+            />
+          </div>
+        )}
+      </div>
 
 
     </div>

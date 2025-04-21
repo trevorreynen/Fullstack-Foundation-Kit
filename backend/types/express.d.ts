@@ -1,7 +1,7 @@
 // ./backend/types/express/index.d.ts
 
 // Imports
-import User from '../models/User'
+import { User } from '../models'
 
 declare global {
   namespace Express {

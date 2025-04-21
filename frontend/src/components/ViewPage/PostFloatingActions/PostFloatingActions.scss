@@ -1,0 +1,38 @@
+@use '@/styles/mixins';
+
+.PostFloatingActions {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    color: #aaa;
+    font-size: 20px;
+    transition: color 0.2s;
+    cursor: pointer;
+
+    .count {
+      margin-top: 4px;
+      color: #666;
+      font-size: 12px;
+    }
+
+    &:hover,
+    &.active {
+      color: #fff;
+
+      .count {
+        color: #ccc;
+      }
+    }
+  }
+}
+

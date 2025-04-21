@@ -1,18 +1,41 @@
 // import MainLayout from '@/layouts/MainLayout'
 
-// =========================< IMPORTS: REACT >=================================
+// ====================< IMPORTS: REACT >=================================
+import { useEffect, useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
-import { useGlobalUI } from '@/hooks/useGlobalUI'
+// ====================< IMPORTS: LAYOUT >================================
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
 import Header from '@/components/Header/Header'
 import Sidebar from '@/components/Sidebar/Sidebar'
 
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+import { SidebarState } from '@/contexts/GlobalUIContext'
+import { useGlobalUI } from '@/hooks/useGlobalUI'
+import { useUser } from '@/hooks/useUser'
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
+
 
 export default function MainLayout() {
-  const { sidebarState } = useGlobalUI()
+  const { user } = useUser()
+  const { setSidebarState, sidebarState } = useGlobalUI()
+
+  useEffect(() => {
+    if (!user) {
+      setSidebarState(SidebarState.Hidden)
+    }
+  }, [user])
+
 
   return (
     <div className='App'>

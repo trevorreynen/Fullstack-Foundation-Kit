@@ -1,36 +1,26 @@
 // import AuthForm from '@/components/AuthForm/AuthForm'
 
-// =========================< IMPORTS: REACT >=================================
+// ====================< IMPORTS: REACT >=================================
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
+// ====================< IMPORTS: LAYOUT >================================
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: PAGES >=================================
 
-// =========================< IMPORTS: CSS >===================================
+// ====================< IMPORTS: COMPONENTS >============================
+
+// ====================< IMPORTS: TYPES >=================================
+import { FieldKey, Props } from '@/types/AuthFormTypes'
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './AuthForm.scss'
-
-
-type FieldKey = 'identifier' | 'password' | 'email' | 'confirmPassword'
-
-type FieldConfig = {
-  key: FieldKey
-  label: string
-  type?: 'text' | 'password'
-  placeholder?: string
-  required?: boolean
-}
-
-type Props = {
-  title: string
-  fields: FieldConfig[]
-  onSubmit: (values: Record<FieldKey, string>, rememberMe: boolean) => Promise<string | null>
-  footer?: React.ReactNode
-  submitText?: string
-  showForgotPassword?: boolean
-  showRememberMe?: boolean
-}
 
 
 export default function AuthForm({ title, fields, onSubmit, footer, submitText = 'Submit', showForgotPassword = false, showRememberMe = false }: Props) {

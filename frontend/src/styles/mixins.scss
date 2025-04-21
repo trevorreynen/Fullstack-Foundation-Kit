@@ -1,6 +1,4 @@
 /* @use '@/styles/mixins'; */
-/* @include mixins.UseScrollBar; */
-/* @include mixins.FlexSpaceBetween; */
 
 @mixin Scrollable($overflowRule: auto) {
   overflow-x: hidden;
@@ -35,6 +33,7 @@
 
 
 
+/* @include mixins.UseScrollBar; */
 @mixin UseScrollBar() {
   @include Scrollable();
   overflow-x: hidden; /* Hide overflow content that leads outside of element, horizontally (left or right) */
@@ -43,6 +42,7 @@
   height: 100%;
 }
 
+/* @include mixins.HideHorizontalScrollbar; */
 @mixin HideHorizontalScrollbar() {
   overflow-x: auto;
   overflow-y: hidden;
@@ -54,23 +54,27 @@
   }
 }
 
+/* @include mixins.FlexSpaceBetween; */
 @mixin FlexSpaceBetween() {
   display: flex; /* Flexbox for layout */
   justify-content: space-between; /* Puts empty space between child divs */
   align-items: center; /* Vertically centers child divs */
 }
 
+/* @include mixins.FlexCenter; */
 @mixin FlexCenter() {
   display: flex; /* Flexbox for layout */
   justify-content: center; /* Horizontally centers child elements */
   align-items: center; /* Vertically centers child divs */
 }
 
+/* @include mixins.Flex; */
 @mixin Flex() {
   display: flex; /* Flexbox for layout */
   align-items: center; /* Vertically centers child divs */
 }
 
+/* @include mixins.SidebarArrowStyle; */
 @mixin SidebarArrowStyle($size: 24px) {
   width: $size;
   height: $size;
@@ -85,6 +89,7 @@
   &.close-it { transform: rotate(180deg); }
 }
 
+/* @include mixins.IconPlaceholder(); */
 @mixin IconPlaceholder($size: 20px) {
   width: $size;
   height: $size;
@@ -93,10 +98,22 @@
   mask-position: center;
   mask-size: contain;
 
+  &.icon-empty-placeholder {
+    border: 1px dashed rgb(255, 255, 255, 0.5);
+    border-radius: 4px;
+  }
+
+  &.icon-empty-placeholder-no-border {
+    background-color: transparent !important;
+  }
+
+
   /* Only apply background when it's a real icon */
-  &:not(.empty-placeholder-icon) {
+  &:not(.icon-empty-placeholder),
+  &:not(.icon-empty-placeholder-no-border) {
     background-color: #fff;
   }
+
 
   &.icon-home { mask-image: url('@/assets/icons/home\ \(Calcite\).svg'); }
   &.icon-settings { mask-image: url('@/assets/icons/settings-cog\ \(Smoothie\).svg'); }
@@ -112,6 +129,12 @@
   &.icon-close { mask-image: url('@/assets/icons/close-md\ \(Coolicons\).svg'); }
   &.icon-hide { mask-image: url('@/assets/icons/eye-hide\ \(Start\).svg'); }
   &.icon-show { mask-image: url('@/assets/icons/eye\ \(Dazzle\).svg'); }
+  &.icon-appearance { mask-image: url('@/assets/icons/moon\ \(Dazzle\).svg'); }
+  &.icon-login-strt { mask-image: url('@/assets/icons/login\ \(Start\).svg'); }
+  &.icon-login-uxasp { mask-image: url('@/assets/icons/login\ \(Uxaspects\).svg'); }
+  &.icon-logout-strt { mask-image: url('@/assets/icons/logout\ \(Start\).svg'); }
+  &.icon-logout-uxasp { mask-image: url('@/assets/icons/logout\ \(Uxaspects\).svg'); }
+  &.icon-checkmark { mask-image: url('@/assets/icons/check\ \(Coolicons\).svg'); }
+  // TODO: Before "done" with frontend, must choose one icon for each type. Get rid of duplicates from assets and code.
 }
-
 

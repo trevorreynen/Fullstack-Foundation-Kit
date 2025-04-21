@@ -3,8 +3,7 @@
 // Imports
 import { Request, Response } from 'express'
 import { Op } from 'sequelize'
-import User from '../models/User'
-import UserSettings from '../models/UserSettings'
+import { User, UserSettings } from '../models'
 import { generateToken } from '../utils/jwt'
 
 // Helper regex to enforce password rules
@@ -82,7 +81,7 @@ export const loginUser = async (req: Request, res: Response) => {
       return
     }
 
-    const token = generateToken({ id: user.id })
+    const token = generateToken(user.id, user.username)
 
     const isMatch = await user.checkPassword(password)
     if (!isMatch) {
@@ -131,6 +130,36 @@ export const getAuthenticatedUser = async (req: Request, res: Response) => {
     console.error(err)
 
     res.status(500).json({ error: 'Failed to fetch user data' })
+    return
+  }
+}
+
+
+// (For POST) Upload profile image.
+export const uploadProfileImage = async (req: Request, res: Response) => {
+  try {
+    const file = req.file
+    if (!file) {
+      res.status(400).json({ error: 'No file uploaded' })
+      return
+    }
+
+    const user = req.user
+    if (!user) {
+      res.status(401).json({ error: 'Not authenticated' })
+      return
+    }
+
+    const filePath = `/uploads/${file.filename}`
+
+    await user.update({ profileIconUrl: filePath })
+
+    res.status(200).json({ message: 'Image uploaded', profileIconUrl: filePath })
+    return
+  } catch (err) {
+    console.error(err)
+
+    res.status(500).json({ error: 'Failed to upload image' })
     return
   }
 }

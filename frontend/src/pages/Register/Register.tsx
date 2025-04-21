@@ -1,13 +1,25 @@
-// =========================< IMPORTS: REACT >=================================
+// import Register from '@/pages/Register/Register'
+
+// ====================< IMPORTS: REACT >=================================
 import { useNavigate } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
-import { api } from '@/utils/api'
+// ====================< IMPORTS: LAYOUT >================================
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
 import AuthForm from '@/components/AuthForm/AuthForm'
 
-// =========================< IMPORTS: STYLES >================================
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+
+// ====================< IMPORTS: UTILS >=================================
+import { api } from '@/utils/api'
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './Register.scss'
 
 
@@ -20,8 +32,7 @@ export default function Register() {
       identifier: string
       email: string
       password: string
-    },
-    rememberMe: boolean
+    }
   ) => {
     try {
       const res = await api('/auth/register', {

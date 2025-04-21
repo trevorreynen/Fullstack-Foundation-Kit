@@ -4,8 +4,7 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize'
 import { sequelize } from '../config/database'
 
-import User from './User'
-import Post from './Post'
+import { User, Post } from '../models'
 
 
 class Comment extends Model<InferAttributes<Comment>, InferCreationAttributes<Comment>> {

@@ -1,11 +1,12 @@
-@use '@/styles/mixins.scss';
+@use '@/styles/mixins';
+
 
 /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap');
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
@@ -13,11 +14,10 @@
 
 html, body {
   @include mixins.UseScrollBar;
-
   color: #fff;
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
-  background-color: #000;
+  background-color: var(--bg-4);
 }
 
 .App {
@@ -30,7 +30,8 @@ html, body {
   @include mixins.UseScrollBar;
   z-index: 1;
   display: grid;
-  grid-template-columns: 240px 1fr;
+  /*grid-template-columns: 240px 1fr;*/
+  grid-template-columns: 140px 1fr;
   flex: 1;
 
   &.collapsed { grid-template-columns: 64px 1fr; }
@@ -43,3 +44,25 @@ html, body {
   height: 100%;
 }
 
+.Router-Wrapper {
+  padding: 20px;
+}
+
+
+@media (max-width: 849px) {
+  .App-Wrapper {
+    display: block !important;
+  }
+
+  .Sidebar {
+    display: none !important;
+  }
+
+  .Sidebar.mobile-overlay {
+    display: flex !important;
+  }
+
+  .header-left-side-sidebar-button {
+    z-index: 1100; // Ensure toggle is above overlay
+  }
+}

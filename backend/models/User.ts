@@ -5,11 +5,6 @@ import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOpt
 import { sequelize } from '../config/database'
 import bcrypt from 'bcrypt'
 
-import UserSettings from './UserSettings'
-import Post from './Post'
-import Like from './Like'
-import Comment from './Comment'
-
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>
@@ -52,7 +47,7 @@ User.init(
     profileIconUrl: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: null,
+      defaultValue: '/uploads/default-profile-icon.png',
     },
   },
   {
@@ -76,41 +71,6 @@ User.beforeUpdate(async (user) => {
     user.password = await bcrypt.hash(user.password, 10)
   }
 })
-
-
-// User settings.
-User.hasOne(UserSettings, {
-  foreignKey: 'userId',
-  as: 'settings',
-  onDelete: 'CASCADE',
-})
-UserSettings.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'user',
-})
-
-
-// User posts.
-User.hasMany(Post, {
-  foreignKey: 'userId',
-  as: 'posts',
-  onDelete: 'CASCADE',
-})
-
-Post.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'user',
-})
-
-
-// User likes.
-User.hasMany(Like, { foreignKey: 'userId', onDelete: 'CASCADE' })
-Like.belongsTo(User, { foreignKey: 'userId' })
-
-
-// User comments.
-User.hasMany(Comment, { foreignKey: 'userId', onDelete: 'CASCADE' })
-Comment.belongsTo(User, { foreignKey: 'userId' })
 
 
 export default User

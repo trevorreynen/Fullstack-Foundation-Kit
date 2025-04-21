@@ -1,7 +1,8 @@
 // ./backend/controllers/settingsController.ts
 
+// Imports
 import { Request, Response } from 'express'
-import UserSettings from '../models/UserSettings'
+import { UserSettings } from '../models'
 
 
 // (For GET) Load user settings.

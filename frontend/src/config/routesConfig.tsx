@@ -1,16 +1,36 @@
 // import { routesConfig } from '@/config/routesConfig'
 
-// =========================< IMPORTS: REACT >=================================
+// ====================< IMPORTS: REACT >=================================
 import { lazy, useMemo, Suspense, JSX } from 'react'
 import { RouteObject } from 'react-router-dom'
 
-// =========================< IMPORTS: LAYOUT >================================
+// ====================< IMPORTS: LAYOUT >================================
 import MainLayout from '@/layouts/MainLayout'
-import EmptyLayout from '@/layouts/EmptyLayout'
 
-// =========================< IMPORTS: COMPONENTS >============================
-import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
+// ====================< IMPORTS: PAGES >=================================
+const About = lazy(() => import('@/pages/About/About'))
+const CreatePost = lazy(() => import('@/pages/CreatePost/CreatePost'))
+const Error404 = lazy(() => import('@/pages/Error404/Error404'))
+const Explore = lazy(() => import('@/pages/Explore/Explore'))
+const Home = lazy(() => import('@/pages/Home/Home'))
+const Landing = lazy(() => import('@/pages/Landing/Landing'))
+const Login = lazy(() => import('@/pages/Login/Login'))
+const Profile = lazy(() => import('@/pages/Profile/Profile'))
+const Register = lazy(() => import('@/pages/Register/Register'))
+const Settings = lazy(() => import('@/pages/Settings/Settings'))
+const ViewPost = lazy(() => import('@/pages/ViewPost/ViewPost'))
+
+// ====================< IMPORTS: COMPONENTS >============================
 import DelayedFallback from '@/components/Loading/DelayedFallback'
+import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
+
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
 
 
 const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element | null>) => (
@@ -20,28 +40,25 @@ const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element | n
 )
 
 
+const mainLayoutRoutes: RouteObject = {
+  element: <MainLayout />,
+  children: [
+    { path: '', element: <Landing /> },
+    { path: 'login', element: withSuspense(Login) },
+    { path: 'register', element: withSuspense(Register) },
+    { path: 'about', element: withSuspense(About) },
+    { path: 'home', element: <ProtectedRoute>{withSuspense(Home)}</ProtectedRoute> },
+    { path: 'settings', element: <ProtectedRoute>{withSuspense(Settings)}</ProtectedRoute> },
+    { path: 'create', element: <ProtectedRoute>{withSuspense(CreatePost)}</ProtectedRoute> },
+    { path: 'explore', element: <ProtectedRoute>{withSuspense(Explore)}</ProtectedRoute> },
+    { path: 'post/:postId', element: <ProtectedRoute>{withSuspense(ViewPost)}</ProtectedRoute> },
+    { path: 'user/:username', element: <ProtectedRoute>{withSuspense(Profile)}</ProtectedRoute> },
+    { path: '*', element: <ProtectedRoute>{withSuspense(Error404)}</ProtectedRoute> },
+  ]
+}
+
+
 export const useRoutesConfig = (): RouteObject[] => {
-  return useMemo(() => {
-
-    const mainLayoutRoutes: RouteObject = {
-      element: <ProtectedRoute><MainLayout /></ProtectedRoute>,
-      children: [
-        { path: '/home', element: withSuspense(lazy(() => import('@/pages/Home/Home'))) },
-        { path: '/settings', element: withSuspense(lazy(() => import('@/pages/Settings/Settings'))) },
-        { path: '/:username', element: withSuspense(lazy(() => import('@/pages/Profile/Profile'))) },
-      ]
-    }
-
-    const emptyLayoutRoutes: RouteObject = {
-      element: <EmptyLayout />,
-      children: [
-        { path: '/', element: withSuspense(lazy(() => import('@/pages/Landing/Landing'))) },
-        { path: '/login', element: withSuspense(lazy(() => import('@/pages/Login/Login'))) },
-        { path: '/register', element: withSuspense(lazy(() => import('@/pages/Register/Register'))) },
-      ]
-    }
-
-    return [mainLayoutRoutes, emptyLayoutRoutes]
-  }, [])
+  return [mainLayoutRoutes]
 }
 

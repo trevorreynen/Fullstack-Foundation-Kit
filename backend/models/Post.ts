@@ -4,9 +4,7 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize'
 import { sequelize } from '../config/database'
 
-import User from './User'
-import Like from './Like'
-import Comment from './Comment'
+import { User } from '../models'
 
 
 class Post extends Model<InferAttributes<Post>, InferCreationAttributes<Post>> {
@@ -31,7 +29,7 @@ Post.init(
       allowNull: false,
     },
     title: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
     content: {
@@ -48,16 +46,6 @@ Post.init(
     timestamps: true,
   },
 )
-
-
-// Post likes.
-Post.hasMany(Like, { foreignKey: 'postId', onDelete: 'CASCADE' })
-Like.belongsTo(Post, { foreignKey: 'postId' })
-
-
-// Post has comments.
-Post.hasMany(Comment, { foreignKey: 'postId', onDelete: 'CASCADE' })
-Comment.belongsTo(Post, { foreignKey: 'postId' })
 
 
 export default Post

@@ -1,21 +1,36 @@
-// =========================< IMPORTS: REACT >=================================
-import { useState, useContext } from 'react'
+// import Login from '@/pages/Login/Login'
+
+// ====================< IMPORTS: REACT >=================================
 import { useNavigate } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
-import { api } from '@/utils/api'
-import { useUser } from '@/hooks/useUser'
+// ====================< IMPORTS: LAYOUT >================================
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
 import AuthForm from '@/components/AuthForm/AuthForm'
 
-// =========================< IMPORTS: STYLES >================================
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+import { SidebarState } from '@/contexts/GlobalUIContext'
+import { useGlobalUI } from '@/hooks/useGlobalUI'
+import { useUser } from '@/hooks/useUser'
+
+// ====================< IMPORTS: UTILS >=================================
+import { api } from '@/utils/api'
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './Login.scss'
+
 
 
 export default function Login() {
   const navigate = useNavigate()
   const { setUser } = useUser()
+  const { setSidebarState } = useGlobalUI()
 
 
   const handleSubmit = async (
@@ -33,11 +48,14 @@ export default function Login() {
 
       if (rememberMe) {
         localStorage.setItem('token', res.token)
+        localStorage.setItem('user', JSON.stringify(res.user))
       } else {
         sessionStorage.setItem('token', res.token)
+        sessionStorage.setItem('user', JSON.stringify(res.user))
       }
 
       setUser(res.user)
+      setSidebarState(SidebarState.Expanded)
       navigate('/home')
 
       return null

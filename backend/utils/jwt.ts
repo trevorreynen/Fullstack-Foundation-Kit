@@ -18,9 +18,9 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ? ms(process.env.JWT_EXPIRES_I
  * @param payload - The data to encode in the token (for example, { id: number }).
  * @returns A signed JWT string.
  */
-export const generateToken = (payload: object): string => {
+export const generateToken = (id: number, username: string): string => {
   const options: SignOptions = { expiresIn: JWT_EXPIRES_IN }
-  return jwt.sign(payload, JWT_SECRET, options)
+  return jwt.sign({ id, username }, JWT_SECRET, options)
 }
 
 

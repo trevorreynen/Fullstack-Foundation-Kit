@@ -2,8 +2,7 @@
 
 // Imports
 import { Request, Response } from 'express'
-import Comment from '../models/Comment'
-import User from '../models/User'
+import { User, Comment } from '../models'
 
 
 
@@ -99,3 +98,22 @@ export const deleteComment = async (req: Request, res: Response) => {
     return
   }
 }
+
+
+// (For GET) Get comment count by post Id.
+export const getCommentCountByPostId = async (req: Request, res: Response) => {
+  const { postId } = req.params
+
+  try {
+    const count = await Comment.count({ where: { postId } })
+
+    res.json({ postId, commentCount: count })
+    return
+  } catch (err) {
+    console.error(err)
+
+    res.status(500).json({ error: 'Failed to count comments' })
+    return
+  }
+}
+

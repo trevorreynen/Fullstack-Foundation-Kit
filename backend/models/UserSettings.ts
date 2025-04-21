@@ -4,7 +4,7 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize'
 import { sequelize } from '../config/database'
 
-import User from './User'
+import { User } from '../models'
 
 
 class UserSettings extends Model<InferAttributes<UserSettings>, InferCreationAttributes<UserSettings>> {

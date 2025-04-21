@@ -1,27 +1,35 @@
-// =========================< IMPORTS: REACT >=================================
-import { useEffect, useState } from 'react'
+// import Profile from '@/pages/Profile/Profile'
+
+// ====================< IMPORTS: REACT >=================================
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
+// ====================< IMPORTS: LAYOUT >================================
+
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
+import ProfileInfo from '@/components/ProfileInfo/ProfileInfo'
+import UserPosts from '@/components/UserPosts/UserPosts'
+import UserComments from '@/components/UserComments/UserComments'
+
+// ====================< IMPORTS: TYPES >=================================
+import { UserProfile } from '@/types/ProfilePageTypes'
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+
+// ====================< IMPORTS: UTILS >=================================
 import { api } from '@/utils/api'
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: OTHER >=================================
 
-
-// =========================< IMPORTS: CSS >===================================
+// ====================< IMPORTS: STYLES >================================
 import './Profile.scss'
-
-
-interface UserProfile {
-  id: number
-  username: string
-  email: string
-}
 
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>()
-  const [user, setUser] = useState<UserProfile | null>(null)
+  const [viewedUser, setViewedUser] = useState<UserProfile | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -31,7 +39,7 @@ export default function Profile() {
       try {
         setLoading(true)
         const data = await api(`/account/username/${username}`)
-        setUser(data)
+        setViewedUser(data)
       } catch (err: any) {
         setError('User not found.')
       } finally {
@@ -39,7 +47,9 @@ export default function Profile() {
       }
     }
 
-    if (username) fetchUser()
+    if (username) {
+      fetchUser()
+    }
   }, [username])
 
 
@@ -51,7 +61,7 @@ export default function Profile() {
     return <div>{error}</div>
   }
 
-  if (!user) {
+  if (!viewedUser) {
     return null
   }
 
@@ -60,12 +70,17 @@ export default function Profile() {
     <div className='Profile'>
 
 
-      <h1>@{user.username}</h1>
-      <p>User ID: {user.id}</p>
+      {/*
+      <h1>@{username}</h1>
+      <p>User ID: {viewedUser.id}</p>
+      */}
       {/* TODO: Later: add posts, likes, comments here */}
+
+      <ProfileInfo user={viewedUser} />
+      <UserPosts user={viewedUser} />
+      <UserComments user={viewedUser} />
 
 
     </div>
   )
 }
-

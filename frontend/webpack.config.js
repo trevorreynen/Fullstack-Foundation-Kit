@@ -16,33 +16,6 @@ const APP_TITLE = process.env.FRONTEND_WEBSITE_TITLE
 const isProduction = process.env.MODE === 'production'
 
 
-
-const makeHTMLTemplate = ({ htmlWebpackPlugin }) => `
-  <!doctype html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      ${htmlWebpackPlugin.tags?.headTags}
-      <title>${APP_TITLE}</title>
-    </head>
-    <body>
-      <div id="root"></div>
-      ${htmlWebpackPlugin.tags?.bodyTags}
-    </body>
-  </html>
-`
-
-
-const makeHTMLPlugin = () =>
-  new HtmlWebpackPlugin({
-    templateContent: makeHTMLTemplate,
-    filename: 'index.html',
-    inject: false, // Disable automatic injection to use our custom template logic
-    publicPath: '',
-  })
-
-
 // Function to find an available port and return the Webpack configuration
 module.exports = async () => {
   const port = process.env.FRONTEND_PORT
@@ -52,6 +25,7 @@ module.exports = async () => {
     output: {
       clean: true, // Clean old build files
       path: path.resolve(__dirname, 'dist'),
+      publicPath: '/',
       filename: '[name].[contenthash].js',
       //filename: 'bundle.js',
       assetModuleFilename: 'assets/[name][ext]',
@@ -84,7 +58,7 @@ module.exports = async () => {
           },
         },
         {
-          test: /\.scss$/,
+          test: /\.(scss|css)$/,
           use: [
             isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
@@ -96,14 +70,14 @@ module.exports = async () => {
           test: /\.(svg|png|jpg|jpeg|gif|ico)$/i, // Handle images and SVGs
           type: 'asset/resource',
           generator: {
-            filename: 'assets/images/[path]-[name]-[hash][ext]', // Customize output folder for images
+            filename: 'assets/icons/[name][ext]', // Customize output folder for images
           },
         },
         {
           test: /\.(woff(2)?|eot|ttf|otf|mp3|mp4|webm)$/i, // Handle fonts and media
           type: 'asset/resource',
           generator: {
-            filename: 'assets/fonts-and-media/[path]-[name]-[hash][ext]', // Customize output folder
+            filename: 'assets/fonts-and-media/[name][ext]', // Customize output folder
           },
         },
       ],
@@ -112,11 +86,25 @@ module.exports = async () => {
       new webpack.DefinePlugin({
         'process.env.API_BASE': JSON.stringify(process.env.API_BASE),
       }),
-      makeHTMLPlugin(),
+      new HtmlWebpackPlugin({
+        template: './public/index.html',
+        title: APP_TITLE,
+      }),
       ...(isProduction ? [new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' })] : []),
     ],
+    performance: {
+      hints: false
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        automaticNameDelimiter: '-'
+      }
+    },
     devServer: {
-      static: './dist', // Serve files from 'dist'
+      static: {
+        directory: path.resolve(__dirname, 'public')
+      },
       port,
       hot: true, // Enable hot module replacement
       open: true, // Supposed to automatically open the browser

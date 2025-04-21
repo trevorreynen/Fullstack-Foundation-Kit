@@ -9,6 +9,7 @@ This project is a fullstack, modular web application built using a custom React 
 
 ## 📑 Table of Contents
 
+- [⚙️ Architecture Notes & Solo Dev Tradeoffs](#architecture-notes)
 - [📊 Tracking & Feature Overview](#tracking-and-feature-overview)
 - [📋 Why I Use a Spreadsheet](#why-i-use-spreadsheets)
 - [📁 Project Structure](#project-structure)
@@ -22,9 +23,24 @@ This project is a fullstack, modular web application built using a custom React 
 ---
 
 
+## ⚙️ Architecture Notes & Solo Dev Tradeoffs <a name="architecture-notes"></a>
+
+This project is built as a solo developer effort, and I've intentionally made some tradeoffs in how components and logic are structured.
+
+While I'm familiar with industry standards like the Single Responsibility Principle (SRP), in many cases I've opted to blend layout, logic, and data prep within the same file. This helps me stay in the flow while rapidly developing features and maintaining context across the fullstack.
+
+If this were a team project or something intended for production at scale, I would:
+- Split logic into smaller, composable components
+- Extract custom hooks for data fetching and formatting
+- Separate presentational vs container components more cleanly
+- Introduce stricter architectural boundaries (e.g. UI vs domain layers)
+
+I may revisit this structure in a later branch to demonstrate a more modular pattern. But for now, the current design reflects the needs and momentum of solo fullstack prototyping.
+
+
 ## 📊 Tracking & Feature Overview <a name="tracking-and-feature-overview"></a>
 
-My [detailed project spreadsheet](https://docs.google.com/spreadsheets/d/11VOvwZ5hVu4gsFAM9Fex8Rb-AQQ5IQZTMSrlPBczVkI/edit?usp=sharing) tracks all features, components, models, endpoints, and logic across frontend and backend. This includes:
+My [detailed project spreadsheet](https://docs.google.com/spreadsheets/d/1C8jvxsDRqb4DzvSESKs9tclEQdRJ9CYKbTXQafrjL4A/edit?usp=sharing) tracks all features, components, models, endpoints, and logic across frontend and backend. This includes:
 
 - Frontend: pages, layouts, components, hooks, utils, contexts
 - Backend: models, routes, controllers, middleware, jobs
@@ -137,7 +153,7 @@ Also, things that I have in my gitignore:
 
 ## 🧭 Route Overview <a name="route-overview"></a>
 
-A complete list of all defined routes, their layouts, file paths, auth requirements, and usage context can be found in the [📄 Pages / Routes Spreadsheet Section](https://docs.google.com/spreadsheets/d/11VOvwZ5hVu4gsFAM9Fex8Rb-AQQ5IQZTMSrlPBczVkI/edit?gid=1493879846#gid=1493879846&range=J5:J25).
+A complete list of all defined routes, their layouts, file paths, auth requirements, and usage context can be found in the [📄 Pages / Routes Spreadsheet Section](https://docs.google.com/spreadsheets/d/1C8jvxsDRqb4DzvSESKs9tclEQdRJ9CYKbTXQafrjL4A/edit?gid=1493879846#gid=1493879846&range=L5).
 
 
 ## 💡 Key Features <a name="key-features"></a>

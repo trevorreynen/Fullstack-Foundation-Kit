@@ -1,0 +1,54 @@
+@use '@/styles/mixins';
+
+.UserPosts {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  max-height: 800px;
+  border: 1px solid var(--border-gray-2);
+  border-radius: 10px;
+
+
+  .user-posts-header {
+    @include mixins.FlexSpaceBetween;
+    padding: 8px 16px;
+    cursor: pointer;
+    width: 100%;
+    border-bottom: 1px solid var(--border-gray-2);
+
+    .header {
+      font-size: 30px;
+      font-weight: 400;
+    }
+
+
+    .header-right {
+      @include mixins.Flex;
+      .arrow { @include mixins.SidebarArrowStyle(30px); }
+    }
+  }
+
+  .user-posts-header.open { border-bottom: 1px solid var(--border-gray-2); }
+  .user-posts-header.closed { border-bottom: none; }
+
+
+  .user-posts-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 12px 4px 12px;
+    @include mixins.UseScrollBar;
+
+    .post-wrapper {
+      
+
+      &:not(:last-child) {
+        margin-bottom: 6px;
+      }
+    }
+  }
+
+}
+

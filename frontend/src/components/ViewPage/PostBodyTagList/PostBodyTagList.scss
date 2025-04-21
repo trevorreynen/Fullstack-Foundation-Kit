@@ -1,0 +1,23 @@
+@use '@/styles/mixins';
+
+.PostBodyTagList {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+
+  .tag {
+    padding: 4px 8px;
+    color: #ccc;
+    font-size: 12px;
+    background-color: rgb(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
+
+  .placeholder {
+    color: rgb(255, 255, 255, 0.2);
+    font-style: italic;
+    font-size: 12px;
+  }
+}
+

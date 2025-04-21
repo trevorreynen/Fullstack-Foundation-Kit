@@ -1,27 +1,22 @@
 // ./backend/controllers/postsController.ts
 
 // Imports
+import { Sequelize } from 'sequelize'
 import { Request, Response } from 'express'
-import Post from '../models/Post'
-import User from '../models/User'
+import { User, Post, Comment } from '../models'
+import { AuthRequest } from '../types/AuthRequest'
 
 
 // (For POST) Create post.
-export const createPost = async (req: Request, res: Response) => {
-  const { userId, title, content } = req.body
-  if (!userId || !title || !content) {
+export const createPost = async (req: AuthRequest, res: Response) => {
+  const { title, content } = req.body
+  if (!title || !content) {
     res.status(400).json({ error: 'Missing required fields' })
     return
   }
 
   try {
-    const user = await User.findByPk(userId)
-    if (!user) {
-      res.status(404).json({ error: 'User not found' })
-      return
-    }
-
-    const newPost = await Post.create({ userId, title, content })
+    const newPost = await Post.create({ userId: req.authUser!.id, title, content })
 
     res.status(201).json({ success: true, post: newPost })
     return
@@ -37,8 +32,25 @@ export const createPost = async (req: Request, res: Response) => {
 export const getAllPosts = async (_req: Request, res: Response) => {
   try {
     const posts = await Post.findAll({
-      include: [{ model: User, as: 'user', attributes: ['id', 'username'] }],
-      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'profileIconUrl']
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: [] // not loading full comment data
+        }
+      ],
+      attributes: {
+        include: [
+          [Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'commentCount']
+        ]
+      },
+      group: ['Post.id', 'user.id'],
+      order: [['createdAt', 'DESC']]
     })
 
     res.status(200).json(posts)
@@ -60,6 +72,13 @@ export const getUserPosts = async (req: Request, res: Response) => {
     const posts = await Post.findAll({
       where: { userId },
       order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'profileIconUrl']
+        }
+      ]
     })
 
     res.status(200).json(posts)
@@ -68,6 +87,28 @@ export const getUserPosts = async (req: Request, res: Response) => {
     console.error(err)
 
     res.status(500).json({ error: 'Error fetching user posts' })
+    return
+  }
+}
+
+
+// (For GET) Get single post by Id.
+export const getPostById = async (req: Request, res: Response) => {
+  const { postId } = req.params
+
+  try {
+    const post = await Post.findByPk(postId)
+    if (!post) {
+      res.status(404).json({ error: 'Post not found' })
+      return
+    }
+
+    res.status(200).json(post)
+    return
+  } catch (error) {
+    console.error('Failed to fetch post:', error)
+
+    res.status(500).json({ error: 'Server error' })
     return
   }
 }

@@ -1,14 +1,26 @@
-// import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute'
+// import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
 
-// =========================< IMPORTS: REACT >=================================
+// ====================< IMPORTS: REACT >=================================
 import { JSX } from 'react'
 import { Navigate } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
+// ====================< IMPORTS: LAYOUT >================================
+
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
+import FullPageLoader from '@/components/Loading/FullPageLoader'
+
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useUser } from '@/hooks/useUser'
 
-// =========================< IMPORTS: COMPONENTS >============================
-import FullPageLoader from '@/components/Loading/FullPageLoader'
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 
 
 interface ProtectedRouteProps {
@@ -30,4 +42,3 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   return children
 }
-

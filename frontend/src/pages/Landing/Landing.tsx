@@ -1,16 +1,22 @@
-// =========================< IMPORTS: REACT >=================================
+// import Landing from '@/pages/Landing/Landing'
 
+// ====================< IMPORTS: REACT >=================================
 
-// =========================< IMPORTS: LAYOUT >================================
+// ====================< IMPORTS: LAYOUT >================================
 
+// ====================< IMPORTS: PAGES >=================================
 
-// =========================< IMPORTS: OTHER >=================================
+// ====================< IMPORTS: COMPONENTS >============================
 
+// ====================< IMPORTS: TYPES >=================================
 
-// =========================< IMPORTS: COMPONENTS >============================
-import Header from '@/components/Header/Header'
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
-// =========================< IMPORTS: STYLES >================================
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './Landing.scss'
 
 
@@ -18,8 +24,6 @@ export default function Landing() {
   return (
     <div className='Landing'>
 
-
-      <Header />
 
       <div className='content'>
         <p>Hello! This is the Landing Page!</p>
@@ -29,4 +33,3 @@ export default function Landing() {
     </div>
   )
 }
-

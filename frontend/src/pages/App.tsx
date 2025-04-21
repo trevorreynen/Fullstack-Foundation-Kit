@@ -1,16 +1,39 @@
-// =========================< IMPORTS: REACT >=================================
+// import App from '@/pages/App'
+
+// ====================< IMPORTS: REACT >=================================
 import { useRoutes } from 'react-router-dom'
 
-// =========================< IMPORTS: OTHER >=================================
+// ====================< IMPORTS: LAYOUT >================================
+
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
+import FullPageLoader from '@/components/Loading/FullPageLoader'
+
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+import { useUser } from '@/hooks/useUser'
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
 import { useRoutesConfig } from '@/config/routesConfig'
 
-// =========================< IMPORTS: CSS >===================================
+// ====================< IMPORTS: STYLES >================================
 import '@/styles/global.scss'
+import '@/styles/_variables.css'
 
 
 export default function App() {
   const routes = useRoutesConfig()
   const routeElements = useRoutes(routes)
+
+  const { loading } = useUser()
+
+  if (loading) {
+    return <FullPageLoader />
+  }
 
 
   return (
@@ -19,4 +42,3 @@ export default function App() {
     </>
   )
 }
-

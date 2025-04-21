@@ -1,32 +1,49 @@
-// =========================< IMPORTS: REACT >=================================
-import React, { useState, useEffect, createContext, useContext, ReactNode, useMemo } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Link, useLocation } from 'react-router-dom'
+// import Settings from '@/pages/Settings/Settings'
 
-// =========================< IMPORTS: LAYOUT >================================
+// ====================< IMPORTS: REACT >=================================
+import { useState } from 'react'
 
+// ====================< IMPORTS: LAYOUT >================================
 
-// =========================< IMPORTS: OTHER >=================================
+// ====================< IMPORTS: PAGES >=================================
 
+// ====================< IMPORTS: COMPONENTS >============================
+import SettingsTabs from '@/components/Settings/SettingsTabs/SettingsTabs'
+import ThemeSettings from '@/components/Settings/ThemeSettings/ThemeSettings'
+import ProfileImageSettings from '@/components/Settings/ProfileImageSettings/ProfileImageSettings'
+import NotificationSettings from '@/components/Settings/NotificationSettings/NotificationSettings'
+import UserNotes from '@/components/Settings/UserNotes/UserNotes'
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: TYPES >=================================
+import { TABS, Tab } from '@/types/SettingsTabsTypes'
 
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
-// =========================< IMPORTS: CSS >===================================
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './Settings.scss'
 
 
 export default function Settings() {
+  const [activeTab, setActiveTab] = useState<Tab>('Theme')
 
 
   return (
     <div className='Settings'>
 
 
-      <div className=''></div>
+      <SettingsTabs tabs={TABS} activeTab={activeTab} onTabClick={setActiveTab} />
+      <div className='settings-panel'>
+        {activeTab === 'Theme' && <ThemeSettings />}
+        {activeTab === 'Profile Icon' && <ProfileImageSettings />}
+        {activeTab === 'Notifications' && <NotificationSettings />}
+        {activeTab === 'Notes' && <UserNotes />}
+      </div>
 
 
     </div>
   )
 }
-

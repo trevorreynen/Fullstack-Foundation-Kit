@@ -21,6 +21,9 @@
     "block-no-empty": null,
     "rule-empty-line-before": null,
     "declaration-block-no-redundant-longhand-properties": null,
+    "font-family-name-quotes": null,
+    "declaration-block-single-line-max-declarations": null,
+    "media-feature-range-notation": null,
     "declaration-property-value-disallowed-list": {
       "outline": ["0"],
       "padding": ["none"],

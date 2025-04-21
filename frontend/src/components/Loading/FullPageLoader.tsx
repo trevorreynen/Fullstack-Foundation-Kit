@@ -1,12 +1,25 @@
 // import FullPageLoader from '@/components/Loading/FullPageLoader'
 
-// =========================< IMPORTS: CSS >===================================
+// ====================< IMPORTS: REACT >=================================
+
+// ====================< IMPORTS: LAYOUT >================================
+
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
+
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import './FullPageLoader.scss'
 
-/** W.I.P. (I have yet to properly test this.
- * A full-screen loading UI used during initial page loads, route transitions,
- * or waiting for async data.
- */
+
 export default function FullPageLoader() {
   return (
     <div className='FullPageLoader'>

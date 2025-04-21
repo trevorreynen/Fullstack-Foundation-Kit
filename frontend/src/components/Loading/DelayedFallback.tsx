@@ -1,9 +1,23 @@
 // import DelayedFallback from '@/components/Loading/DelayedFallback'
 
-// =========================< IMPORTS: REACT >=================================
-import { useEffect, useState } from 'react'
+// ====================< IMPORTS: REACT >=================================
+import { useState, useEffect } from 'react'
 
-// =========================< IMPORTS: COMPONENTS >============================
+// ====================< IMPORTS: LAYOUT >================================
+
+// ====================< IMPORTS: PAGES >=================================
+
+// ====================< IMPORTS: COMPONENTS >============================
+
+// ====================< IMPORTS: TYPES >=================================
+
+// ====================< IMPORTS: CONTEXTS/HOOKS >========================
+
+// ====================< IMPORTS: UTILS >=================================
+
+// ====================< IMPORTS: OTHER >=================================
+
+// ====================< IMPORTS: STYLES >================================
 import FullPageLoader from './FullPageLoader'
 
 

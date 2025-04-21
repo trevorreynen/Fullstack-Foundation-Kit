@@ -2,7 +2,7 @@
 
 // Imports
 import { Request, Response } from 'express'
-import User from '../models/User'
+import { User } from '../models'
 
 
 
@@ -152,7 +152,7 @@ export const getUserProfileByUsername = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({
       where: { username },
-      attributes: ['id', 'username']
+      attributes: ['id', 'username', 'profileIconUrl']
     })
 
     if (!user) {

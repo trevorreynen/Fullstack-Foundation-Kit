@@ -1,4 +1,4 @@
-// ./frontend/src/utils/api.ts
+// import { api } from '@/utils/api'
 
 const API_BASE = `${process.env.API_BASE}`
 

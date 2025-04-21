@@ -2,59 +2,44 @@
 
 // Imports
 import { Request, Response } from 'express'
-import Like from '../models/Like'
+import { Like } from '../models'
 
-// (For POST) Like a post.
-export const likePost = async (req: Request, res: Response) => {
-  const { userId, postId } = req.body
-  if (!userId || !postId) {
-    res.status(400).json({ error: 'Missing userId or postId' })
+
+// (For POST) Toggle a post or comment like on or off.
+export const toggleLike = async (req: Request, res: Response) => {
+  const { userId, postId, commentId } = req.body
+  if (!userId || (!postId && !commentId)) {
+    res.status(400).json({ error: 'Missing required like target or userId' })
     return
   }
 
+  if (postId && commentId) {
+    res.status(400).json({ error: 'Cannot like both a post and comment at once' })
+    return
+  }
+
+  const whereClause = {
+    userId,
+    ...(postId ? { postId } : { commentId })
+  }
+
   try {
-    const existing = await Like.findOne({ where: { userId, postId } })
+    const existing = await Like.findOne({ where: whereClause })
     if (existing) {
-      res.status(409).json({ error: 'Already liked' })
+      await existing.destroy()
+
+      res.json({ liked: false })
       return
     }
 
-    const like = await Like.create({ userId, postId })
+    const like = await Like.create(whereClause)
 
-    res.status(201).json({ success: true, like })
+    res.status(201).json({ liked: true, like })
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error liking post' })
-    return
-  }
-}
-
-
-// (For DELETE) Unlike a post.
-export const unlikePost = async (req: Request, res: Response) => {
-  const { userId, postId } = req.body
-  if (!userId || !postId) {
-    res.status(400).json({ error: 'Missing userId or postId' })
-    return
-  }
-
-  try {
-    const like = await Like.findOne({ where: { userId, postId } })
-    if (!like) {
-      res.status(404).json({ error: 'Like not found' })
-      return
-    }
-
-    await like.destroy()
-
-    res.status(200).json({ success: true })
-    return
-  } catch (err) {
-    console.error(err)
-
-    res.status(500).json({ error: 'Error unliking post' })
+    res.status(500).json({ error: 'Error toggling like' })
     return
   }
 }

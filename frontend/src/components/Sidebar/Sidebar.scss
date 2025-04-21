@@ -2,12 +2,13 @@
 
 .Sidebar {
   @include mixins.UseScrollBar;
-  width: 240px;
+  /*width: 240px;*/
+  width: 140px;
   padding: 2px;
-  color: #fff;
-  background-color: #0d1117;
+  color: var(--text-1);
+  background-color: var(--bg-4);
   user-select: none;
-  border-right: 1px solid #888;
+  border-right: 1px solid var(--border-gray-1);
 
   &.hidden,
   &.minimal { display: none; }
@@ -75,6 +76,43 @@
 
   }
 
+  &.mobile-overlay {
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    opacity: 1;
+    width: 100vw;
+    height: 100vh;
+    max-height: 100dvh; // support modern mobile units
+    padding: 60px;
+    background-color: var(--bg-5);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    transform: translateX(0%);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    flex: 1;
+
+
+    &.hidden {
+      opacity: 0;
+      transform: translateX(-100%);
+      pointer-events: none;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      height: 1.5rem;  // same as your bottom padding
+      width: 100%;
+    }
+  }
+
+
+
+  /* Styling Unrelated To Sidebar State: */
   .sidebar-dropdown,
   .sidebar-submenu {
     &:not(:last-child) { margin-bottom: 6px; }
@@ -88,7 +126,7 @@
       border-radius: 8px;
       cursor: pointer;
 
-      &:hover { background-image: linear-gradient(to bottom right, #610429, #ad1216); }
+      &:hover { background-color: var(--bg-hover-3); }
 
       .label-left {
         @include mixins.Flex;
@@ -108,9 +146,9 @@
 
     .sidebar-dropdown-children {
       padding: 2px 0px;
-      background-color: #151b23;
-      border-top: 1px solid #888;
-      border-bottom: 1px solid #888;
+      background-color: var(--bg-5);
+      border-top: 1px solid var(--border-gray-1);
+      border-bottom: 1px solid var(--border-gray-1);
     }
   }
 
@@ -119,7 +157,7 @@
 
     &:not(:first-child) {
       margin-top: 16px;
-      border-top: 1px solid #888;
+      border-top: 1px solid var(--border-gray-1);
     }
 
     .sidebar-group-label {
@@ -143,16 +181,16 @@
 
     .sidebar-link {
       @include mixins.Flex;
-      color: #fff;
+      color: var(--text-1);
       font-size: 14px;
     }
 
-    &.selected { background-image: linear-gradient(to bottom right, #610429, #ad1216); }
-    &:hover { background-image: linear-gradient(to bottom right, #610429, #ad1216); }
+    &.selected { background-color: var(--bg-hover-3); }
+    &:hover { background-color: var(--bg-hover-3); }
   }
 
   .sidebar-submenu {
-    border-top: 1px solid #888;
+    border-top: 1px solid var(--border-gray-1);
 
     .sidebar-submenu-label .label-left { margin-left: 16px; }
 
@@ -170,13 +208,8 @@
   .sidebar-group .sidebar-link-wrapper .sidebar-link { margin-left: 16px; }
 
   .icon-placeholder {
-    @include mixins.IconPlaceholder(20px);
+    @include mixins.IconPlaceholder(24px);
     margin-right: 8px;
-
-    &.empty-placeholder-icon {
-      border: 1px dashed rgb(255, 255, 255, 0.5);
-      border-radius: 4px;
-    }
   }
 }
 
