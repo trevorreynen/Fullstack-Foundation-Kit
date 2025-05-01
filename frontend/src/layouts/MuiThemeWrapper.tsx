@@ -1,39 +1,42 @@
-// import MainLayout from '@/layouts/MainLayout'
+// import MuiThemeWrapper from '@/layouts/MuiThemeWrapper'
 
 // ====================< IMPORTS: REACT >=================================
-import { Outlet } from 'react-router-dom'
+import { ReactNode, useMemo } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import Header from '@/components/Header/Header'
-import Box from '@mui/material/Box'
 
 // ====================< IMPORTS: TYPES >=================================
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
+import { useGlobalUI } from '@/hooks/useGlobalUI'
 
 // ====================< IMPORTS: UTILS >=================================
 
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
+import { CssBaseline } from '@mui/material'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 
-export default function MainLayout() {
+export default function MuiThemeWrapper({ children }: { children: ReactNode }) {
+  // Grab theme selection from contexts/hooks.
+  const { theme } = useGlobalUI()
+
+
+  const muiTheme = useMemo(() => createTheme({
+    palette: { mode: theme }
+  }), [theme])
+
+
   return (
-    <Box className='App' sx={{ width: '100%', height: '100%' }}>
-
-
-      <Header />
-
-      <Box className='App-Wrapper' sx={{ width: '100%', height: '100%' }}>
-        <Outlet />
-      </Box>
-
-
-    </Box>
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
   )
 }

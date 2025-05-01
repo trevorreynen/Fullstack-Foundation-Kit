@@ -249,28 +249,47 @@ export const formatEndTime = (ms: number, showAmPm = true): string => {
  * Converts an ISO 8601 date string to MM/DD/YYYY HH:MM:SS AM/PM format.
  *
  * @param isoString - The ISO 8601 date string to convert.
- * @param showAmPm - Whether to include AM/PM in the output.
- * @returns A formatted string in MM/DD/YYYY HH:MM:SS AM/PM format.
+ * @param options - Formatting options:
+ *   - `showDate` (default `true`): Whether to include the date (MM/DD/YYYY).
+ *   - `showTime` (default `true`): Whether to include the time (HH:MM:SS).
+ *   - `showAmPm` (default `true`): Whether to use 12-hour format with AM/PM.
+ * @returns A formatted string based on the selected options.
  *
  * **Examples:**
  * ```typescript
- * convertISO8601ToFormatted('2024-11-15T13:30:00Z')  // Output: '11/15/2024 01:30:00 PM'
- * convertISO8601ToFormatted('2024-11-15T02:30:00Z')  // Output: '11/15/2024 02:30:00 AM'
+ * convertISO8601ToFormatted('2024-11-15T13:30:00Z')                       // Output: '11/15/2024 01:30:00 PM'
+ * convertISO8601ToFormatted('2024-11-15T13:30:00Z', { showDate: false })  // Output: '01:30:00 PM'
+ * convertISO8601ToFormatted('2024-11-15T13:30:00Z', { showTime: false })  // Output: '11/15/2024'
+ * convertISO8601ToFormatted('2024-11-15T13:30:00Z', { showAmPm: false })  // Output: '11/15/2024 13:30:00'
  * ```
  */
-export const convertISO8601ToFormatted = (isoString: string, showAmPm = true): string => {
-  const date = new Date(isoString),
-    month = padNumber(date.getMonth() + 1, 2),
-    day = padNumber(date.getDate(), 2),
-    year = date.getFullYear(),
-    hours = date.getHours(),
-    minutes = padNumber(date.getMinutes(), 2),
-    seconds = padNumber(date.getSeconds(), 2)
+export const convertISO8601ToFormatted = (isoString: string, options?: { showDate?: boolean, showTime?: boolean, showAmPm?: boolean }): string => {
+  const { showDate = true, showTime = true, showAmPm = true } = options || {}
 
-  const formattedHours = showAmPm ? padNumber(((hours + 11) % 12) + 1, 2) : padNumber(hours, 2)
-  const amPm = showAmPm ? (hours >= 12 ? 'PM' : 'AM') : ''
+  const date = new Date(isoString)
 
-  return `${month}/${day}/${year} ${formattedHours}:${minutes}:${seconds} ${showAmPm ? amPm : ''}`.trim()
+  const month = padNumber(date.getMonth() + 1, 2)
+  const day = padNumber(date.getDate(), 2)
+  const year = date.getFullYear()
+
+  const hours24 = date.getHours()
+  const minutes = padNumber(date.getMinutes(), 2)
+  const seconds = padNumber(date.getSeconds(), 2)
+
+  const formattedHours = showAmPm ? padNumber(((hours24 + 11) % 12) + 1, 2) : padNumber(hours24, 2)
+  const amPm = showAmPm ? (hours24 >= 12 ? 'PM' : 'AM') : ''
+
+  let parts: string[] = []
+
+  if (showDate) {
+    parts.push(`${month}/${day}/${year}`)
+  }
+
+  if (showTime) {
+    parts.push(`${formattedHours}:${minutes}:${seconds}${showAmPm ? ` ${amPm}` : ''}`)
+  }
+
+  return parts.join(' ').trim()
 }
 
 /**

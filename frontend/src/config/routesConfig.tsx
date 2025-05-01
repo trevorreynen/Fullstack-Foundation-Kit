@@ -61,4 +61,3 @@ const mainLayoutRoutes: RouteObject = {
 export const useRoutesConfig = (): RouteObject[] => {
   return [mainLayoutRoutes]
 }
-

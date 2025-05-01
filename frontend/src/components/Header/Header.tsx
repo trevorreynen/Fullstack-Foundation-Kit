@@ -1,7 +1,7 @@
 // import Header from '@/components/Header/Header'
 
 // ====================< IMPORTS: REACT >=================================
-import { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
@@ -9,12 +9,12 @@ import { useNavigate } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { AppBar, Toolbar, Typography, Box, Button, IconButton, Tooltip, Chip, Avatar, Menu, MenuItem } from '@mui/material'
 import DropdownMenu from '@/components/DropdownMenu/DropdownMenu'
 
 // ====================< IMPORTS: TYPES >=================================
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
-import { SidebarState } from '@/contexts/GlobalUIContext'
 import { useGlobalUI } from '@/hooks/useGlobalUI'
 import { useUser } from '@/hooks/useUser'
 
@@ -23,191 +23,208 @@ import { useUser } from '@/hooks/useUser'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './Header.scss'
+import MoreVertSharpIcon from '@mui/icons-material/MoreVertSharp'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import NightlightRoundIcon from '@mui/icons-material/NightlightRound'
+import CheckIcon from '@mui/icons-material/Check'
+import SettingsIcon from '@mui/icons-material/Settings'
+import LogoutIcon from '@mui/icons-material/Logout'
+import AddIcon from '@mui/icons-material/Add'
+import MenuIcon from '@mui/icons-material/Menu'
+
+
+const pages = [
+  { label: 'Landing', path: '/' },
+  { label: 'Home', path: '/home' },
+  { label: 'Explore', path: '/explore' },
+  { label: 'About', path: '/about' },
+]
 
 
 export default function Header() {
+  // 1. React router navigate hook.
   const navigate = useNavigate()
 
-  const { theme, setTheme, sidebarState, setSidebarState, isMobile, isMobileMenuOpen, setIsMobileMenuOpen } = useGlobalUI()
+  // 2. Global UI context for theme handling.
+  const { theme, setTheme } = useGlobalUI()
+
+  // 3. User authentication context.
   const { user, logoutUser } = useUser()
 
-  const leftRef = useRef<HTMLDivElement>(null)
-  const centerRef = useRef<HTMLDivElement>(null)
-  const rightRef = useRef<HTMLDivElement>(null)
-  const [hideCenter, setHideCenter] = useState(false)
-  const [hideRight, setHideRight] = useState(false)
+  // 4. Anchor element states for mobile navigation dropdown menu.
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 
-
-  const toggleSidebar = () => {
-    if (isMobile) {
-      setIsMobileMenuOpen(!isMobileMenuOpen)
-      return
-    }
-
-    let nextState
-
-    switch (sidebarState) {
-      case SidebarState.Expanded:
-        nextState = SidebarState.Collapsed
-        break
-      case SidebarState.Collapsed:
-        nextState = SidebarState.Hidden
-        break
-      case SidebarState.Hidden:
-        nextState = SidebarState.Minimal
-        break
-      case SidebarState.Minimal:
-      default:
-        nextState = SidebarState.Expanded
-        break
-    }
-
-    setSidebarState(nextState)
+  // 4.1. Open mobile nav dropdown menu.
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget)
   }
 
-  const checkOverlap = () => {
-    const left = leftRef.current?.getBoundingClientRect()
-    const center = centerRef.current?.getBoundingClientRect()
-    const right = rightRef.current?.getBoundingClientRect()
-
-    if (!left || !center || !right) return
-
-    const centerOverlapsLeft = center.left < left.right + 8
-    const centerOverlapsRight = center.right > right.left - 8
-    const rightTooClose = right.left - left.right < 80
-
-    setHideCenter(centerOverlapsLeft || centerOverlapsRight)
-    setHideRight(rightTooClose)
+  // 4.2. Close mobile nav dropdown menu.
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null)
   }
 
-  useLayoutEffect(() => {
-    const resizeObserver = new ResizeObserver(checkOverlap)
 
-    if (leftRef.current) resizeObserver.observe(leftRef.current)
-    if (centerRef.current) resizeObserver.observe(centerRef.current)
-    if (rightRef.current) resizeObserver.observe(rightRef.current)
-
-    window.addEventListener('resize', checkOverlap)
-
-    // Delay first call to ensure DOM is ready
-    const timer = setTimeout(() => {
-      checkOverlap()
-    }, 0)
-
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('resize', checkOverlap)
-      resizeObserver.disconnect()
-    }
-  }, [sidebarState])
-
-  // Resets the header center and right divs to reappear after exiting minimal state.
-  useEffect(() => {
-    if (sidebarState !== 'minimal') {
-      setHideCenter(false)
-      setHideRight(false)
-    }
-  }, [sidebarState])
-
-
+  // 5. Render header.
   return (
-    <div className={`Header ${sidebarState}`}>
+    // TODO: Decide to keep or remove custom classes when not using custom style sheets.
+    <AppBar className='Header' position='static' color='inherit' elevation={6} sx={{ height: '56px', maxHeight: '56px', minHeight: '56px' }}>
+      <Toolbar color='inherit' sx={{ justifyContent: 'space-between', position: 'relative', maxHeight: '56px', minHeight: '56px !important' }}>
 
 
-      <div ref={leftRef} className='header-left-side-sidebar-button'>
-        {user && (
-          <button className='sidebar-header-state-btn' onClick={toggleSidebar}>
-            <div className={isMobile && isMobileMenuOpen ? 'close-icon' : 'menu-icon'} />
-          </button>
-        )}
-      </div>
+        <Box display='flex' alignItems='center' gap={2} color='inherit'>
+          <Box color='inherit' sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size='large'
+              color='inherit'
+              aria-label='Nav Menu'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
+              onClick={handleOpenNavMenu}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            <Menu
+              id='menu-appbar'
+              anchorEl={anchorElNav}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              keepMounted
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              color='inherit'
+              sx={{ display: { xs: 'block', md: 'none' } }}
+            >
+              {pages.map(({ label, path }) => (
+                <MenuItem
+                  key={path}
+                  color='inherit'
+                  onClick={() => {
+                    navigate(path)
+                    handleCloseNavMenu()
+                  }}>
+                  <Typography textAlign='center' color='inherit'>
+                    {label}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+
+          <Box color='inherit' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map(({ label, path }) => (
+              <Button key={path} color='inherit' onClick={() => navigate(path)} sx={{ my: 2, color: 'inherit', display: 'block' }}>
+                {label}
+              </Button>
+            ))}
+          </Box>
+        </Box>
 
 
-      <div ref={centerRef} className={`header-center-content ${hideCenter ? 'hidden' : 'visible'}`}>
-        <h2>Test Project by Trevor Reynen</h2>
-      </div>
+        <Box
+          color='inherit'
+          sx={{
+            display: { xs: 'none', sm: 'none', md: 'block' },
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}>
+          <Typography variant='h5'>Test Project by Trevor Reynen</Typography>
+        </Box>
 
 
-      <div
-        ref={rightRef}
-        className={`header-right-side-content ${hideRight ? 'hidden' : 'visible'}`}
-      >
-        {!user ? (
-          <>
-            <DropdownMenu
-              button={<div className='menu-ellipsis-btn'>⋮</div>}
-              items={[
-                {
-                  type: 'submenu',
-                  label: 'Appearance',
-                  iconClass: 'icon-appearance',
-                  submenu: [
-                    { type: 'item-text', label: 'Setting applies to this browser only' },
-                    { type: 'item', label: 'Dark theme', iconClass: theme === 'dark' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('dark') },
-                    { type: 'item', label: 'Light theme', iconClass: theme === 'light' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('light') },
-                  ]
-                },
-                { type: 'divider' },
-                { type: 'item', label: 'Settings', onClick: () => {}, iconClass: 'icon-settings' }
-              ]}
-            />
-
-            <button className='sign-in-btn' onClick={() => navigate('/login')}>Sign In</button>
-          </>
-        ) : (
-          <div className='signed-in-actions'>
-            <button className='create-post-btn' onClick={() => navigate('/create')}>Post</button>
-
-            <DropdownMenu
-              button={<img
-                        src={`${process.env.API_BASE!.replace('/api', '')}${user.profileIconUrl || '/uploads/default-profile-icon.png'}`}
-                        className='profile-avatar'
-                        onError={(e) => e.currentTarget.src = `${process.env.API_BASE!.replace('/api', '')}/uploads/default-profile-icon.png`}
-                        draggable={false}
-                      />
-              }
-              items={[
-                {
-                  type: 'header',
-                  username: user.username,
-                  profileIconUrl: user.profileIconUrl,
-                  onViewProfile: () => navigate(`/user/${user.username}`)
-                },
-                { type: 'divider' },
-                {
-                  type: 'item',
-                  label: 'Sign Out',
-                  onClick: () => {
-                    logoutUser()
-                  },
-                  iconClass: 'icon-logout-uxasp'
-                },
-                { type: 'divider' },
-                {
-                  type: 'submenu',
-                  label: 'Appearance',
-                  iconClass: 'icon-appearance',
-                  submenu: [
-                    { type: 'item-text', label: 'Setting applies to this browser only' },
-                    { type: 'item', label: 'Dark theme', iconClass: theme === 'dark' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('dark') },
-                    { type: 'item', label: 'Light theme', iconClass: theme === 'light' ? 'icon-checkmark' : 'icon-empty-placeholder-no-border', onClick: () => setTheme('light') },
-                  ]
-                },
-                {
-                  type: 'item',
-                  label: 'Settings',
-                  iconClass: 'icon-settings',
-                  onClick: () => navigate('/settings')
+        <Box display='flex' alignItems='center' gap={2} color='inherit'>
+          {!user ? (
+            <>
+              <DropdownMenu
+                button={
+                  <Tooltip color='inherit' title='Settings'>
+                    <IconButton color='inherit'>
+                      <MoreVertSharpIcon />
+                    </IconButton>
+                  </Tooltip>
                 }
-              ]}
-            />
-          </div>
-        )}
-      </div>
+                items={[
+                  {
+                    type: 'submenu',
+                    label: 'Appearance',
+                    icon: <NightlightRoundIcon fontSize='small' />,
+                    submenu: [
+                      { type: 'item-text', label: 'Setting applies to this browser only' },
+                      {
+                        type: 'item',
+                        label: 'Dark theme',
+                        icon: theme === 'dark' ? <CheckIcon fontSize='small' /> : <CheckIcon fontSize='small' sx={{ visibility: 'hidden' }} />,
+                        onClick: () => setTheme('dark'),
+                      },
+                      {
+                        type: 'item',
+                        label: 'Light theme',
+                        icon: theme === 'light' ? <CheckIcon fontSize='small' /> : <CheckIcon fontSize='small' sx={{ visibility: 'hidden' }} />,
+                        onClick: () => setTheme('light'),
+                      },
+                    ],
+                  },
+                  { type: 'divider' },
+                  { type: 'item', label: 'Settings', onClick: () => {}, icon: <SettingsIcon fontSize='small' /> },
+                ]}
+              />
+
+              <Chip avatar={<AccountCircleIcon />} label='Sign In' variant='outlined' color='info' onClick={() => navigate('/login')} />
+            </>
+          ) : (
+            <>
+              <Chip
+                avatar={<AddIcon />}
+                label='Create Post'
+                variant='outlined'
+                onClick={() => navigate('/create', { state: { backgroundLocation: { pathname: location.pathname, search: location.search, hash: location.hash } } })}
+              />
+
+              <DropdownMenu
+                button={
+                  <Avatar
+                    src={`${process.env.API_BASE!.replace('/api', '')}${user.profileIconUrl || '/uploads/default-profile-icon.png'}`}
+                    className='profile-avatar'
+                    draggable={false}
+                  />
+                }
+                items={[
+                  { type: 'header', username: user.username, profileIconUrl: user.profileIconUrl, onViewProfile: () => navigate(`/user/${user.username}`) },
+                  { type: 'divider' },
+                  { type: 'item', label: 'Sign Out', onClick: () => logoutUser(), icon: <LogoutIcon fontSize='small' /> },
+                  { type: 'divider' },
+                  {
+                    type: 'submenu',
+                    label: 'Appearance',
+                    icon: <NightlightRoundIcon fontSize='small' />,
+                    submenu: [
+                      { type: 'item-text', label: 'Setting applies to this browser only' },
+                      {
+                        type: 'item',
+                        label: 'Dark theme',
+                        icon: theme === 'dark' ? <CheckIcon fontSize='small' /> : <CheckIcon fontSize='small' sx={{ visibility: 'hidden' }} />,
+                        onClick: () => setTheme('dark'),
+                      },
+                      {
+                        type: 'item',
+                        label: 'Light theme',
+                        icon: theme === 'light' ? <CheckIcon fontSize='small' /> : <CheckIcon fontSize='small' sx={{ visibility: 'hidden' }} />,
+                        onClick: () => setTheme('light'),
+                      },
+                    ],
+                  },
+                  { type: 'item', label: 'Settings', onClick: () => navigate('/settings'), icon: <SettingsIcon fontSize='small' /> },
+                ]}
+              />
+            </>
+          )}
+        </Box>
 
 
-    </div>
+      </Toolbar>
+    </AppBar>
   )
 }
-

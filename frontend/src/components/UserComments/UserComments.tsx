@@ -1,16 +1,18 @@
 // import UserComments from '@/components/UserComments/UserComments'
 
 // ====================< IMPORTS: REACT >=================================
+import { useState } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import CommentCard from '@/components/Cards/CommentCard'
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Skeleton, Box, Stack } from '@mui/material'
+import ProfileCommentCard from '@/components/Cards/ProfileCommentCard'
 
 // ====================< IMPORTS: TYPES >=================================
-import { UserProfile } from '@/types/ProfilePageTypes'
+import { UserProfile, PostComment } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -19,10 +21,16 @@ import { UserProfile } from '@/types/ProfilePageTypes'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './UserComments.scss'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 
-export default function UserComments({ user }: { user: UserProfile }) {
+type Props = {
+  user: UserProfile
+  comments: PostComment[] | null
+}
+
+
+export default function UserComments({ user, comments }: Props) {
 
   const dummyComments = [
     { id: 1, content: 'Nice post!', postId: 101 },
@@ -31,16 +39,36 @@ export default function UserComments({ user }: { user: UserProfile }) {
 
 
   return (
-    <div className='UserComments'>
+    <Accordion defaultExpanded disableGutters elevation={3} sx={{ mb: 3 }}>
 
 
-      <h3>User Comments</h3>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography variant='h6' fontWeight={600}>
+          {user.username}'s Comments
+        </Typography>
+      </AccordionSummary>
 
-      {dummyComments.map(comment => (
-        <CommentCard key={comment.id} comment={comment} />
-      ))}
+      <AccordionDetails>
+        {!comments ? (
+          <Stack spacing={2}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} variant='rectangular' height={100} />
+            ))}
+          </Stack>
+        ) : comments.length === 0 ? (
+          <Typography variant='body2' color='text.secondary'>
+            No comments to display.
+          </Typography>
+        ) : (
+          <Stack spacing={2}>
+            {comments.map((comment) => (
+              <ProfileCommentCard key={comment.id} comment={comment} />
+            ))}
+          </Stack>
+        )}
+      </AccordionDetails>
 
 
-    </div>
+    </Accordion>
   )
 }

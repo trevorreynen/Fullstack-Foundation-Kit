@@ -15,7 +15,7 @@ import NotificationSettings from '@/components/Settings/NotificationSettings/Not
 import UserNotes from '@/components/Settings/UserNotes/UserNotes'
 
 // ====================< IMPORTS: TYPES >=================================
-import { TABS, Tab } from '@/types/SettingsTabsTypes'
+import { TABS, Tab } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 

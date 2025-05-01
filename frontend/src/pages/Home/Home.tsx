@@ -17,7 +17,6 @@
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './Home.scss'
 
 
 export default function Home() {

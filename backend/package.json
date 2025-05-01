@@ -8,7 +8,8 @@
     "seed:UsersAndPosts": "ts-node ./scripts/seedUsersAndPosts.ts",
     "seed:1Users": "ts-node ./scripts/seed1Users.ts",
     "seed:2Posts": "ts-node ./scripts/seed2Posts.ts",
-    "seed:3Comments": "ts-node ./scripts/seed3Comments.ts"
+    "seed:3Comments": "ts-node ./scripts/seed3Comments.ts",
+    "seed:4Likes": "ts-node ./scripts/seed4Likes.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^9.7.0",

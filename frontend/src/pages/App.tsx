@@ -1,11 +1,12 @@
 // import App from '@/pages/App'
 
 // ====================< IMPORTS: REACT >=================================
-import { useRoutes } from 'react-router-dom'
+import { useRoutes, useLocation } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
+import CreatePost from '@/pages/CreatePost/CreatePost'
 
 // ====================< IMPORTS: COMPONENTS >============================
 import FullPageLoader from '@/components/Loading/FullPageLoader'
@@ -26,9 +27,14 @@ import '@/styles/global.scss'
 
 export default function App() {
   const routes = useRoutesConfig()
-  const routeElements = useRoutes(routes)
+  const location = useLocation()
 
   const { loading } = useUser()
+
+  // Capture background location if we’re opening a modal
+  const state = location.state as { backgroundLocation?: Location }
+  const routeElements = useRoutes(routes, state?.backgroundLocation || location)
+
 
   if (loading) {
     return <FullPageLoader />
@@ -38,6 +44,11 @@ export default function App() {
   return (
     <>
       {routeElements}
+
+      {/* Modal route */}
+      {state?.backgroundLocation && location.pathname === '/create' && (
+        <CreatePost />
+      )}
     </>
   )
 }

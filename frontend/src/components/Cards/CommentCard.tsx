@@ -7,69 +7,75 @@
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Box, Typography, Tooltip, Stack } from '@mui/material'
+import LikeBtn from '@/components/common/LikeBtn'
+import HoverMenuBtn from '@/components/common/HoverMenuBtn'
 
 // ====================< IMPORTS: TYPES >=================================
+import { PostComment } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
 // ====================< IMPORTS: UTILS >=================================
 
 // ====================< IMPORTS: OTHER >=================================
+import { useCommentStore } from '@/stores/useCommentStore'
 
 // ====================< IMPORTS: STYLES >================================
-import './CommentCard.scss'
 
 
-interface Comment {
-  id: number
-  userId: number
-  content: string
-  createdAt: string
-  updatedAt: string | null
-  user: {
-    username: string
-    profileIconUrl?: string
-  }
-}
-
-interface CommentCardProps {
-  comment: Comment
+type Props = {
+  comment: PostComment
+  depth?: number
 }
 
 
-export default function CommentCard({ comment }: CommentCardProps) {
-  const createdDate = new Date(comment.createdAt)
-  const updatedDate = comment.updatedAt ? new Date(comment.updatedAt) : null
+export default function CommentCard({ comment, depth = 0 }: Props) {
+  const { comments } = useCommentStore()
 
-  const tooltip =
-    updatedDate && comment.updatedAt !== comment.createdAt
-      ? `Created: ${createdDate.toLocaleString()} | Last edited: ${updatedDate.toLocaleString()}`
-      : `Created: ${createdDate.toLocaleString()}`
-
-  const displayDate =
-    updatedDate && comment.updatedAt !== comment.createdAt
-      ? updatedDate.toLocaleDateString()
-      : createdDate.toLocaleDateString()
+  // Find replies for this comment
+  const replies = comments.filter((c) => c.postId === comment.id)
 
 
   return (
-    <div className='CommentCard' title={tooltip}>
+    <Box
+      sx={{
+        ml: depth === 1 ? 4 : 0,
+        mt: 2,
+        p: 2,
+        border: 1,
+        borderColor: 'divider',
+        borderRadius: 2
+      }}
+    >
+      <Typography variant='body2' sx={{ mb: 1 }}>
+        {comment.content}
+      </Typography>
 
+      <Stack direction='row' justifyContent='space-between' alignItems='center'>
+        <Tooltip title={new Date(comment.updatedAt || comment.createdAt).toLocaleString()}>
+          <Typography variant='caption' color='text.secondary'>
+            {comment.updatedAt ? 'Edited: ' : 'Created: '}
+            {new Date(comment.updatedAt || comment.createdAt).toLocaleDateString()}
+          </Typography>
+        </Tooltip>
 
-      <img src={comment.user.profileIconUrl || '/default-avatar.png'} alt={`${comment.user.username}'s profile`} className='avatar' />
+        <LikeBtn
+          type='comment'
+          targetId={comment.id}
+          defaultLiked={comment.likedByUser ?? false}
+          defaultLikeCount={comment.likeCount ?? 0}
+        />
+      </Stack>
 
-      <div className='content-area'>
-        <div className='header'>
-          <span className='username'>{comment.user.username}</span>
-          <span className='date'>{displayDate}</span>
-        </div>
-
-        <div className='content'>
-          {comment.content}
-        </div>
-      </div>
-
-
-    </div>
+      {/* replies */}
+      {depth === 0 && comment.replies && comment.replies.length > 0 && (
+        <Box sx={{ mt: 2 }}>
+          {comment.replies.map((reply) => (
+            <CommentCard key={reply.id} comment={reply} depth={1} />
+          ))}
+        </Box>
+      )}
+    </Box>
   )
 }

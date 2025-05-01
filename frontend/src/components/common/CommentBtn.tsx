@@ -1,15 +1,13 @@
-// import MainLayout from '@/layouts/MainLayout'
+// import CommentBtn from '@/components/common/CommentBtn'
 
 // ====================< IMPORTS: REACT >=================================
-import { Outlet } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import Header from '@/components/Header/Header'
-import Box from '@mui/material/Box'
+import { IconButton, Typography } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -20,20 +18,28 @@ import Box from '@mui/material/Box'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
+import ModeCommentIcon from '@mui/icons-material/ModeComment'
 
 
-export default function MainLayout() {
+interface CommentBtnProps {
+  commentCount: number
+  onClick: (e: React.MouseEvent) => void
+}
+
+
+export default function CommentBtn({ commentCount, onClick }: CommentBtnProps) {
+  // 1. Render comment button.
   return (
-    <Box className='App' sx={{ width: '100%', height: '100%' }}>
+    <IconButton onClick={onClick} size='small'>
 
 
-      <Header />
+      <ModeCommentIcon fontSize='small' />
 
-      <Box className='App-Wrapper' sx={{ width: '100%', height: '100%' }}>
-        <Outlet />
-      </Box>
+      <Typography variant='caption' sx={{ ml: 0.5, fontSize: '14px' }}>
+        {commentCount}
+      </Typography>
 
 
-    </Box>
+    </IconButton>
   )
 }

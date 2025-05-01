@@ -17,7 +17,6 @@
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './Landing.scss'
 
 
 export default function Landing() {

@@ -9,12 +9,13 @@ import { useParams } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Box, Skeleton, Typography } from '@mui/material'
 import ProfileInfo from '@/components/ProfileInfo/ProfileInfo'
 import UserPosts from '@/components/UserPosts/UserPosts'
 import UserComments from '@/components/UserComments/UserComments'
 
 // ====================< IMPORTS: TYPES >=================================
-import { UserProfile } from '@/types/ProfilePageTypes'
+import { UserProfile, Post } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -24,63 +25,60 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './Profile.scss'
 
 
 export default function Profile() {
-  const { username } = useParams<{ username: string }>()
+  const { username } = useParams()
   const [viewedUser, setViewedUser] = useState<UserProfile | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [posts, setPosts] = useState<Post[] | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true)
-        const data = await api(`/account/username/${username}`)
-        setViewedUser(data)
+        const userRes = await api(`/account/username/${username}`)
+        setViewedUser(userRes)
+
+        const postsRes = await api(`/posts/user/${userRes.id}`)
+        setPosts(postsRes)
       } catch (err: any) {
-        setError('User not found.')
+        setError('User not found or failed to load.')
       } finally {
         setLoading(false)
       }
     }
 
-    if (username) {
-      fetchUser()
-    }
+    fetchData()
   }, [username])
 
 
-  if (loading) {
-    return <div>Loading profile...</div>
+  if (loading || !viewedUser) {
+    return (
+      <Box sx={{ px: 2, py: 3 }}>
+        <Skeleton variant='rectangular' height={120} sx={{ mb: 2 }} />
+        <Skeleton variant='text' height={40} width='40%' />
+        <Skeleton variant='text' height={30} width='60%' />
+      </Box>
+    )
   }
 
   if (error) {
-    return <div>{error}</div>
-  }
-
-  if (!viewedUser) {
-    return null
+    return <Typography color='error'>{error}</Typography>
   }
 
 
   return (
-    <div className='Profile'>
+    <Box className='ProfilePage' sx={{ display: 'flex', flexDirection: 'column', px: { xs: 0, sm: 2 }, py: { xs: 1, sm: 2 } }}>
 
-
-      {/*
-      <h1>@{username}</h1>
-      <p>User ID: {viewedUser.id}</p>
-      */}
-      {/* TODO: Later: add posts, likes, comments here */}
 
       <ProfileInfo user={viewedUser} />
-      <UserPosts user={viewedUser} />
+      <UserPosts user={viewedUser} posts={posts} />
       <UserComments user={viewedUser} />
 
 
-    </div>
+    </Box>
   )
 }

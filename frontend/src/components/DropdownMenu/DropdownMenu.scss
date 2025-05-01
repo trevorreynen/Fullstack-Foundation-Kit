@@ -10,7 +10,7 @@
   }
 
   .dropdown-list {
-    z-index: 3000 !important;
+    z-index: 3000;
     position: absolute;
     top: calc(100% + 6px);
     right: 0px;
@@ -21,7 +21,9 @@
     box-shadow: 0px 2px 12px rgb(0, 0, 0, 0.5);
   }
 
-  .dropdown-item { @include mixins.Flex; }
+  .dropdown-item {
+    @include mixins.Flex;
+  }
 
   .dropdown-item,
   .dropdown-item-submenu {
@@ -35,10 +37,10 @@
       background-color: #3e3e3e;
     }
 
-    .icon-placeholder {
-      @include mixins.IconPlaceholder(24px);
+    .dropdown-icon {
+      width: 20px;
+      height: 20px;
       margin-right: 10px;
-      border-radius: 4px;
     }
 
     span {
@@ -57,11 +59,6 @@
     .right {
       width: 26px;
       height: 26px;
-      mask-image: url('../../assets/icons/chevron-right\ \(Dazzle\).svg');
-      mask-repeat: no-repeat;
-      mask-position: center;
-      mask-size: contain;
-      background-color: #fff;
     }
   }
 
@@ -79,30 +76,12 @@
     margin-top: -8px;
     margin-bottom: 8px;
     padding: 16px;
+    color: #fff;
     font-weight: 400;
     border-bottom: 1px solid #888;
 
-    .icon-wrapper {
-      @include mixins.FlexCenter;
-      width: 40px;
-      height: 40px;
-      margin-right: 6px;
-      border-radius: 50%;
-
-      .icon-left-arrow {
-        width: 26px;
-        height: 26px;
-        mask-image: url('../../assets/icons/arrow-left\ \(Dazzle\).svg');
-        mask-repeat: no-repeat;
-        mask-position: center;
-        mask-size: contain;
-        background-color: #fff;
-      }
-
-      &:hover {
-        background: #282828;
-        cursor: pointer;
-      }
+    .submenu-label {
+      margin-left: 4px;
     }
   }
 
@@ -120,14 +99,9 @@
     .profile-avatar {
       width: 50px;
       height: 50px;
-      margin-right: 16px;
     }
 
     .profile-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-
       .username {
         color: #fff;
         font-size: 18px;

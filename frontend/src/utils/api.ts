@@ -36,7 +36,8 @@ export async function api(endpoint: string, { method = 'GET', body, headers = {}
   const data = isJson ? await response.json() : await response.text()
 
   if (!response.ok) {
-    throw new Error(data?.error || `Request failed: ${response.status}`)
+    const errMsg = typeof data === 'string' ? data : data?.error || `Request failed: ${response.status}`
+    throw new Error(errMsg)
   }
 
   return data

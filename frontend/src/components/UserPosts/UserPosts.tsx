@@ -1,87 +1,98 @@
 // import UserPosts from '@/components/UserPosts/UserPosts'
 
 // ====================< IMPORTS: REACT >=================================
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Pagination, Box, Stack, Skeleton } from '@mui/material'
 import PostCard from '@/components/Cards/PostCard'
 
 // ====================< IMPORTS: TYPES >=================================
-import { UserProfile } from '@/types/ProfilePageTypes'
-import { Post } from '@/types/ViewPostTypes'
+import { UserProfile, Post } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
 // ====================< IMPORTS: UTILS >=================================
-import { api } from '@/utils/api'
 
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './UserPosts.scss'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 
-export default function UserPosts({ user }: { user: UserProfile }) {
-  const [error, setError] = useState<string | null>(null)
-  const [userPosts, setUserPosts] = useState<Post[] | null>(null)
-  const [isOpen, setIsOpen] = useState(true)
+type Props = {
+  user: UserProfile
+  posts: Post[] | null
+}
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const posts = await api(`/posts/user/${user.id}`)
-        setUserPosts(posts)
-      } catch {
-        setError('User posts not found.')
-      }
+
+export default function UserPosts({ user, posts }: Props) {
+
+  // Pagination states
+  const [page, setPage] = useState(1)
+  const postsPerPage = 10
+  // Pagination logic
+  const paginatedPosts = useMemo(() => {
+    if (!posts) {
+      return []
     }
 
-    if (user.username) {
-      fetchPosts()
-    }
-  }, [user.username])
+    const start = (page - 1) * postsPerPage
 
-
-  if (error) {
-    return (
-    <p>{error}</p>
-    )
-  }
-
-  if (!userPosts) {
-    return (
-      <p>Post not found.</p>
-    )
-  }
+    return posts.slice(start, start + postsPerPage)
+  }, [page, posts])
+  const totalPages = posts ? Math.ceil(posts.length / postsPerPage) : 1
 
 
   return (
-    <div className='UserPosts'>
+    <Accordion defaultExpanded disableGutters elevation={3} sx={{ mb: 3 }}>
 
 
-      <div className={`user-posts-header ${isOpen ? 'open' : 'closed'}`} onClick={() => setIsOpen(!isOpen)}>
-        <div className='header'>{user.username}'s Posts</div>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography variant='h6' fontWeight={600}>
+          {user.username}'s Posts
+        </Typography>
+      </AccordionSummary>
 
-        <div className='header-right'>
-          <div className={`arrow ${isOpen ? 'close-it' : 'open-it'}`}></div>
-        </div>
-      </div>
+      <AccordionDetails>
+        {!posts ? (
+          <Stack spacing={2}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} variant='rectangular' height={120} />
+            ))}
+          </Stack>
+        ) : paginatedPosts.length === 0 ? (
+          <Typography variant='body2' color='text.secondary'>
+            No posts to display.
+          </Typography>
+        ) : (
+          <>
+            <Stack spacing={2}>
+              {paginatedPosts.map((post) => (
+                <PostCard key={post.id} post={post} viewMode='forum' />
+              ))}
+            </Stack>
 
-      {isOpen && (
-        <div className='user-posts-list'>
-          {userPosts.map((post) => (
-            <div className='post-wrapper'>
-              <PostCard key={post.id} post={post} viewMode='forum' />
-            </div>
-          ))}
-        </div>
-      )}
+            {totalPages > 1 && (
+              <Box mt={3} display='flex' justifyContent='center'>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={(_, value) => setPage(value)}
+                  color='primary'
+                  shape='rounded'
+                />
+              </Box>
+            )}
+          </>
+        )}
+      </AccordionDetails>
 
 
-    </div>
+    </Accordion>
   )
 }
