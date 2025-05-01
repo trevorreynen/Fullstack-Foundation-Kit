@@ -8,13 +8,12 @@ import { useNavigate } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import Box from '@mui/material/Box'
 import AuthForm from '@/components/AuthForm/AuthForm'
 
 // ====================< IMPORTS: TYPES >=================================
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
-import { SidebarState } from '@/contexts/GlobalUIContext'
-import { useGlobalUI } from '@/hooks/useGlobalUI'
 import { useUser } from '@/hooks/useUser'
 
 // ====================< IMPORTS: UTILS >=================================
@@ -23,50 +22,38 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './Login.scss'
-
 
 
 export default function Login() {
+  // 1. React router navigate hook.
   const navigate = useNavigate()
+
+  // 2. Global user context setter for storing authenticated user data.
   const { setUser } = useUser()
-  const { setSidebarState } = useGlobalUI()
 
-
-  const handleSubmit = async (
-    values: { identifier: string; password: string },
-    rememberMe: boolean
-  ) => {
+  // 3. Form submit handler for signing in user via API.
+  const handleSubmit = async (values: { identifier: string, password: string }, rememberMe: boolean) => {
     try {
-      const res = await api('/auth/login', {
-        method: 'POST',
-        body: { identifier: values.identifier, password: values.password }
-      })
+      const res = await api('/auth/login', { method: 'POST', body: values })
+      const storage = rememberMe ? localStorage : sessionStorage
 
-      // TODO: Remove console.log eventually.
-      console.log('Login success:', res)
-
-      if (rememberMe) {
-        localStorage.setItem('token', res.token)
-        localStorage.setItem('user', JSON.stringify(res.user))
-      } else {
-        sessionStorage.setItem('token', res.token)
-        sessionStorage.setItem('user', JSON.stringify(res.user))
-      }
+      storage.setItem('token', res.token)
+      storage.setItem('user', JSON.stringify(res.user))
 
       setUser(res.user)
-      setSidebarState(SidebarState.Expanded)
       navigate('/home')
 
       return null
     } catch (err: any) {
-      return err?.message || 'Something went wrong'
+      return err?.message || 'Invalid credentials.'
     }
   }
 
 
+  // 4. Render login page.
   return (
-    <div className='LoginPage'>
+    // TODO: Decide to keep or remove custom classes when not using custom style sheets.
+    <Box className='LoginPage' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
 
 
       <AuthForm
@@ -77,19 +64,18 @@ export default function Login() {
         ]}
         onSubmit={handleSubmit}
         submitText='Sign In'
-        showForgotPassword
         showRememberMe
+        showForgotPassword
         footer={
           <p>
-            Don't have an account?{' '}
-            <button className='register-here-btn' type='button' onClick={() => navigate('/register')}>
-              Register here
-            </button>
+            Don't have an account?
+            {' '}
+            <button type='button' className='footer-btn' onClick={() => navigate('/register')}>Register here</button>
           </p>
         }
       />
 
 
-    </div>
+    </Box>
   )
 }

@@ -2,7 +2,8 @@
 
 // Imports
 import { Request, Response } from 'express'
-import { User, Comment } from '../models'
+import { User, Post, Comment, Like } from '../models'
+import { AuthRequest } from '../types/AuthRequest'
 
 
 
@@ -29,22 +30,47 @@ export const createComment = async (req: Request, res: Response) => {
 
 
 // (For GET) Get comments by post Id.
-export const getCommentsByPost = async (req: Request, res: Response) => {
-  const postId = parseInt(req.params.postId, 10)
+export const getCommentsForPost = async (req: Request, res: Response) => {
+  const postId = req.params.postId
 
   try {
-    const comments = await Comment.findAll({
-      where: { postId },
-      include: [{ model: User, attributes: ['id', 'username'] }],
-      order: [['createdAt', 'ASC']],
+    const topLevelComments = await Comment.findAll({
+      where: {
+        postId,
+        parentCommentId: null
+      },
+      include: [
+        {
+          model: Comment,
+          as: 'replies',
+          required: false,
+          separate: true,
+          order: [['createdAt', 'ASC']]
+        }
+      ],
+      order: [['createdAt', 'ASC']]
     })
 
-    res.status(200).json(comments)
+    // Attach like counts
+    for (const comment of topLevelComments) {
+      const likeCount = await Like.count({ where: { commentId: comment.id } })
+      ;(comment as any).likeCount = likeCount
+
+      const replies = (comment as any).replies || []
+      if (replies.length > 0) {
+        for (const reply of replies) {
+          const replyLikeCount = await Like.count({ where: { commentId: reply.id } })
+          ;(reply as any).likeCount = replyLikeCount
+        }
+      }
+    }
+
+    res.status(200).json(topLevelComments)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error loading comments' })
+    res.status(500).json({ message: 'Server error' })
     return
   }
 }
@@ -113,6 +139,55 @@ export const getCommentCountByPostId = async (req: Request, res: Response) => {
     console.error(err)
 
     res.status(500).json({ error: 'Failed to count comments' })
+    return
+  }
+}
+
+
+// (For POST) Reply to a comment.
+export const createReply = async (req: AuthRequest, res: Response) => {
+  const { postId, parentCommentId, content } = req.body
+  const userId = req.user!.id
+
+  if (!postId || !parentCommentId || !content?.trim()) {
+    res.status(400).json({ message: 'Missing required fields' })
+    return
+  }
+
+  try {
+    // Make sure post exists
+    const post = await Post.findByPk(postId)
+    if (!post) {
+      res.status(404).json({ message: 'Post not found' })
+      return
+    }
+
+    // Check that parent comment exists and belongs to same post
+    const parentComment = await Comment.findByPk(parentCommentId)
+    if (!parentComment || parentComment.postId !== Number(postId)) {
+      res.status(400).json({ message: 'Invalid parent comment for this post' })
+      return
+    }
+
+    // Check nesting level (only 2 levels allowed)
+    if (parentComment.parentCommentId !== null) {
+      res.status(400).json({ message: 'Cannot reply to a reply (max depth reached)' })
+      return
+    }
+
+    const newReply = await Comment.create({
+      userId,
+      postId,
+      parentCommentId,
+      content: content.trim()
+    })
+
+    res.status(201).json(newReply)
+    return
+  } catch (err) {
+    console.error(err)
+
+    res.status(500).json({ message: 'Server error' })
     return
   }
 }

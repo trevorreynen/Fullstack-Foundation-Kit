@@ -29,7 +29,7 @@ export const createPost = async (req: AuthRequest, res: Response) => {
 }
 
 // (For GET) Get all posts.
-export const getAllPosts = async (_req: Request, res: Response) => {
+export const getAllPosts = async (req: AuthRequest, res: Response) => {
   try {
     const posts = await Post.findAll({
       include: [
@@ -46,7 +46,24 @@ export const getAllPosts = async (_req: Request, res: Response) => {
       ],
       attributes: {
         include: [
-          [Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'commentCount']
+          [Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'commentCount'],
+          [ // Subquery to count likes for each post
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM Likes AS postLikes
+              WHERE postLikes.postId = Post.id
+            )`),
+            'likeCount'
+          ],
+          [
+            Sequelize.literal(`EXISTS (
+              SELECT 1
+              FROM Likes
+              WHERE Likes.postId = Post.id
+              AND Likes.userId = ${req.authUser!.id}
+            )`),
+            'likedByUser'
+          ]
         ]
       },
       group: ['Post.id', 'user.id'],
@@ -65,20 +82,43 @@ export const getAllPosts = async (_req: Request, res: Response) => {
 
 
 // (For GET) Get posts by user Id.
-export const getUserPosts = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10)
+export const getUserPosts = async (req: AuthRequest, res: Response) => {
+  const { userId } = req.params
 
   try {
     const posts = await Post.findAll({
       where: { userId },
-      order: [['createdAt', 'DESC']],
       include: [
         {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'profileIconUrl']
+          model: Comment,
+          as: 'comments',
+          attributes: []
         }
-      ]
+      ],
+      attributes: {
+        include: [
+          [Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'commentCount'],
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM Likes AS postLikes
+              WHERE postLikes.postId = Post.id
+            )`),
+            'likeCount'
+          ],
+          [
+            Sequelize.literal(`EXISTS (
+              SELECT 1
+              FROM Likes
+              WHERE Likes.postId = Post.id
+              AND Likes.userId = ${req.authUser!.id}
+            )`),
+            'likedByUser'
+          ]
+        ]
+      },
+      group: ['Post.id'],
+      order: [['createdAt', 'DESC']]
     })
 
     res.status(200).json(posts)
@@ -93,11 +133,48 @@ export const getUserPosts = async (req: Request, res: Response) => {
 
 
 // (For GET) Get single post by Id.
-export const getPostById = async (req: Request, res: Response) => {
+export const getPostById = async (req: AuthRequest, res: Response) => {
   const { postId } = req.params
 
   try {
-    const post = await Post.findByPk(postId)
+    const post = await Post.findOne({
+      where: { id: postId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'profileIconUrl']
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: []
+        }
+      ],
+      attributes: {
+        include: [
+          [Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'commentCount'],
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM Likes AS postLikes
+              WHERE postLikes.postId = Post.id
+            )`),
+            'likeCount'
+          ],
+          [
+            Sequelize.literal(`EXISTS (
+              SELECT 1
+              FROM Likes
+              WHERE Likes.postId = Post.id
+              AND Likes.userId = ${req.authUser!.id}
+            )`),
+            'likedByUser'
+          ]
+        ]
+      },
+      group: ['Post.id', 'user.id']
+    })
     if (!post) {
       res.status(404).json({ error: 'Post not found' })
       return

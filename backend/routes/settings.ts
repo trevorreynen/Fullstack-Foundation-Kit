@@ -7,7 +7,7 @@ import { getUserSettings, updateUserSettings } from '../controllers/settingsCont
 const router = express.Router()
 
 
-router.get('/:userId', getUserSettings)      // GET: Load user settings.
+router.get('/:userId', getUserSettings)      // GET: Get user settings.
 router.patch('/:userId', updateUserSettings) // PATCH: Update user settings.
 
 

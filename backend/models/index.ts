@@ -43,5 +43,9 @@ Comment.belongsTo(Post, { foreignKey: 'postId', as: 'post' })
 Comment.hasMany(Like, { foreignKey: 'commentId', as:'likes', onDelete: 'CASCADE' })
 Like.belongsTo(Comment, { foreignKey: 'commentId', as: 'comments' })
 
+// Comment -> Comment (1:M)
+Comment.hasMany(Comment, { foreignKey: 'parentCommentId', as: 'replies', onDelete: 'CASCADE' })
+Comment.belongsTo(Comment, { foreignKey: 'parentCommentId', as: 'parent' })
+
 
 export { User, Post, Comment, Like, UserSettings }

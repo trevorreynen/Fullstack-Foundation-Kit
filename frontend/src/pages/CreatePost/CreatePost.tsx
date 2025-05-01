@@ -2,12 +2,14 @@
 
 // ====================< IMPORTS: REACT >=================================
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Stack } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -19,57 +21,83 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './CreatePost.scss'
 
 
 export default function CreatePost() {
+  const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
+  const [errors, setErrors] = useState<{ title?: string; content?: string }>({})
 
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
+    const newErrors: typeof errors = {}
+
+    if (!title.trim()) newErrors.title = 'Title is required'
+    if (!content.trim()) newErrors.content = 'Content is required'
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+
     setLoading(true)
-    setError('')
-    setSuccess(false)
 
     try {
-      const res = await api('/posts', { method: 'POST', body: { title: title, content: content }})
-      console.log('res', res)
-      setSuccess(true)
-      setTitle('')
-      setContent('')
+      await api('/posts', { method: 'POST', body: { title, content } })
+      navigate(-1)
     } catch (err: any) {
       console.error(err)
-      setError(err.response?.data?.message || 'Failed to create post')
     } finally {
       setLoading(false)
     }
   }
 
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
+  const handleReset = () => {
+    setTitle('')
+    setContent('')
+    setErrors({})
+  }
+
 
   return (
-    <div className='CreatePost'>
+    <Dialog open onClose={handleCancel} fullWidth maxWidth='sm'>
+      <DialogTitle>Create Post</DialogTitle>
+      <DialogContent dividers>
+        <Stack spacing={3} sx={{ mt: 1 }}>
+          <TextField
+            label='Title'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            error={!!errors.title}
+            helperText={errors.title}
+            fullWidth
+          />
+          <TextField
+            label='Content'
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            error={!!errors.content}
+            helperText={errors.content}
+            fullWidth
+            multiline
+            rows={4}
+          />
+        </Stack>
+      </DialogContent>
 
-
-      <div className='create-post-page'>
-        <h2>Create New Post</h2>
-
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Post title" value={title} onChange={e => setTitle(e.target.value)} required />
-          <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="Write your post..." rows={5} required />
-          <button type="submit" disabled={loading || !content.trim()}> {loading ? 'Posting...' : 'Post'} </button>
-        </form>
-
-        {success && <p style={{ color: 'lime' }}>Post created!</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      </div>
-
-
-    </div>
+      <DialogActions>
+        <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={handleSubmit} variant='contained' disabled={loading}>
+          {loading ? 'Posting...' : 'Post'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }

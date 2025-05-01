@@ -32,12 +32,14 @@ async function seedUsers() {
   }
 
   console.log(`✅ Created ${usernames.size} users.`)
+
   process.exit(0)
 }
 
 
 seedUsers().catch((err) => {
   console.error('❌ User seeding failed:', err)
+
   process.exit(1)
 })
 

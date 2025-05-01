@@ -9,9 +9,10 @@ import { useNavigate } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Box, TextField, Typography, Button, Alert, FormControlLabel, Checkbox, IconButton, InputAdornment, Paper } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
-import { FieldKey, Props } from '@/types/AuthFormTypes'
+import { FieldKey, AuthFormProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -21,52 +22,73 @@ import { FieldKey, Props } from '@/types/AuthFormTypes'
 
 // ====================< IMPORTS: STYLES >================================
 import './AuthForm.scss'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 
-export default function AuthForm({ title, fields, onSubmit, footer, submitText = 'Submit', showForgotPassword = false, showRememberMe = false }: Props) {
+export default function AuthForm({
+  title,
+  fields,
+  onSubmit,
+  footer,
+  submitText = 'Submit',
+  showForgotPassword = false,
+  showRememberMe = false
+}: AuthFormProps) {
+  // 1. React router navigate hook.
   const navigate = useNavigate()
 
+  // 2. Form state and user interaction.
   const [values, setValues] = useState<Record<string, string>>(() => Object.fromEntries(fields.map(({ key }) => [key, ''])))
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [generalError, setGeneralError] = useState<string | null>(null)
+
+  // 3. UI behavior states.
   const [loading, setLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
-
+  // 4. Update field values and reset errors.
   const handleChange = (key: string, value: string) => {
     setValues((prev) => ({ ...prev, [key]: value }))
 
-    if (fieldErrors[key] || generalError) {
-      setFieldErrors({})
+    if (errors[key] || generalError) {
+      setErrors({})
       setGeneralError(null)
     }
   }
 
+  // 5. Field validation rules.
   const validate = () => {
-    const errors: Record<string, string> = {}
+    const result: Record<string, string> = {}
 
     for (const field of fields) {
       if (field.required && !values[field.key]?.trim()) {
-        errors[field.key] = 'Required'
+        result[field.key] = 'Required'
       }
     }
 
-    return errors
+    // Extra validation for confirmPassword
+    if (values['confirmPassword'] !== undefined) {
+      if (values['confirmPassword'] !== values['password']) {
+        result['confirmPassword'] = 'Passwords do not match'
+      }
+    }
+
+    return result
   }
 
+  // 6. Form submission logic.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setFormSubmitted(true)
-    setFieldErrors({})
+    setErrors({})
     setGeneralError(null)
 
-    const errors = validate()
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors)
-      setGeneralError('Please fill in all required fields.')
+    const validation = validate()
 
+    if (Object.keys(validation).length > 0) {
+      setErrors(validation)
+      setGeneralError('Please fix the errors above.')
       return
     }
 
@@ -84,77 +106,86 @@ export default function AuthForm({ title, fields, onSubmit, footer, submitText =
     }
   }
 
-  const hasErrors = Object.keys(fieldErrors).length > 0 || !!generalError
+  // 7. Render text field helper.
+  const renderTextField = (key: string, label: string, type = 'text', autoFocus = false) => (
+    <TextField
+      key={key}
+      type={type === 'password' && showPassword ? 'text' : type}
+      label={label}
+      value={values[key]}
+      onChange={(e) => handleChange(key, e.target.value)}
+      error={Boolean(errors[key])}
+      helperText={errors[key]}
+      fullWidth
+      required
+      margin='normal'
+      autoFocus={autoFocus}
+      size='small'
+      InputProps={{
+        endAdornment: type === 'password' && (
+          <InputAdornment position='end'>
+            <IconButton onClick={() => setShowPassword((p) => !p)} edge='end' aria-label='toggle password visibility'>
+              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </InputAdornment>
+        )
+      }}
+    />
+  )
 
 
+  // 8. Render auth form.
   return (
-    <div className='AuthForm'>
+    <Box sx={{ display: 'flex', flexDirection: 'column', maxWidth: 520 }}>
 
 
-      <div className='auth-form-wrapper'>
-        <h2>{title}</h2>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography
+          variant='h3'
+          align='center'
+          color='inherit'
+          sx={{ mb: 2, fontWeight: 700, cursor: 'default', userSelect: 'none' }}
+        >
+          {title}
+        </Typography>
 
         <form onSubmit={handleSubmit} noValidate>
-
-          {generalError && <div className='error-message'>{generalError}</div>}
-
-          {fields.map(({ key, label, type = 'text' }) => (
-
-            <div key={key} className={`input-wrapper ${formSubmitted && fieldErrors[key] ? 'error' : ''}`}>
-
-              {type === 'password' ? (
-                <>
-                  <div className='input-wrapper-body'>
-                    <input type={showPassword ? 'text' : 'password'} value={values[key]} onChange={(e) => handleChange(key, e.target.value)} required />
-                    <label>{label}</label>
-                    <div className='line'></div>
-                  </div>
-                  <div className='show-pass-wrapper' onClick={() => setShowPassword((p) => !p)}>
-                    <div className={`show-icon ${showPassword ? 'icon-hide' : 'icon-show'}`} />
-                    <button type='button' className='show-password-btn'>
-                      {showPassword ? 'Hide' : 'Show'}
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <input type='text' value={values[key]} onChange={(e) => handleChange(key, e.target.value)} required autoFocus={key === fields[0].key} />
-                  <label>{label}</label>
-                  <div className='line'></div>
-                </>
-              )}
-            </div>
-          ))}
+          {fields.map((field, i) =>
+            renderTextField(field.key, field.label, field.type, i === 0)
+          )}
 
           {showForgotPassword && (
-            <div className='forgot-password-btn-wrapper'>
-              <button className='forgot-password-btn' type='button' onClick={() => navigate('/forgot-password')}>
-                Forgot your password?
-              </button>
-            </div>
+            <Box textAlign='right' color='inherit'>
+              <Button type='button' onClick={() => navigate('/forgot-password')} size='small' sx={{ textTransform: 'none' }}>Forgot your password?</Button>
+            </Box>
           )}
 
           {showRememberMe && (
-            <div className='remember-me-container'>
-              <label className='remember-me-wrapper'>
-                <input type='checkbox' checked={rememberMe} onChange={() => setRememberMe((prev) => !prev)} />
-                <span>Remember Me</span>
-              </label>
-            </div>
+            <FormControlLabel
+              control={<Checkbox checked={rememberMe} onChange={() => setRememberMe((p) => !p)} />}
+              color='inherit'
+              label='Remember Me'
+            />
           )}
 
-          <div className='submit-btn-wrapper'>
-            <button className='submit-btn' type='submit' disabled={loading || hasErrors}>
+          <Box mt={1} textAlign='center'>
+            <Button
+              type='submit'
+              variant='outlined'
+              disabled={loading}
+              sx={{ px: 4, py: 1, color: '#9400d3', fontWeight: 700, borderColor: '#9400d3', borderRadius: '8px' }}
+            >
               {loading ? 'Please wait...' : submitText}
-            </button>
-          </div>
+            </Button>
+          </Box>
+
+          {generalError && <Alert severity='error' onClose={() => setGeneralError(null)} sx={{ mt: 2 }}>{generalError}</Alert>}
         </form>
-      </div>
+      </Paper>
 
-      {footer && <div className='footer'>{footer}</div>}
+      {footer && <div className='auth-form-footer'>{footer}</div>}
 
 
-    </div>
+    </Box>
   )
 }
-

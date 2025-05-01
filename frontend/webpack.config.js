@@ -60,10 +60,10 @@ module.exports = async () => {
         {
           test: /\.(scss|css)$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-            'css-loader',
-            'sass-loader'
-          ], // 'style-loader': Injects styles into the DOM, 'css-loader': Resolves CSS imports, 'sass-loader': Compiles SCSS to CSS
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader', // 'style-loader': Injects styles into the DOM,
+            'css-loader', // 'css-loader': Resolves CSS imports
+            'sass-loader' // 'sass-loader': Compiles SCSS to CSS
+          ],
           //use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
@@ -108,7 +108,9 @@ module.exports = async () => {
       port,
       hot: true, // Enable hot module replacement
       open: true, // Supposed to automatically open the browser
-      historyApiFallback: true, // Redirect all 404s to 'index.html'
+      historyApiFallback: {
+        disableDotRule: true, // Should hopefully fix issue with '.' in usernames.
+      },
     },
   }
 }

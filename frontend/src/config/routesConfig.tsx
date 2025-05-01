@@ -1,7 +1,7 @@
 // import { routesConfig } from '@/config/routesConfig'
 
 // ====================< IMPORTS: REACT >=================================
-import { lazy, useMemo, Suspense, JSX } from 'react'
+import { lazy, Suspense, JSX } from 'react'
 import { RouteObject } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
@@ -43,7 +43,7 @@ const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element | n
 const mainLayoutRoutes: RouteObject = {
   element: <MainLayout />,
   children: [
-    { path: '', element: <Landing /> },
+    { path: '', element: withSuspense(Landing) },
     { path: 'login', element: withSuspense(Login) },
     { path: 'register', element: withSuspense(Register) },
     { path: 'about', element: withSuspense(About) },
@@ -61,4 +61,3 @@ const mainLayoutRoutes: RouteObject = {
 export const useRoutesConfig = (): RouteObject[] => {
   return [mainLayoutRoutes]
 }
-

@@ -9,7 +9,7 @@
 // ====================< IMPORTS: COMPONENTS >============================
 
 // ====================< IMPORTS: TYPES >=================================
-import { SettingsTabsProps } from '@/types/SettingsTabsTypes'
+import { SettingsTabsProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 

@@ -9,10 +9,9 @@ import { useParams } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import CommentSidebar from '@/components/ViewPage/CommentSidebar/CommentSidebar'
-import PostFloatingActions from '@/components/ViewPage/PostFloatingActions/PostFloatingActions'
-import PostLayoutShell from '@/components/ViewPage/PostLayoutShell/PostLayoutShell'
-import PostMainContent from '@/components/ViewPage/PostMainContent/PostMainContent'
+import Box from '@mui/material/Box'
+import FullPost from '@/components/ViewPost/FullPost'
+import PostCommentSidebar from '@/components/ViewPost/PostCommentSidebar/PostCommentSidebar'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -22,69 +21,67 @@ import PostMainContent from '@/components/ViewPage/PostMainContent/PostMainConte
 import { api } from '@/utils/api'
 
 // ====================< IMPORTS: OTHER >=================================
+import { usePostStore } from '@/stores/usePostStore'
+import { useCommentStore } from '@/stores/useCommentStore'
 
 // ====================< IMPORTS: STYLES >================================
-import './ViewPost.scss'
-
-
-export interface PostWithUser {
-  id: number
-  userId: number
-  title: string
-  content: string
-  createdAt: string
-  updatedAt: string | null
-  user: {
-    username: string
-    profileIconUrl?: string
-  }
-}
 
 
 export default function ViewPost() {
-  const { postId } = useParams<{ postId: string }>()
-  const [post, setPost] = useState<PostWithUser | null>(null)
-  const [showCommentsSidebar, setShowCommentsSidebar] = useState(false)
+  // 1. Get postId from URL.
+  const { postId } = useParams()
 
+  // 2. Zustand stores for managing single post and its comments.
+  const { setPosts } = usePostStore()
+  const { setComments } = useCommentStore()
+
+  // 3. Loading states.
+  const [loading, setLoading] = useState(true)
+
+  // 4. Comment sidebar open toggle states.
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // 5. On mount, fetch post and its comments by postId and store them in zustand stores.
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api(`/posts/by-id/${postId}`)
+        if (!postId) {
+          return
+        }
 
-        setPost(res)
+        const postRes = await api(`/posts/by-id/${postId}`)
+        const commentsRes = await api(`/comments/post/${postId}`)
+
+        setPosts([postRes])
+        setComments(commentsRes)
       } catch (err) {
-        console.error('Failed to fetch post:', err)
+        console.error('Failed to fetch post or comments:', err)
+      } finally {
+        setLoading(false)
       }
     }
 
-    if (postId) {
-      console.log('[ViewPost] Fetching post')
-      fetchPost()
-    }
-  }, [postId])
+    fetchData()
+  }, [postId, setPosts, setComments])
 
-  const toggleSidebar = () => setShowCommentsSidebar(prev => !prev)
+  // 6. Toggle sidebar.
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev)
 
-  if (!post) {
-    return <div className='ViewPost loading'>Loading...</div>
+  // 7. Loading & Errors.
+  if (loading) {
+    return <div className='ViewPost loading'>Loading...</div> // TODO: Add skeleton.
   }
 
 
+  // 8. Render view post page.
   return (
-    <div className='ViewPost'>
+    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%', py: 4, px: 4 }}>
 
 
-      <PostLayoutShell showCommentsSidebar={showCommentsSidebar}>
-        <PostMainContent post={post} showCommentsSidebar={showCommentsSidebar} onToggleComments={toggleSidebar} />
-
-        <PostFloatingActions onCommentClick={toggleSidebar} showCommentsSidebar={showCommentsSidebar} />
-
-        {showCommentsSidebar && (
-          <CommentSidebar postId={post.id} postUser={post.user} onClose={toggleSidebar} />
-        )}
-      </PostLayoutShell>
+      <FullPost postId={parseInt(postId!)} showComments={sidebarOpen} onCommentClick={toggleSidebar} />
+      <PostCommentSidebar onClose={toggleSidebar} />
 
 
-    </div>
+    </Box>
   )
 }

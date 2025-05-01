@@ -22,7 +22,7 @@ const PORT = parseInt(process.env.BACKEND_PORT!, 10)
 // Allow local + LAN access
 const allowedOrigins = [
   `http://localhost:${process.env.FRONTEND_PORT}`,
-  `http://192.168.1.113:${process.env.FRONTEND_PORT}`
+  `http://${process.env.DEV_IP}:${process.env.FRONTEND_PORT}`
 ]
 
 app.use(cors({

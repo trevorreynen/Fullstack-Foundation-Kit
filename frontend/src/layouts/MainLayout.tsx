@@ -1,7 +1,6 @@
 // import MainLayout from '@/layouts/MainLayout'
 
 // ====================< IMPORTS: REACT >=================================
-import { useEffect, useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
@@ -10,14 +9,11 @@ import { Outlet } from 'react-router-dom'
 
 // ====================< IMPORTS: COMPONENTS >============================
 import Header from '@/components/Header/Header'
-import Sidebar from '@/components/Sidebar/Sidebar'
+import Box from '@mui/material/Box'
 
 // ====================< IMPORTS: TYPES >=================================
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
-import { SidebarState } from '@/contexts/GlobalUIContext'
-import { useGlobalUI } from '@/hooks/useGlobalUI'
-import { useUser } from '@/hooks/useUser'
 
 // ====================< IMPORTS: UTILS >=================================
 
@@ -27,29 +23,17 @@ import { useUser } from '@/hooks/useUser'
 
 
 export default function MainLayout() {
-  const { user } = useUser()
-  const { setSidebarState, sidebarState } = useGlobalUI()
-
-  useEffect(() => {
-    if (!user) {
-      setSidebarState(SidebarState.Hidden)
-    }
-  }, [user])
-
-
   return (
-    <div className='App'>
+    <Box className='App' sx={{ width: '100%', height: '100%' }}>
+
+
       <Header />
 
-      <div className={`App-Wrapper ${sidebarState}`}>
-        <Sidebar />
+      <Box className='App-Wrapper' sx={{ width: '100%', height: '100%' }}>
+        <Outlet />
+      </Box>
 
-        <div className='Router-Wrapper'>
-          <Outlet />
-        </div>
-      </div>
 
-    </div>
+    </Box>
   )
 }
-

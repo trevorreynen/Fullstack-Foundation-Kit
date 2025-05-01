@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 
 // ====================< IMPORTS: LAYOUT >================================
+import MuiThemeWrapper from '@/layouts/MuiThemeWrapper'
 
 // ====================< IMPORTS: PAGES >=================================
 import App from '@/pages/App'
@@ -29,13 +30,15 @@ const root = document.getElementById('root')
 if (root) {
   createRoot(root).render(
     <React.StrictMode>
-      <BrowserRouter>
-        <UserProvider>
-          <GlobalUIProvider>
-            <App />
-          </GlobalUIProvider>
-        </UserProvider>
-      </BrowserRouter>
+      <UserProvider>
+        <GlobalUIProvider>
+          <MuiThemeWrapper>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </MuiThemeWrapper>
+        </GlobalUIProvider>
+      </UserProvider>
     </React.StrictMode>
   )
 }
