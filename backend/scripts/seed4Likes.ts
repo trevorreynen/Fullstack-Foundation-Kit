@@ -7,25 +7,28 @@ import { User, Post, Comment, Like } from '../models'
 
 
 // ==============================< CONFIG >===============================
-// Percent of users selected
-const userSelectionPercent = 0.7
+// % of users selected to like
+const userSelectionPercent = 0.6
 
-// Percent of posts liked per user
-const postLikePercent = 0.5
+// % of posts liked per selected user
+const postLikePercent = 0.3
 
-// Percent of comments liked inside a liked post
-const commentLikePercent = 0.35
+// % of comments liked per post
+const commentLikePercent = 0.15
 
-// Percent chance to pick popular comment instead of random comment
+// % chance to bias toward popular comment instead of random
 const popularityBiasPercent = 0.5
 
-// Number of nested replies to like under a liked comment
-const nestedReplyLikesMin = 1
-const nestedReplyLikesMax = 2
+// Nested replies to like per liked comment
+const nestedReplyLikesMin = 0
+const nestedReplyLikesMax = 1
 
 
 // =========================< MAIN FUNCTION(S) >==========================
 async function seedLikes() {
+  const startTime = Date.now()
+  console.log(`👍 Starting likes seeding at: ${new Date(startTime).toISOString()}`)
+
   await sequelize.sync()
 
   const users = await User.findAll()
@@ -39,7 +42,12 @@ async function seedLikes() {
   const selectedUsers = users.filter(() => Math.random() < userSelectionPercent)
   const likeCache = new Set<string>()
 
+  let totalLikes = 0
+
   for (const user of selectedUsers) {
+    const userStart = Date.now()
+    console.log(`\n🙋‍♂️ User ${user.username || user.id} starting likes at ${new Date(userStart).toISOString()}`)
+
     const postsToLike = posts.filter(() => Math.random() < postLikePercent)
 
     for (const post of postsToLike) {
@@ -47,10 +55,10 @@ async function seedLikes() {
       if (!likeCache.has(postKey)) {
         await Like.create({ userId: user.id, postId: post.id })
         likeCache.add(postKey)
+        totalLikes++
       }
 
       const postComments = comments.filter(c => c.postId === post.id && c.parentCommentId === null)
-
       if (!postComments.length) continue
 
       const commentsToLike = postComments.filter(() => Math.random() < commentLikePercent)
@@ -62,12 +70,11 @@ async function seedLikes() {
 
         if (!likeCache.has(commentKey)) {
           await Like.create({ userId: user.id, commentId: targetComment.id })
-
           likeCache.add(commentKey)
+          totalLikes++
         }
 
-        // Like replies to this comment
-        const replies = Array.isArray((targetComment as any).replies) ? (targetComment as any).replies as Comment[] : []
+        const replies = Array.isArray((targetComment as any).replies) ? ((targetComment as any).replies as Comment[]) : []
 
         if (replies.length > 0) {
           const repliesToLike = faker.helpers.arrayElements(replies, faker.number.int({ min: nestedReplyLikesMin, max: nestedReplyLikesMax }))
@@ -79,22 +86,30 @@ async function seedLikes() {
             if (!likeCache.has(replyKey)) {
               await Like.create({ userId: user.id, commentId: reply.id })
               likeCache.add(replyKey)
+              totalLikes++
             }
           }
         }
       }
     }
+
+    const userEnd = Date.now()
+
+    console.log(`✅ User ${user.username || user.id} finished at ${new Date(userEnd).toISOString()} (Duration: ${userEnd - userStart} ms)`)
   }
 
-  console.log(`✅ Likes seeded for ${selectedUsers.length} users.`)
+  const endTime = Date.now()
+  const duration = endTime - startTime
+
+  console.log(`\n🎯 Finished seeding likes for ${selectedUsers.length} users.`)
+  console.log(`🧾 Total Likes Created: ${totalLikes}`)
+  console.log(`🕒 Finished at: ${new Date(endTime).toISOString()} (Duration: ${duration} ms)`)
 
   process.exit(0)
 }
-
 
 seedLikes().catch(err => {
   console.error('❌ Likes seeding failed:', err)
 
   process.exit(1)
 })
-

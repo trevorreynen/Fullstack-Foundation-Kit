@@ -3,18 +3,21 @@
 // Imports
 import { Request, Response } from 'express'
 import { Like } from '../models'
+import { AuthRequest } from '../types/AuthRequest'
+import { resSuccess, resError } from '../utils/response'
 
 
 // (For POST) Toggle a post or comment like on or off.
-export const toggleLike = async (req: Request, res: Response) => {
-  const { userId, postId, commentId } = req.body
-  if (!userId || (!postId && !commentId)) {
-    res.status(400).json({ error: 'Missing required like target or userId' })
+export const toggleLike = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
+  const { postId, commentId } = req.body
+  if (!postId && !commentId) {
+    resError(400, res, 'MISSING_LIKE_TARGET')
     return
   }
 
   if (postId && commentId) {
-    res.status(400).json({ error: 'Cannot like both a post and comment at once' })
+    resError(400, res, 'CANNOT_LIKE_BOTH')
     return
   }
 
@@ -34,49 +37,49 @@ export const toggleLike = async (req: Request, res: Response) => {
 
     const like = await Like.create(whereClause)
 
-    res.status(201).json({ liked: true, like })
+    resSuccess(res, { liked: true, like }, 201)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error toggling like' })
+    resError(500, res, 'ERROR_TOGGLING_LIKE')
     return
   }
 }
 
 
-// (For GET) Total likes on post.
+// (For GET) Get total likes on post.
 export const getPostLikes = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId, 10)
 
   try {
     const count = await Like.count({ where: { postId } })
 
-    res.status(200).json({ postId, likes: count })
+    resSuccess(res, { postId, likes: count })
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error fetching likes' })
+    resError(500, res, 'ERROR_FETCHING_LIKES')
     return
   }
 }
 
 
 // (For GET) Check if user liked post.
-export const checkUserLikedPost = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10)
+export const checkUserLikedPost = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
   const postId = parseInt(req.params.postId, 10)
 
   try {
     const like = await Like.findOne({ where: { userId, postId } })
 
-    res.status(200).json({ liked: !!like })
+    resSuccess(res, { liked: !!like })
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error checking like status' })
+    resError(500, res, 'ERROR_FETCHING_LIKE_STATUS')
     return
   }
 }

@@ -1,50 +1,44 @@
 // ./backend/controllers/settingsController.ts
 
 // Imports
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { UserSettings } from '../models'
+import { AuthRequest } from '../types/AuthRequest'
+import { resSuccess, resError } from '../utils/response'
 
 
-// (For GET) Load user settings.
-export const getUserSettings = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10)
-  if (isNaN(userId)) {
-    res.status(400).json({ error: 'Invalid userId' })
-    return
-  }
+// (For GET) Get user settings.
+export const getUserSettings = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
 
   try {
     const settings = await UserSettings.findOne({ where: { userId } })
     if (!settings) {
-      res.status(404).json({ error: 'Settings not found for this user' })
+      resError(404, res, 'SETTINGS_NOT_FOUND')
       return
     }
 
-    res.status(200).json(settings)
+    resSuccess(res, settings)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error loading user settings' })
+    resError(500, res, 'ERROR_FETCHING_SETTINGS')
     return
   }
 }
 
 
 // (For PATCH) Update user settings.
-export const updateUserSettings = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10)
-  if (isNaN(userId)) {
-    res.status(400).json({ error: 'Invalid userId' })
-    return
-  }
+export const updateUserSettings = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
 
   const { uiTheme, notificationsEnabled, customNote } = req.body
 
   try {
     const settings = await UserSettings.findOne({ where: { userId } })
     if (!settings) {
-      res.status(404).json({ error: 'Settings not found' })
+      resError(404, res, 'SETTINGS_NOT_FOUND')
       return
     }
 
@@ -60,12 +54,12 @@ export const updateUserSettings = async (req: Request, res: Response) => {
 
     await settings.save()
 
-    res.status(200).json({ success: true, settings })
+    resSuccess(res, settings)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Error updating user settings' })
+    resError(500, res, 'ERROR_UPDATING_SETTINGS')
     return
   }
 }

@@ -61,7 +61,6 @@ export default function LikeBtn({ targetId, type, defaultLiked, defaultLikeCount
       await api('/likes/toggle', {
         method: 'POST',
         body: {
-          userId: user.id,
           postId: type === 'post' ? targetId : undefined,
           commentId: type === 'comment' ? targetId : undefined
         }

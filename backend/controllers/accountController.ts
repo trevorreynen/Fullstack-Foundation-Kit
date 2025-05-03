@@ -3,143 +3,143 @@
 // Imports
 import { Request, Response } from 'express'
 import { User } from '../models'
+import { AuthRequest } from '../types/AuthRequest'
+import { resSuccess, resError } from '../utils/response'
 
 
-
-// (For PATCH) Update username.
-export const updateUsername = async (req: Request, res: Response) => {
-  const { userId, newUsername } = req.body
-  if (!userId || !newUsername) {
-    res.status(400).json({ error: 'Missing userId or newUsername' })
-    return
-  }
+// (For DELETE) Delete user.
+export const deleteAccount = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
 
   try {
-    const existingUser = await User.findOne({ where: { username: newUsername } })
-    if (existingUser) {
-      res.status(409).json({ error: 'Username is already taken' })
-      return
-    }
-
     const user = await User.findByPk(userId)
     if (!user) {
-      res.status(404).json({ error: 'User not found' })
+      resError(404, res, 'USER_NOT_FOUND')
       return
     }
 
-    user.username = newUsername
-    await user.save()
+    await user.destroy()
 
-    res.status(200).json({ success: true, username: user.username })
+    resSuccess(res)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Server error during username update' })
+    resError(500, res, 'ERROR_DELETING_USER')
     return
   }
 }
 
 
 // (For PATCH) Update email.
-export const updateEmail = async (req: Request, res: Response) => {
-  const { userId, newEmail } = req.body
-  if (!userId || !newEmail) {
-    res.status(400).json({ error: 'Missing userId or newEmail' })
+export const updateEmail = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
+  const { newEmail } = req.body
+  if (!newEmail) {
+    resError(400, res, 'MISSING_REQUIRED_FIELDS')
     return
   }
 
   try {
     const existingUser = await User.findOne({ where: { email: newEmail } })
     if (existingUser) {
-      res.status(409).json({ error: 'Email is already in use' })
+      resError(409, res, 'EMAIL_IN_USE')
       return
     }
 
     const user = await User.findByPk(userId)
     if (!user) {
-      res.status(404).json({ error: 'User not found' })
+      resError(404, res, 'USER_NOT_FOUND')
       return
     }
 
     user.email = newEmail
     await user.save()
 
-    res.status(200).json({ success: true, email: user.email })
+    resSuccess(res, { email: user.email })
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Server error during email update' })
+    resError(500, res, 'ERROR_UPDATING_EMAIL')
     return
   }
 }
 
 
 // (For PATCH) Update password.
-export const updatePassword = async (req: Request, res: Response) => {
-  const { userId, currentPassword, newPassword } = req.body
-  if (!userId || !currentPassword || !newPassword) {
-    res.status(400).json({ error: 'Missing required fields' })
+export const updatePassword = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
+  const { currentPassword, newPassword } = req.body
+  if (!currentPassword || !newPassword) {
+    resError(400, res, 'MISSING_REQUIRED_FIELDS')
     return
   }
 
   try {
     const user = await User.findByPk(userId)
     if (!user) {
-      res.status(404).json({ error: 'User not found' })
+      resError(404, res, 'USER_NOT_FOUND')
       return
     }
 
     const isMatch = await user.checkPassword(currentPassword)
     if (!isMatch) {
-      res.status(401).json({ error: 'Current password is incorrect' })
+      resError(401, res, 'PASSWORD_INCORRECT')
       return
     }
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{5,}$/
     if (!passwordRegex.test(newPassword)) {
-      res.status(400).json({ error: 'New password must be at least 5 characters and include lowercase, uppercase, and a symbol' })
+      resError(400, res, 'INVALID_PASSWORD_FORMAT')
       return
     }
 
     user.password = newPassword // Gets hashed by model hook
     await user.save()
 
-    res.status(200).json({ success: true, message: 'Password updated' })
+    resSuccess(res)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Server error during password update' })
+    resError(500, res, 'ERROR_UPDATING_PASSWORD')
     return
   }
 }
 
 
-// (For DELETE) Delete user.
-export const deleteAccount = async (req: Request, res: Response) => {
-  const { userId } = req.body
-  if (!userId) {
-    res.status(400).json({ error: 'Missing userId' })
+// (For PATCH) Update username.
+export const updateUsername = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser!.id
+  const { newUsername } = req.body
+  if (!newUsername) {
+    resError(400, res, 'MISSING_REQUIRED_FIELDS')
     return
   }
 
   try {
-    const user = await User.findByPk(userId)
-    if (!user) {
-      res.status(404).json({ error: 'User not found' })
+    const existingUser = await User.findOne({ where: { username: newUsername } })
+    if (existingUser) {
+      resError(409, res, 'USERNAME_TAKEN')
       return
     }
 
-    await user.destroy()
+    const user = await User.findByPk(userId)
+    if (!user) {
+      resError(404, res, 'USER_NOT_FOUND')
+      return
+    }
 
-    res.status(200).json({ success: true, message: 'User deleted' })
+    user.username = newUsername
+    await user.save()
+
+    resSuccess(res, { username: user.username })
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Server error during user deletion' })
+    resError(500, res, 'ERROR_UPDATING_USERNAME')
     return
   }
 }
@@ -156,16 +156,16 @@ export const getUserProfileByUsername = async (req: Request, res: Response) => {
     })
 
     if (!user) {
-      res.status(404).json({ error: 'User not found' })
+      resError(404, res, 'USER_NOT_FOUND')
       return
     }
 
-    res.json(user)
+    resSuccess(res, user)
     return
   } catch (err) {
     console.error(err)
 
-    res.status(500).json({ error: 'Internal server error' })
+    resError(500, res, 'SERVER_ERROR')
     return
   }
 }

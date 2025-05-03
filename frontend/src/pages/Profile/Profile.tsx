@@ -39,11 +39,11 @@ export default function Profile() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const userRes = await api(`/account/username/${username}`)
-        setViewedUser(userRes)
+        const userRes = await api(`/account/username/${username}`, { method: 'GET' })
+        setViewedUser(userRes.data)
 
-        const postsRes = await api(`/posts/user/${userRes.id}`)
-        setPosts(postsRes)
+        const postsRes = await api(`/posts/user/${username}`, { method: 'GET' })
+        setPosts(postsRes.data.items)
       } catch (err: any) {
         setError('User not found or failed to load.')
       } finally {

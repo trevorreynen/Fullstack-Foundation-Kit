@@ -57,7 +57,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
 
     // 3️⃣ We have a token but no stored user: validate it
-    api('/auth/me')
+    api('/auth/me', { method: 'GET' })
       .then((me: User) => {
         setUser(me)
         localStorage.setItem('user', JSON.stringify(me))

@@ -8,16 +8,27 @@ interface ApiOptions {
   method?: Method
   body?: any
   headers?: Record<string, string>
-  queryParams?: Record<string, any>
+  queryParams?: Record<string, string | number | boolean>
+  query?: Record<string, string | number | boolean> // alias for queryParams for consistency
 }
 
 
-export async function api(endpoint: string, { method = 'GET', body, headers = {}, queryParams }: ApiOptions = {}) {
+export async function api(endpoint: string, { method, body, headers = {}, queryParams, query }: ApiOptions = {}) {
   const url = new URL(`${API_BASE}${endpoint}`)
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
 
-  if (queryParams) {
-    Object.entries(queryParams).forEach(([key, value]) => url.searchParams.append(key, String(value)))
+  // Merge query and queryParams if both exist
+  const combinedQuery = { ...queryParams, ...query }
+  if (combinedQuery) {
+    Object.entries(combinedQuery).forEach(([key, value]) => {
+      url.searchParams.append(key, String(value))
+    })
+  }
+
+  if (!method) {
+    if (process.env.NODE_ENV !== 'production') {
+      throw new Error(`Missing method in api() call to: ${endpoint}`)
+    }
   }
 
   const response = await fetch(url.toString(), {

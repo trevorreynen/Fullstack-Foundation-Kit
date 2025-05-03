@@ -1,6 +1,7 @@
 // import PaginationBox from '@/components/common/PaginationBox'
 
 // ====================< IMPORTS: REACT >=================================
+import { useState, Dispatch, SetStateAction } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
@@ -8,6 +9,7 @@
 
 // ====================< IMPORTS: COMPONENTS >============================
 import { Box, FormControl, InputLabel, MenuItem, Pagination, Select } from '@mui/material'
+import PaginationFilterMenu from '@/components/common/PaginationFilterMenu'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -35,8 +37,20 @@ interface PaginationBoxProps {
 
   // Optional: Extra sx
   sx?: object
-}
 
+  // Optional: Filter menu
+  showFilterMenu?: boolean
+  sort?: 'ASC' | 'DESC'
+  setSort?: Dispatch<SetStateAction<'ASC' | 'DESC'>>
+  sortBy?: string
+  setSortBy?: Dispatch<SetStateAction<string>>
+  sortByOptions?: { label: string; value: string }[]
+  search?: string
+  setSearch?: Dispatch<SetStateAction<string>>
+  searchField?: string
+  setSearchField?: Dispatch<SetStateAction<string>>
+  searchFields?: { label: string; value: string }[]
+}
 
 export default function PaginationBox({
   totalPages,
@@ -46,7 +60,18 @@ export default function PaginationBox({
   perPage = 15,
   perPageOptions = [15, 30, 50],
   onPerPageChange,
-  sx = {}
+  sx = {},
+  showFilterMenu,
+  sort,
+  setSort,
+  sortBy,
+  setSortBy,
+  sortByOptions,
+  search,
+  setSearch,
+  searchField,
+  setSearchField,
+  searchFields
 }: PaginationBoxProps) {
   // 1. Access MUI theme (for responsive breakpoint logic).
   const theme = useTheme()
@@ -86,6 +111,21 @@ export default function PaginationBox({
             ))}
           </Select>
         </FormControl>
+      )}
+
+      {showFilterMenu && (
+        <PaginationFilterMenu
+          sort={sort}
+          setSort={setSort}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          sortByOptions={sortByOptions}
+          search={search}
+          setSearch={setSearch}
+          searchField={searchField}
+          setSearchField={setSearchField}
+          searchFieldOptions={searchFields}
+        />
       )}
 
       <Pagination

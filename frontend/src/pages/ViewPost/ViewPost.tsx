@@ -49,11 +49,11 @@ export default function ViewPost() {
           return
         }
 
-        const postRes = await api(`/posts/by-id/${postId}`)
-        const commentsRes = await api(`/comments/post/${postId}`)
+        const postRes = await api(`/posts/by-id/${postId}`, { method: 'GET' })
+        const commentsRes = await api(`/comments/post/${postId}`, { method: 'GET' })
 
-        setPosts([postRes])
-        setComments(commentsRes)
+        setPosts([postRes.data])
+        setComments(commentsRes.data.items)
       } catch (err) {
         console.error('Failed to fetch post or comments:', err)
       } finally {

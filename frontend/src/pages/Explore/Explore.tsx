@@ -33,8 +33,8 @@ export default function Explore() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await api('/posts')
-        setPosts(res)
+        const res = await api('/posts', { method: 'GET' })
+        setPosts(res.data.items)
       } catch (err) {
         setError('Failed to load posts')
         console.error(err)
@@ -48,19 +48,53 @@ export default function Explore() {
   // 2. Pagination states.
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(15)
+  const [totalPages, setTotalPages] = useState(0)
 
-  // 3. Pagination page logic.
-  const start = (page - 1) * perPage
-  const end = start + perPage
-  const paginatedPosts = posts.slice(start, end)
-  const totalPages = Math.ceil(posts.length / perPage)
+  // 3. Sort query states + options.
+  const [sort, setSort] = useState<'ASC' | 'DESC'>('DESC')
+  const [sortBy, setSortBy] = useState<string>('createdAt')
+  const sortByOptions = [
+    { label: 'Date Created', value: 'createdAt' },
+    { label: 'Like Count', value: 'likeCount' },
+    { label: 'Comment Count', value: 'commentCount' },
+  ]
+
+  // 4. Search field states + options.
+  const [search, setSearch] = useState('')
+  const [searchField, setSearchField] = useState<string>('title')
+  const searchFields = [
+    { label: 'Title', value: 'title' },
+    { label: 'Body', value: 'content' },
+    { label: 'Title + Content', value: 'combined' }
+  ]
 
   // 4. Pagination page logic.
-  const handlePageChange = (_: any, value: number) => setPage(value)
-  const handlePerPageChange = (e: any) => {
-    setPerPage(e.target.value)
-    setPage(1)
-  }
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const query = {
+          page,
+          pageSize: perPage,
+          sort,
+          sortBy,
+          search,
+          searchableFields: JSON.stringify(
+            Array.isArray(searchField) ? searchField : [searchField]
+          )
+        }
+
+        const res = await api('/posts', { method: 'GET', query })
+
+        setPosts(res.data.items)
+        setTotalPages(res.data.meta.totalPages)
+      } catch (err) {
+        setError('Failed to load posts')
+        console.error(err)
+      }
+    }
+
+    fetchPosts()
+  }, [page, perPage, sort, sortBy, search, searchField, setPosts])
 
   // 5. Loading & Errors.
   if (error) {
@@ -82,7 +116,7 @@ export default function Explore() {
 
       <Box className='explore-post-list' sx={{ pb: 6 }}>
         <Stack spacing={2}>
-          {paginatedPosts.map(post => (
+          {posts.map(post => (
             <PostCard key={post.id} post={post} viewMode='full' />
           ))}
         </Stack>
@@ -91,11 +125,25 @@ export default function Explore() {
       <PaginationBox
         totalPages={totalPages}
         page={page}
-        onPageChange={handlePageChange}
+        onPageChange={(_, val) => setPage(val)}
         showPerPageSelect
         perPage={perPage}
-        onPerPageChange={handlePerPageChange}
+        onPerPageChange={(e) => {
+          setPerPage(e.target.value)
+          setPage(1)
+        }}
         perPageOptions={[15, 30, 50]}
+        showFilterMenu={true}
+        sort={sort}
+        setSort={setSort}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        sortByOptions={sortByOptions}
+        search={search}
+        setSearch={setSearch}
+        searchField={searchField}
+        setSearchField={setSearchField}
+        searchFields={searchFields}
       />
 
 

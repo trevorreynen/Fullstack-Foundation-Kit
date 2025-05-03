@@ -12,7 +12,7 @@ This project is a fullstack, modular web application built using a custom React 
 - [⚙️ Architecture Notes & Solo Dev Tradeoffs](#architecture-notes)
 - [📊 Tracking & Feature Overview](#tracking-and-feature-overview)
 - [📋 Why I Use a Spreadsheet](#why-i-use-spreadsheets)
-- [📁 Project Structure](#project-structure)
+- [🛠️ Backend Todo List](#backend-todo)
 - [🧭 Route Overview](#route-overview)
 - [💡 Key Features](#key-features)
 - [🔐 Backend Architecture](#backend-architecture)
@@ -65,95 +65,47 @@ Everything from components, routes, models, and endpoints to feature planning an
 ---
 
 
-## 📁 Project Structure <a name="project-structure"></a>
+## 🧭 Route Overview <a name="route-overview"></a>
 
-NOTE: Might not be 100% updated.
-
-```
-project/
-├── backend/
-│   ├── config/
-│   │   └── database.ts
-│   ├── models/
-│   │   ├── Comment.ts
-│   │   ├── Like.ts
-│   │   ├── Post.ts
-│   │   ├── User.ts
-│   │   └── UserSettings.ts
-│   ├── routes/
-│   │   ├── account.ts
-│   │   ├── auth.ts
-│   │   ├── comments.ts
-│   │   ├── index.ts
-│   │   ├── likes.ts
-│   │   ├── posts.ts
-│   │   └── settings.ts
-│   ├── package.json
-│   ├── server.ts
-│   └── tsconfig.json
-├── frontend/
-│   ├── src/
-│   │   ├── assets/
-│   │   │   └── icons/
-│   │   ├── components/
-│   │   │   ├── AuthForm/
-│   │   │   ├── DropdownMenu/
-│   │   │   ├── Header/
-│   │   │   ├── Loading/
-│   │   │   ├── ProtectedRoute/
-│   │   │   └── Sidebar/
-│   │   ├── config/
-│   │   │   └── routesConfig.tsx
-│   │   ├── hooks/
-│   │   │   └── common-context.tsx
-│   │   ├── layouts/
-│   │   │   ├── EmptyLayout.tsx
-│   │   │   └── MainLayout.tsx
-│   │   ├── pages/
-│   │   │   ├── Home/
-│   │   │   ├── Landing/
-│   │   │   ├── Login/
-│   │   │   ├── Profile/
-│   │   │   ├── Register/
-│   │   │   ├── Settings/
-│   │   │   ├── App.tsx
-│   │   │   └── Entry.tsx
-│   │   ├── styles/
-│   │   │   ├── global.scss
-│   │   │   └── mixins.scss
-│   │   └── utils/
-│   │   │   ├── api.tsx
-│   │   │   └── usefulFunctions.ts
-│   ├── .babelrc
-│   ├── .stylelinttc.json
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── webpack.config.js
-├── .env.example
-├── .gitignore
-├── .prettierignore
-├── .prettierrc
-├── LICENSE
-└── README.md
-
-Also, things that I have in my gitignore:
-├── .!other/   # Simply contains old files and some notes, etc.
-├── .vscode/
-└── .env
-```
-
-- Pages and components are folder-scoped (`.tsx + .scss`)
-   - Sometimes no `.scss` file if it isn't needed.
-- Custom layouts allow public/private route separation
-- Common state is shared via `common-context.tsx`
+A complete list of all defined routes, their layouts, file paths, auth requirements, and usage context can be found in the [📄 Pages / Routes Spreadsheet Section](https://docs.google.com/spreadsheets/d/1C8jvxsDRqb4DzvSESKs9tclEQdRJ9CYKbTXQafrjL4A/edit?gid=1493879846#gid=1493879846&range=L5).
 
 
 ---
 
 
-## 🧭 Route Overview <a name="route-overview"></a>
+## 🛠️ Backend Todo List (Planned — Subject to Change) <a name="backend-todo"></a>
 
-A complete list of all defined routes, their layouts, file paths, auth requirements, and usage context can be found in the [📄 Pages / Routes Spreadsheet Section](https://docs.google.com/spreadsheets/d/1C8jvxsDRqb4DzvSESKs9tclEQdRJ9CYKbTXQafrjL4A/edit?gid=1493879846#gid=1493879846&range=L5).
+These are planned improvements and optional features for future versions. Some may not be implemented depending on time, scope, or project direction.
+
+1. **Add `createdBy` and `updatedBy` to tracked models** (Expected effort: **low**)
+   * Add audit fields to all models (via Sequelize hooks or direct assignment).
+   * Enables admin oversight, edit traceability, and future role-based systems.
+2. **Add media upload support to posts** (Expected effort: **medium**)
+   * File upload handling (using multer).
+   * Save image/video files and expose them via public URLs.
+   * Add validation, size limits, and optional UI cropping later.
+3. **Implement soft deletes (`deletedAt` columns)** (Expected effort: **medium**)
+   * Use `paranoid: true` or add a `deletedAt` column manually.
+   * Allows future moderation tools and content recovery.
+4. **Paginate likes list on posts** (Expected effort: **medium**)
+   * Add pagination support to the likes endpoint.
+   * Useful if post likes become high volume or are user-visible.
+5. **Add request validation using Zod, Yup, or class-validator** (Expected effort: **high**)
+   * Replace manual checks (`if (!title || !content)`) with schema-based validation.
+   * Improves maintainability and type safety across all endpoints.
+6. **Seeder — Profile Icons** (Expected effort: **low**)
+   * Randomize user profile icons using stored image set.
+   * Mimic real behavior by hitting the upload endpoint.
+7. **Seeder — Media Posts** (Expected effort: **medium**)
+   * Attach randomized images or videos to \~35% of posts.
+   * Split evenly between image/video (50/50 chance).
+   * Simulate user-generated media with cropping logic:
+8. **Sort comments by like count** (Expected effort: **very high**)
+   * Requires a `likeCount` cache column or subquery optimization.
+   * Needed for "Top", "Controversial", and other Reddit-style sorting.
+
+
+---
 
 
 ## 💡 Key Features <a name="key-features"></a>
@@ -216,32 +168,33 @@ This project is being developed as a feature-complete fullstack template, showin
 
 The following scope represents the intended "v1.0" release — a well-rounded foundation suitable for showcasing in portfolios, cloning for future projects, or extending into larger applications.
 
+**NOTE:** This list below was created a while ago, I still need to update it.
+
 
 ### 👤 Authentication & User
-- User registration and login
-- "Remember Me" JWT token support
-- Logout functionality
+- ~~User registration and login~~
+- ~~"Remember Me" JWT token support~~
+- ~~Logout functionality~~
 - Update account settings (username, email, password)
 - Upload and display profile image
 
 ### 📝 Content System
-- Create basic text-based posts
+- ~~Create basic text-based posts~~
 - Comment on posts
-- Like posts
-- Timestamps for post/comment creation + editing
-- View a user's posts and comments on their profile
+- ~~Like posts~~
+- ~~Timestamps for post/comment creation + editing~~
+- View a user's ~~posts~~ and comments on their profile
 
 ### 🌍 Routing & Layouts
-- Public: Landing, Login, Register (no sidebar)
-- Protected: Profile, Settings, Feed
-- Multiple layout support (public vs authenticated views)
+- ~~Public: Landing, Login, Register~~
+- ~~Protected: Profile, Settings, Explore, ViewPost, CreatePost, etc.~~
 
 ### ✅ UI Polish & Extras
 - Skeleton loaders or spinners for async pages
 - Clean route structure with layout guards
-- Centralized API handler (`api.ts`)
+- ~~Centralized API handler (`api.ts`)~~
 - SCSS modules for scoped styling
-- Form error handling with real-time validation
+- ~~Form error handling with real-time validation~~
 - Responsive header with dynamic auth state
 
 ### 💡 Post-MVP (Optional Future Features)
@@ -249,5 +202,5 @@ The following scope represents the intended "v1.0" release — a well-rounded fo
 - Private profiles or post visibility control
 - Feed filtered by followed users
 - Notifications (likes/comments)
-- Explore/search page
+- ~~Explore/search page~~
 

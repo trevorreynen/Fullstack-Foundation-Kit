@@ -1,0 +1,15 @@
+{
+  "watch": [
+    "./config",
+    "./controllers",
+    "./middleware",
+    "./models",
+    "./routes",
+    "./types",
+    "./utils",
+    "./server.ts"
+  ],
+  "ext": "ts",
+  "ignore": ["node_modules", "dist"],
+  "exec": "ts-node ./server.ts"
+}

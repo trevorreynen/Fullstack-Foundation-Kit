@@ -43,7 +43,7 @@ export const usePostStore = create<PostStoreState>((set) => ({
 
   fetchPosts: async () => {
     try {
-      const res = await api('/posts')
+      const res = await api('/posts', { method: 'GET' })
       set({ posts: res.data })
     } catch (error) {
       console.error('Failed to fetch posts:', error)

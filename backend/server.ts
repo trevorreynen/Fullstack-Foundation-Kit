@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 
 
 // Serve static frontend assets from backend
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
+app.use('/v1/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
 
 
 // Sequelize sync and start

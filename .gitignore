@@ -1,5 +1,7 @@
 **/.!other/
 **/node_modules/
 **/.env
+**/public/uploads
 
-
+# Adding for now until I am ready to utilize them. This will be jut over 1 GB of media that I will add once I get closer to my goals.
+**/seeder-assets/

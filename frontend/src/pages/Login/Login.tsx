@@ -35,12 +35,14 @@ export default function Login() {
   const handleSubmit = async (values: { identifier: string, password: string }, rememberMe: boolean) => {
     try {
       const res = await api('/auth/login', { method: 'POST', body: values })
+      const { token, user } = res.data
       const storage = rememberMe ? localStorage : sessionStorage
 
-      storage.setItem('token', res.token)
-      storage.setItem('user', JSON.stringify(res.user))
+      storage.setItem('token', token)
+      storage.setItem('user', JSON.stringify(user))
 
-      setUser(res.user)
+      console.log(user)
+      setUser(user)
       navigate('/home')
 
       return null
