@@ -3,16 +3,20 @@
 // Imports
 import { Sequelize } from 'sequelize'
 import { Request, Response } from 'express'
-import { User, Post, Comment } from '../models'
+import { User, Post, Comment, Like } from '../models'
 import { AuthRequest } from '../types/AuthRequest'
 import { resSuccess, resError } from '../utils/response'
 import { buildQueryOptions } from '../utils/queryUtils'
 import { buildPaginatedResponse } from '../utils/pagination'
+import { log } from '../utils/logger'
 
 
-// (For POST) Create post.
 export const createPost = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
 
   const { title, content } = req.body
   if (!title || !content) {
@@ -24,7 +28,6 @@ export const createPost = async (req: AuthRequest, res: Response) => {
     const newPost = await Post.create({ userId, title, content })
 
     resSuccess(res, newPost, 201)
-    res.status(201).json({ success: true, post: newPost })
     return
   } catch (err) {
     console.error(err)
@@ -35,9 +38,13 @@ export const createPost = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For GET) Get all posts.
 export const getAllPosts = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const rawSearchableFields = req.query.searchableFields as string | undefined
   const parsedSearchableFields: string[] = rawSearchableFields ? JSON.parse(rawSearchableFields) : []
   const { page, pageSize, options } = buildQueryOptions(req, parsedSearchableFields)
@@ -46,7 +53,7 @@ export const getAllPosts = async (req: AuthRequest, res: Response) => {
     {
       model: User,
       as: 'user',
-      attributes: ['id', 'username', 'profileIconUrl']
+      attributes: ['id', 'username', 'profileIconKey']
     }
   ]
 
@@ -99,10 +106,13 @@ export const getAllPosts = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For DELETE) Delete post.
 export const deletePost = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
   const postId = parseInt(req.params.postId, 10)
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
 
   try {
     const post = await Post.findByPk(postId)
@@ -111,6 +121,26 @@ export const deletePost = async (req: AuthRequest, res: Response) => {
       return
     }
 
+    // Fetch comments and replies.
+    const comments = await Comment.findAll({ where: { postId } })
+    const commentIds = comments.map(c => c.id)
+
+    const replies = await Comment.findAll({ where: { parentCommentId: commentIds } })
+
+    // Fetch likes on post, comments, and replies.
+    const postLikes = await Like.findAll({ where: { postId } })
+    const commentLikes = await Like.findAll({ where: { commentId: commentIds } })
+    const replyLikes = await Like.findAll({ where: { commentId: replies.map(r => r.id) } })
+
+    log(`[deletePost] Deleting Post ID: ${postId}`, 'info')
+    log(`[deletePost] -> Likes on Post: ${JSON.stringify(postLikes.map(l => l.toJSON()), null, 2)}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: false }, true)
+    log(`[deletePost] -> Comments: ${JSON.stringify(comments.map(c => c.toJSON()), null, 2)}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: false }, true)
+    log(`[deletePost] -> Replies: ${JSON.stringify(replies.map(r => r.toJSON()), null, 2)}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: false }, true)
+    log(`[deletePost] -> Likes on Comments: ${JSON.stringify(commentLikes.map(l => l.toJSON()), null, 2)}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: false }, true)
+    log(`[deletePost] -> Likes on Replies: ${JSON.stringify(replyLikes.map(l => l.toJSON()), null, 2)}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: false }, true)
+
+
+    // Delete post.
     await post.destroy()
 
     resSuccess(res)
@@ -124,9 +154,13 @@ export const deletePost = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For PATCH) Edit post.
 export const editPost = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const postId = parseInt(req.params.postId, 10)
   const { title, content } = req.body
 
@@ -158,9 +192,13 @@ export const editPost = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For GET) Get single post by Id.
 export const getPostById = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const { postId } = req.params
 
   try {
@@ -170,7 +208,7 @@ export const getPostById = async (req: AuthRequest, res: Response) => {
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'profileIconUrl']
+          attributes: ['id', 'username', 'profileIconKey']
         }
       ],
       attributes: {
@@ -220,7 +258,6 @@ export const getPostById = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For GET) Get posts by user Id.
 export const getUserPosts = async (req: Request, res: Response) => {
   const { username } = req.params
   const rawSearchableFields = req.query.searchableFields as string | undefined
@@ -236,11 +273,16 @@ export const getUserPosts = async (req: Request, res: Response) => {
 
     const userId = user.id
 
+    options.where = {
+      ...(options.where || {}),
+      userId
+    }
+
     options.include = [
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'username', 'profileIconUrl']
+        attributes: ['id', 'username', 'profileIconKey']
       }
     ]
 

@@ -4,12 +4,22 @@
 import { faker } from '@faker-js/faker'
 import { sequelize } from '../config/database'
 import { User, Post, Comment } from '../models'
+import { convertISO8601ToFormatted } from './seeder-utils/usefulFunctions'
+import { initLogger, log, closeLogger } from '../utils/logger'
 
 
 // ==============================< CONFIG >===============================
+initLogger('timestamp', 'seed3Comments', './Logs-Seeders')
+
+// % of users who will leave comments.
+const userSelectionPercent = 0.4
+
+// % of posts each selected user comments on.
+const postSelectionPercent = 0.3
+
 // Top-level comments per post.
-const minCommentsPerPost = 2
-const maxCommentsPerPost = 3
+const minCommentsPerPost = 1
+const maxCommentsPerPost = 2
 
 // Sentences per comment.
 const minSentencesPerComment = 1
@@ -18,14 +28,12 @@ const maxSentencesPerComment = 2
 // % chance a comment is edited.
 const percentCommentBecomesEdited = 0.1
 
-// % of users who will leave comments.
-const userSelectionPercent = 0.5
-
-// % of posts each selected user comments on.
-const postSelectionPercent = 0.3
-
 // % of users who will reply to existing comments.
 const userSelectionReplyPercent = 0.4     // fewer users reply than top-level comment
+
+// Number of top-level comments in a post to reply to.
+const minCommentToReply = 2
+const maxCommentToReply = 4
 
 // Number of replies per comment.
 const minRepliesPerComment = 1
@@ -35,9 +43,9 @@ const maxRepliesPerComment = 1
 // =========================< MAIN FUNCTION(S) >==========================
 async function seedComments() {
   const startTime = Date.now()
-  console.log(`💬 Starting comment seeding at: ${new Date(startTime).toISOString()}`)
+  log(`[start] Starting comment seeding at: ${convertISO8601ToFormatted(new Date(startTime).toISOString())}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  await sequelize.sync()
+  await sequelize.authenticate()
 
   const users = await User.findAll()
   const posts = await Post.findAll()
@@ -46,23 +54,21 @@ async function seedComments() {
     throw new Error('No users or posts found. Run user/post seeders first.')
   }
 
+
+  // 1. Top-level Comments.
   let totalTopLevelComments = 0
 
-  // Phase 1 — Top-level Comments
   const selectedUsers = users.filter(() => Math.random() < userSelectionPercent)
 
   for (const user of selectedUsers) {
-    console.log(`🗨️  User ${user.username || user.id} adding comments...`)
+    log(`  User ${user.username || user.id} adding top-level comments...`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
     const postsToCommentOn = posts.filter(() => Math.random() < postSelectionPercent)
 
     for (const post of postsToCommentOn) {
       const commentCount = faker.number.int({ min: minCommentsPerPost, max: maxCommentsPerPost })
 
       for (let i = 0; i < commentCount; i++) {
-        const sentenceCount = faker.number.int({ min: minSentencesPerComment, max: maxSentencesPerComment })
-        const content = Array.from({ length: sentenceCount }, () =>
-          faker.lorem.sentence({ min: 6, max: 12 })
-        ).join(' ')
+        const content = faker.lorem.sentences(faker.number.int({ min: minSentencesPerComment, max: maxSentencesPerComment }))
 
         const createdAt = faker.date.between({ from: post.createdAt, to: new Date() })
         const isEdited = Math.random() < percentCommentBecomesEdited
@@ -81,33 +87,32 @@ async function seedComments() {
     }
   }
 
-  console.log(`✅ Top-level comments complete: ${totalTopLevelComments} total.`)
+  log(`[success] Top-level comments complete: ${totalTopLevelComments} total.`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  // Phase 2 — Replies
-  const replyStartTime = Date.now()
+
+  // 2. Replies.
   let totalReplies = 0
 
   const freshComments = await Comment.findAll({ where: { parentCommentId: null } })
   const replyUsers = users.filter(() => Math.random() < userSelectionReplyPercent)
 
   for (const user of replyUsers) {
-    console.log(`↪️  User ${user.username || user.id} replying to comments...`)
+    log(`  User ${user.username || user.id} replying to comments...`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
     const postsToReplyOn = posts.filter(() => Math.random() < postSelectionPercent)
 
     for (const post of postsToReplyOn) {
       const postComments = freshComments.filter(comment => comment.postId === post.id && comment.userId !== user.id)
-      if (!postComments.length) continue
+      if (!postComments.length) {
+        continue
+      }
 
-      const commentsToReplyTo = faker.helpers.arrayElements(postComments, faker.number.int({ min: 4, max: 5 }))
+      const commentsToReplyTo = faker.helpers.arrayElements(postComments, faker.number.int({ min: minCommentToReply, max: maxCommentToReply }))
 
       for (const comment of commentsToReplyTo) {
         const numReplies = faker.number.int({ min: minRepliesPerComment, max: maxRepliesPerComment })
 
         for (let i = 0; i < numReplies; i++) {
-          const sentenceCount = faker.number.int({ min: minSentencesPerComment, max: maxSentencesPerComment })
-          const content = Array.from({ length: sentenceCount }, () =>
-            faker.lorem.sentence({ min: 6, max: 12 })
-          ).join(' ')
+          const content = faker.lorem.sentences(faker.number.int({ min: minSentencesPerComment, max: maxSentencesPerComment }))
 
           const createdAt = faker.date.between({ from: comment.createdAt, to: new Date() })
           const isEdited = Math.random() < percentCommentBecomesEdited
@@ -131,16 +136,20 @@ async function seedComments() {
   const endTime = Date.now()
   const duration = endTime - startTime
 
-  console.log(`✅ Nested replies complete: ${totalReplies} replies.`)
-  console.log(`🎉 Finished seeding comments.`)
-  console.log(`🧾 Total Comments: ${totalTopLevelComments + totalReplies} (Top-level: ${totalTopLevelComments}, Replies: ${totalReplies})`)
-  console.log(`🕒 Finished at: ${new Date(endTime).toISOString()} (Duration: ${duration} ms)`)
+  log(`[success] Nested replies complete: ${totalReplies} replies.`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
+  log(`[done] Finished seeding comments.`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
+  log(`[note] Total Comments: ${totalTopLevelComments + totalReplies} (Top-level: ${totalTopLevelComments}, Replies: ${totalReplies})`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
+  log(`[time] Finished at: ${convertISO8601ToFormatted(new Date(endTime).toISOString())} (Duration: ${duration} ms)`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
+  await closeLogger()
   process.exit(0)
 }
 
 seedComments().catch(err => {
-  console.error('❌ Comment seeding failed:', err)
+  (async () => {
+    log(`Comment seeding failed: ${err}`, 'error', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  process.exit(1)
+    await closeLogger()
+    process.exit(1)
+  })()
 })

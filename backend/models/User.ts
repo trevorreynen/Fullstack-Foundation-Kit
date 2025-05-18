@@ -11,7 +11,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare username: string
   declare email: string
   declare password: string
-  declare profileIconUrl: CreationOptional<string | null>
+  declare profileIconKey: CreationOptional<string | null>
 
   // Utility method to compare passwords.
   async checkPassword(inputPassword: string): Promise<boolean> {
@@ -44,10 +44,9 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    profileIconUrl: {
+    profileIconKey: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: '/uploads/default-profile-icon.png',
     },
   },
   {

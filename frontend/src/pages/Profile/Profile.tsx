@@ -9,13 +9,14 @@ import { useParams } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import { Box, Skeleton, Typography } from '@mui/material'
-import ProfileInfo from '@/components/ProfileInfo/ProfileInfo'
-import UserPosts from '@/components/UserPosts/UserPosts'
-import UserComments from '@/components/UserComments/UserComments'
+import { Box, Typography } from '@mui/material'
+import ProfileInfo from '@/components/profile/ProfileInfo'
+import UserPosts from '@/components/profile/UserPosts'
+import UserComments from '@/components/profile/UserComments'
+import FullPageLoader from '@/components/loading/FullPageLoader'
 
 // ====================< IMPORTS: TYPES >=================================
-import { UserProfile, Post } from '@/types'
+import { UserProfile, Post, PaginatedResponse, PostComment } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -28,13 +29,19 @@ import { api } from '@/utils/api'
 
 
 export default function Profile() {
+  // Extract username from route params.
   const { username } = useParams()
+
+  // Local states for fetched user and their content.
   const [viewedUser, setViewedUser] = useState<UserProfile | null>(null)
-  const [posts, setPosts] = useState<Post[] | null>(null)
+  const [postsData, setPostsData] = useState<PaginatedResponse<Post> | null>(null)
+  const [commentsData, setCommentsData] = useState<PaginatedResponse<PostComment> | null>(null)
+
+  // Local loading + error states.
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-
+  // Fetch user profile, posts, and comments on mount using username.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,8 +49,11 @@ export default function Profile() {
         const userRes = await api(`/account/username/${username}`, { method: 'GET' })
         setViewedUser(userRes.data)
 
-        const postsRes = await api(`/posts/user/${username}`, { method: 'GET' })
-        setPosts(postsRes.data.items)
+        const postsRes = await api(`/posts/user/${username}?page=1&pageSize=10`, { method: 'GET' })
+        setPostsData(postsRes.data)
+
+        const commentsRes = await api(`/comments/user/${username}?page=1&pageSize=10`, { method: 'GET' })
+        setCommentsData(commentsRes.data)
       } catch (err: any) {
         setError('User not found or failed to load.')
       } finally {
@@ -54,15 +64,9 @@ export default function Profile() {
     fetchData()
   }, [username])
 
-
+  // Handle loading and error fallbacks.
   if (loading || !viewedUser) {
-    return (
-      <Box sx={{ px: 2, py: 3 }}>
-        <Skeleton variant='rectangular' height={120} sx={{ mb: 2 }} />
-        <Skeleton variant='text' height={40} width='40%' />
-        <Skeleton variant='text' height={30} width='60%' />
-      </Box>
-    )
+    return <FullPageLoader />
   }
 
   if (error) {
@@ -70,13 +74,14 @@ export default function Profile() {
   }
 
 
+  // Render profile page.
   return (
     <Box className='ProfilePage' sx={{ display: 'flex', flexDirection: 'column', px: { xs: 0, sm: 2 }, py: { xs: 1, sm: 2 } }}>
 
 
       <ProfileInfo user={viewedUser} />
-      <UserPosts user={viewedUser} posts={posts} />
-      <UserComments user={viewedUser} />
+      <UserPosts user={viewedUser} initialData={postsData ?? { items: [], meta: { page: 1, pageSize: 10, totalPages: 1, totalItems: 0 } }} />
+      <UserComments user={viewedUser} initialData={commentsData ?? { items: [], meta: { page: 1, pageSize: 10, totalPages: 1, totalItems: 0 } }} />
 
 
     </Box>

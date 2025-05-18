@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom'
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import AuthForm from '@/components/AuthForm/AuthForm'
 import { Box } from '@mui/material'
+import AuthForm from '@/components/auth/AuthForm'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -24,18 +24,16 @@ import { api } from '@/utils/api'
 
 
 export default function Register() {
-  // 1. React router navigate hook.
+  // React router navigate hook.
   const navigate = useNavigate()
 
-  // 2. Form submit handler for registering user via API.
+  // Form submission handler for creating a new user account.
   const handleSubmit = async (values: { identifier: string, email: string, password: string, confirmPassword: string }) => {
     try {
       const res = await api('/auth/register', {
         method: 'POST',
         body: { username: values.identifier, email: values.email, password: values.password }
       })
-
-      console.log('Registration success:', res) // TODO: Remove console.log.
 
       navigate('/login')
 
@@ -46,10 +44,9 @@ export default function Register() {
   }
 
 
-  // 3. Render register page.
+  // Render register page.
   return (
-    // TODO: Decide to keep or remove custom classes when not using custom style sheets.
-    <Box className='RegisterPage' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
 
 
       <AuthForm

@@ -9,8 +9,8 @@ import { useState, useEffect } from 'react'
 
 // ====================< IMPORTS: COMPONENTS >============================
 import { Box, Typography, Stack } from '@mui/material'
-import PostCard from '@/components/Cards/PostCard'
-import PaginationBox from '@/components/common/PaginationBox'
+import PaginationBox from '@/components/shared/PaginationBox'
+import PostCard from '@/components/post/PostCard'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -26,10 +26,11 @@ import { usePostStore } from '@/stores/usePostStore'
 
 
 export default function Explore() {
-  // 1. Posts fetch + error states.
+  // Zustand post store and local error state.
   const { posts, setPosts } = usePostStore()
   const [error, setError] = useState<string | null>(null)
 
+  // Initial post fetch on mount.
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -44,13 +45,12 @@ export default function Explore() {
     fetchPosts()
   }, [setPosts])
 
-
-  // 2. Pagination states.
+  // Local pagination states.
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(15)
   const [totalPages, setTotalPages] = useState(0)
 
-  // 3. Sort query states + options.
+  // Local sort query state and available sorting options.
   const [sort, setSort] = useState<'ASC' | 'DESC'>('DESC')
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const sortByOptions = [
@@ -59,7 +59,7 @@ export default function Explore() {
     { label: 'Comment Count', value: 'commentCount' },
   ]
 
-  // 4. Search field states + options.
+  // Local search query state and available searchable fields.
   const [search, setSearch] = useState('')
   const [searchField, setSearchField] = useState<string>('title')
   const searchFields = [
@@ -68,7 +68,7 @@ export default function Explore() {
     { label: 'Title + Content', value: 'combined' }
   ]
 
-  // 4. Pagination page logic.
+  // Fetch posts on mount using pagination, sorting, and search filters.
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -78,15 +78,13 @@ export default function Explore() {
           sort,
           sortBy,
           search,
-          searchableFields: JSON.stringify(
-            Array.isArray(searchField) ? searchField : [searchField]
-          )
+          searchableFields: JSON.stringify(Array.isArray(searchField) ? searchField : [searchField])
         }
 
-        const res = await api('/posts', { method: 'GET', query })
+        const { data } = await api('/posts', { method: 'GET', query })
 
-        setPosts(res.data.items)
-        setTotalPages(res.data.meta.totalPages)
+        setPosts(data.items)
+        setTotalPages(data.meta.totalPages)
       } catch (err) {
         setError('Failed to load posts')
         console.error(err)
@@ -96,25 +94,32 @@ export default function Explore() {
     fetchPosts()
   }, [page, perPage, sort, sortBy, search, searchField, setPosts])
 
-  // 5. Loading & Errors.
+  // Handle loading and error fallbacks.
   if (error) {
-    return <Typography>{error}</Typography> // TODO: Add alert errors?
+    return <Typography>{error}</Typography>
   }
 
   if (!posts) {
-    return <Typography>Loading...</Typography> // TODO: Add skeletons.
+    return <Typography>Loading...</Typography>
   }
 
 
-  // 6. Render explore page.
+  // Render explore page.
   return (
-    // TODO: Decide to keep or remove custom classes when not using custom style sheets.
-    <Box className='Explore' sx={{ display: 'flex', flexDirection: 'column', px: { xs: 0, sm: 2 }, py: { xs: 1, sm: 2 } }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: { xs: '95%', sm: '85%', md: '70%', lg: '65%' },
+        px: { xs: 0, sm: 2 }, py: { xs: 1, sm: 2 },
+        mx: 'auto'
+      }}
+    >
 
 
       <Typography variant='h4' sx={{ width: '100%', mb: 2, textAlign: 'center' }}>Explore</Typography>
 
-      <Box className='explore-post-list' sx={{ pb: 6 }}>
+      <Box sx={{ pb: 6 }}>
         <Stack spacing={2}>
           {posts.map(post => (
             <PostCard key={post.id} post={post} viewMode='full' />
@@ -122,29 +127,42 @@ export default function Explore() {
         </Stack>
       </Box>
 
-      <PaginationBox
-        totalPages={totalPages}
-        page={page}
-        onPageChange={(_, val) => setPage(val)}
-        showPerPageSelect
-        perPage={perPage}
-        onPerPageChange={(e) => {
-          setPerPage(e.target.value)
-          setPage(1)
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          width: { xs: '95%', sm: '85%', md: '70%', lg: '65%' },
+          mx: 'auto',
+          transform: 'translateX(-50%)'
         }}
-        perPageOptions={[15, 30, 50]}
-        showFilterMenu={true}
-        sort={sort}
-        setSort={setSort}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        sortByOptions={sortByOptions}
-        search={search}
-        setSearch={setSearch}
-        searchField={searchField}
-        setSearchField={setSearchField}
-        searchFields={searchFields}
-      />
+      >
+        <PaginationBox
+          totalPages={totalPages}
+          page={page}
+          onPageChange={(_, val) => setPage(val)}
+          showPerPageSelect
+          perPage={perPage}
+          onPerPageChange={(e) => {
+            setPerPage(e.target.value)
+            setPage(1)
+          }}
+          perPageOptions={[15, 30, 50]}
+          showFilterMenu={true}
+          sort={sort}
+          setSort={setSort}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          sortByOptions={sortByOptions}
+          search={search}
+          setSearch={setSearch}
+          searchField={searchField}
+          setSearchField={setSearchField}
+          searchFields={searchFields}
+          btnSize='small'
+          iconSize='small'
+        />
+      </Box>
 
 
     </Box>

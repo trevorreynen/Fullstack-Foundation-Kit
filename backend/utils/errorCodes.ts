@@ -48,6 +48,7 @@ export const ERROR_MESSAGES = {
   ERROR_EDITING_COMMENT: 'Error editing comment',
   ERROR_DELETING_COMMENT: 'Error deleting comment',
   ERROR_FETCHING_COMMENTS: 'Error fetching comments',
+  ERROR_FETCHING_USER_COMMENTS: 'Error fetching user comments',
   ERROR_COUNTING_COMMENTS: 'Failed to count comments',
   ERROR_CREATING_REPLY: 'Error creating reply',
   ERROR_TOGGLING_LIKE: 'Error toggling like',

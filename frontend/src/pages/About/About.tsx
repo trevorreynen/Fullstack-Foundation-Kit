@@ -7,6 +7,7 @@
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Box, Typography, Link, Divider } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -17,55 +18,33 @@
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './About.scss'
 
 
 export default function About() {
-
-
+  // Render about page.
   return (
-    <div className='About'>
+    <Box sx={{ maxWidth: 800, mx: 'auto', px: 3, py: 6 }}>
 
 
-      <h2>Icon Attribution</h2>
+      <Typography variant='h4' fontWeight={600} gutterBottom>About This Project</Typography>
+      <Typography variant='body1' sx={{ mb: 3 }}>This website is a personal fullstack project designed and developed entirely from scratch using React on the frontend and Express with MySQL on the backend. The goal was to build a clean, secure, and scalable user-authenticated platform that supports posts, threaded comments, user profiles, and customizable settings.</Typography>
 
-      <p>This project may include icons sourced from the collections listed below. These are the only icon collections I have ever downloaded from, and any icons used in the project may be from one or more of these collections. However, not every icon from each collection is used.
-      </p>
+      <Divider sx={{ my: 4 }} />
 
-      <p>All icons are used in accordance with their respective licenses, which permit modification and use in commercial and non-commercial projects. Proper attribution is provided below, with links to both the original collections and their corresponding licenses.</p>
+      <Typography variant='h6' fontWeight={500} gutterBottom>Tech Stack & UI</Typography>
+      <Typography variant='body1' sx={{ mb: 2 }}>
+        The frontend is built using React and TypeScript, styled entirely with{' '}
+        <Link href='https://mui.com' target='_blank' rel='noopener noreferrer'>Material UI (MUI)</Link>{' '}
+        — a modern React UI framework that provides accessible, responsive, and consistent components.
+      </Typography>
+      <Typography variant='body1' sx={{ mb: 3 }}>Backend services are handled with Node.js, Express, Sequelize ORM, and a MySQL database. Authentication is powered by JWT, and all user-related features are protected via middleware.</Typography>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Icon Collection</th>
-            <th>License</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><a href="https://www.svgrepo.com/collection/smoothie-line-icons/">Smoothie Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/software-mansion-curved-line-icons/">Software Mansion Curved Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/software-mansion-line-icons/">Software Mansion Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#MIT">MIT License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/solar-linear-icons/">Solar Linear Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/start-universal-tiny-oval-icons/">Start Universal Tiny Oval Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#PD">Public Domain</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/uxaspects-sharp-cornered-icons/">Uxaspects Sharp Cornered Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#Apache">Apache License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/xnix-circular-interface-icons/">Xnix Circular Interface Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/dazzle-line-icons/">Dazzle Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/flexicon-sharp-interface-glyphs/">Flexicon Sharp Interface Glyphs</a></td><td><a href="https://www.svgrepo.com/page/licensing/#MIT">MIT License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/iconship-interface-icons/">Iconship Interface Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/micions-interface-icons/">Micions Interface Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/minimal-ui-icons/29">Minimal UI Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#PD">Public Domain</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/nataicons-oval-tiny-line-icons/">Nataicons Oval Tiny Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#MIT">MIT License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/sanity-interface-sharp-line-icons/">Sanity Interface Sharp Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#MIT">MIT License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/bigmug-interface-icons/">Bigmug Interface Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/calcite-sharp-line-icons/">Calcite Sharp Line Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#MIT">MIT License</a></td></tr>
-          <tr><td><a href="https://www.svgrepo.com/collection/coolicons-line-oval-icons/">Coolicons Line Oval Icons</a></td><td><a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a></td></tr>
-        </tbody>
-      </table>
+      <Divider sx={{ my: 4 }} />
+
+      <Typography variant='h6' fontWeight={500} gutterBottom>Credits & Open Source Acknowledgments</Typography>
+      <Typography variant='body2' color='text.secondary'>This project is powered by open source software. All icons, UI components, and utilities used are either part of MUI or fall under permissive licenses. Previously used icon collections have been replaced by MUI components.</Typography>
 
 
-
-
-    </div>
+    </Box>
   )
 }
-

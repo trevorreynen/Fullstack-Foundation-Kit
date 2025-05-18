@@ -25,20 +25,18 @@ interface PostStoreState {
   setPosts: (posts: PostCardProps['post'][]) => void
   updatePostLike: (postId: number, likedByUser: boolean, likeCount: number) => void
   fetchPosts: () => Promise<void>
+  fetchPostById: (postId: number) => Promise<void>
 }
 
 
 export const usePostStore = create<PostStoreState>((set) => ({
+
   posts: [],
 
   setPosts: (posts) => set({ posts }),
 
   updatePostLike: (postId, likedByUser, likeCount) => set((state) => ({
-    posts: state.posts.map(post =>
-      post.id === postId
-        ? { ...post, likedByUser, likeCount }
-        : post
-    )
+    posts: state.posts.map(post => post.id === postId ? { ...post, likedByUser, likeCount } : post)
   })),
 
   fetchPosts: async () => {
@@ -48,6 +46,18 @@ export const usePostStore = create<PostStoreState>((set) => ({
     } catch (error) {
       console.error('Failed to fetch posts:', error)
     }
-  }
+  },
+
+  fetchPostById: async (postId) => {
+    try {
+      const { data } = await api(`/posts/${postId}`, { method: 'GET' })
+      set((state) => ({
+        posts: state.posts.map((p) => (p.id === postId ? data.post : p))
+      }))
+    } catch (err) {
+      console.error('Failed to fetch post by ID:', err)
+    }
+  },
+
 }))
 

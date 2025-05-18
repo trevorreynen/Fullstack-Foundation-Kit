@@ -11,7 +11,6 @@ import { resSuccess, resError } from '../utils/response'
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{5,}$/
 
 
-// (For POST) Sign in to account.
 export const loginUser = async (req: Request, res: Response) => {
   // identifier = username or email as intended
   const { identifier, password } = req.body
@@ -46,7 +45,7 @@ export const loginUser = async (req: Request, res: Response) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        profileIconUrl: user.profileIconUrl,
+        profileIconKey: user.profileIconKey,
       }
     })
     return
@@ -59,7 +58,6 @@ export const loginUser = async (req: Request, res: Response) => {
 }
 
 
-// (For GET) Get authenticated user.
 export const getAuthenticatedUser = async (req: Request, res: Response) => {
   try {
     const user = req.user
@@ -72,7 +70,7 @@ export const getAuthenticatedUser = async (req: Request, res: Response) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      profileIconUrl: user.profileIconUrl,
+      profileIconKey: user.profileIconKey,
     })
     return
   } catch (err) {
@@ -84,7 +82,6 @@ export const getAuthenticatedUser = async (req: Request, res: Response) => {
 }
 
 
-// (For POST) Register a user.
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body
   if (!username || !email || !password) {
@@ -129,34 +126,3 @@ export const registerUser = async (req: Request, res: Response) => {
     return
   }
 }
-
-
-// (For POST) Upload profile image.
-export const uploadProfileImage = async (req: Request, res: Response) => {
-  try {
-    const file = req.file
-    if (!file) {
-      resError(400, res, 'INVALID_FILE')
-      return
-    }
-
-    const user = req.user
-    if (!user) {
-      resError(401, res, 'NOT_AUTHENTICATED')
-      return
-    }
-
-    const filePath = `/uploads/${file.filename}`
-
-    await user.update({ profileIconUrl: filePath })
-
-    resSuccess(res, { profileIconUrl: filePath })
-    return
-  } catch (err) {
-    console.error(err)
-
-    resError(500, res, 'ERROR_UPLOADING_IMAGE')
-    return
-  }
-}
-

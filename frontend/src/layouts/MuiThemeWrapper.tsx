@@ -12,6 +12,7 @@ import { ReactNode, useMemo } from 'react'
 // ====================< IMPORTS: TYPES >=================================
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { useGlobalUI } from '@/hooks/useGlobalUI'
 
 // ====================< IMPORTS: UTILS >=================================
@@ -20,18 +21,15 @@ import { useGlobalUI } from '@/hooks/useGlobalUI'
 
 // ====================< IMPORTS: STYLES >================================
 import { CssBaseline } from '@mui/material'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 
 export default function MuiThemeWrapper({ children }: { children: ReactNode }) {
   // Grab theme selection from contexts/hooks.
   const { theme } = useGlobalUI()
 
-
   const muiTheme = useMemo(() => createTheme({
     palette: { mode: theme }
   }), [theme])
-
 
   return (
     <ThemeProvider theme={muiTheme}>

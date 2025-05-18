@@ -10,6 +10,19 @@ import {
 */
 
 
+
+
+export type PaginatedResponse<T> = {
+  items: T[]
+  meta: {
+    page: number
+    pageSize: number
+    totalPages: number
+    totalItems: number
+  }
+}
+
+
 // =======================================================================
 // ============================<  Auth Form  >============================
 // =======================================================================
@@ -54,7 +67,7 @@ export interface PostCardProps {
     user?: {
       id?: number
       username?: string
-      profileIconUrl?: string
+      profileIconKey?: string
     }
   },
   viewMode?: 'forum' | 'full'
@@ -74,9 +87,10 @@ export interface PostComment {
   postTitle?: string
   likedByUser?: boolean
   likeCount?: number
+  parentCommentId?: number
   user: {
     username: string
-    profileIconUrl?: string
+    profileIconKey?: string
   }
   replies?: PostComment[]
 }
@@ -100,7 +114,7 @@ export type DropdownItem =
   | {
       type: 'header'
       username: string
-      profileIconUrl: string | null
+      profileIconKey: string | null
       onViewProfile: () => void
     }
   | {
@@ -134,7 +148,7 @@ export interface UserProfile {
   id: number
   username: string
   email: string
-  profileIconUrl?: string
+  profileIconKey?: string
 }
 
 

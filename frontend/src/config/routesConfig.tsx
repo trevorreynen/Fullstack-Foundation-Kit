@@ -12,7 +12,6 @@ const About = lazy(() => import('@/pages/About/About'))
 const CreatePost = lazy(() => import('@/pages/CreatePost/CreatePost'))
 const Error404 = lazy(() => import('@/pages/Error404/Error404'))
 const Explore = lazy(() => import('@/pages/Explore/Explore'))
-const Home = lazy(() => import('@/pages/Home/Home'))
 const Landing = lazy(() => import('@/pages/Landing/Landing'))
 const Login = lazy(() => import('@/pages/Login/Login'))
 const Profile = lazy(() => import('@/pages/Profile/Profile'))
@@ -21,8 +20,8 @@ const Settings = lazy(() => import('@/pages/Settings/Settings'))
 const ViewPost = lazy(() => import('@/pages/ViewPost/ViewPost'))
 
 // ====================< IMPORTS: COMPONENTS >============================
-import DelayedFallback from '@/components/Loading/DelayedFallback'
-import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
+import FullPageLoader from '@/components/loading/FullPageLoader'
+import ProtectedRoute from '@/components/layout/ProtectedRoute'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -34,7 +33,7 @@ import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
 
 
 const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element | null>) => (
-  <Suspense fallback={<DelayedFallback delay={200} />}>
+  <Suspense fallback={<FullPageLoader />}>
     <Component />
   </Suspense>
 )
@@ -47,7 +46,6 @@ const mainLayoutRoutes: RouteObject = {
     { path: 'login', element: withSuspense(Login) },
     { path: 'register', element: withSuspense(Register) },
     { path: 'about', element: withSuspense(About) },
-    { path: 'home', element: <ProtectedRoute>{withSuspense(Home)}</ProtectedRoute> },
     { path: 'settings', element: <ProtectedRoute>{withSuspense(Settings)}</ProtectedRoute> },
     { path: 'create', element: <ProtectedRoute>{withSuspense(CreatePost)}</ProtectedRoute> },
     { path: 'explore', element: <ProtectedRoute>{withSuspense(Explore)}</ProtectedRoute> },

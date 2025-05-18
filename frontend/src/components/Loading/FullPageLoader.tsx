@@ -1,4 +1,4 @@
-// import FullPageLoader from '@/components/Loading/FullPageLoader'
+// import FullPageLoader from '@/components/loading/FullPageLoader'
 
 // ====================< IMPORTS: REACT >=================================
 
@@ -7,6 +7,7 @@
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Box, CircularProgress } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -17,13 +18,13 @@
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './FullPageLoader.scss'
 
 
 export default function FullPageLoader() {
+  // Render full page loader.
   return (
-    <div className='FullPageLoader'>
-      <div className='loader-spinner' />
-    </div>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+      <CircularProgress />
+    </Box>
   )
 }

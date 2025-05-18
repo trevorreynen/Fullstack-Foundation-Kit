@@ -9,9 +9,9 @@ import { requireAuth } from '../middleware/requireAuth'
 const router = express.Router()
 
 
-router.post('/toggle',           requireAuth, toggleLike)         // POST: Toggle a post or comment like on or off.
-router.get('/post/:postId',                   getPostLikes)       // GET: Get total likes on post.
-router.get('/user/post/:postId',              checkUserLikedPost) // GET: Check if user liked post.
+router.post('/toggle',           requireAuth, toggleLike)         // POST: Toggles a like on a post or comment for the authenticated user.
+router.get('/post/:postId',                   getPostLikes)       // GET: Returns the total number of likes for a specific post.
+router.get('/user/post/:postId',              checkUserLikedPost) // GET: Checks whether a specific user has liked a given post.
 
 
 export default router

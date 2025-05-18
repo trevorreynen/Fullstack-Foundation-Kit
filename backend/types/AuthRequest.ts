@@ -7,5 +7,6 @@ import { JWTPayloadUser } from './JWTPayloadUser'
 
 export type AuthRequest = Request & {
   authUser?: JWTPayloadUser
+  profileIconKey?: string
 }
 

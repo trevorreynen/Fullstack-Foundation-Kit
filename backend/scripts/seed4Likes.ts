@@ -4,11 +4,15 @@
 import { faker } from '@faker-js/faker'
 import { sequelize } from '../config/database'
 import { User, Post, Comment, Like } from '../models'
+import { convertISO8601ToFormatted } from './seeder-utils/usefulFunctions'
+import { initLogger, log, closeLogger } from '../utils/logger'
 
 
 // ==============================< CONFIG >===============================
+initLogger('timestamp', 'seed4Likes', './Logs-Seeders')
+
 // % of users selected to like
-const userSelectionPercent = 0.6
+const userSelectionPercent = 0.65
 
 // % of posts liked per selected user
 const postLikePercent = 0.3
@@ -20,23 +24,23 @@ const commentLikePercent = 0.15
 const popularityBiasPercent = 0.5
 
 // Nested replies to like per liked comment
-const nestedReplyLikesMin = 0
-const nestedReplyLikesMax = 1
+const nestedReplyLikesMin = 1
+const nestedReplyLikesMax = 2
 
 
 // =========================< MAIN FUNCTION(S) >==========================
 async function seedLikes() {
   const startTime = Date.now()
-  console.log(`👍 Starting likes seeding at: ${new Date(startTime).toISOString()}`)
+  log(`[start] Starting likes seeding at: ${convertISO8601ToFormatted(new Date(startTime).toISOString())}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  await sequelize.sync()
+  await sequelize.authenticate()
 
   const users = await User.findAll()
   const posts = await Post.findAll()
   const comments = await Comment.findAll({ include: [{ model: Comment, as: 'replies' }] })
 
   if (!users.length || !posts.length) {
-    throw new Error('No users or posts found.')
+    throw new Error('[error] No users or posts found.')
   }
 
   const selectedUsers = users.filter(() => Math.random() < userSelectionPercent)
@@ -46,7 +50,7 @@ async function seedLikes() {
 
   for (const user of selectedUsers) {
     const userStart = Date.now()
-    console.log(`\n🙋‍♂️ User ${user.username || user.id} starting likes at ${new Date(userStart).toISOString()}`)
+    log(`\n  User ${user.username} starting likes at ${convertISO8601ToFormatted(new Date(userStart).toISOString())}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
     const postsToLike = posts.filter(() => Math.random() < postLikePercent)
 
@@ -59,7 +63,9 @@ async function seedLikes() {
       }
 
       const postComments = comments.filter(c => c.postId === post.id && c.parentCommentId === null)
-      if (!postComments.length) continue
+      if (!postComments.length) {
+        continue
+      }
 
       const commentsToLike = postComments.filter(() => Math.random() < commentLikePercent)
 
@@ -80,7 +86,9 @@ async function seedLikes() {
           const repliesToLike = faker.helpers.arrayElements(replies, faker.number.int({ min: nestedReplyLikesMin, max: nestedReplyLikesMax }))
 
           for (const reply of repliesToLike) {
-            if (!reply?.id) continue
+            if (!reply?.id) {
+              continue
+            }
 
             const replyKey = `${user.id}-comment-${reply.id}`
             if (!likeCache.has(replyKey)) {
@@ -95,21 +103,25 @@ async function seedLikes() {
 
     const userEnd = Date.now()
 
-    console.log(`✅ User ${user.username || user.id} finished at ${new Date(userEnd).toISOString()} (Duration: ${userEnd - userStart} ms)`)
+    log(`[success] User ${user.username} finished at ${convertISO8601ToFormatted(new Date(userEnd).toISOString())} (Duration: ${userEnd - userStart} ms)`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
   }
 
   const endTime = Date.now()
   const duration = endTime - startTime
 
-  console.log(`\n🎯 Finished seeding likes for ${selectedUsers.length} users.`)
-  console.log(`🧾 Total Likes Created: ${totalLikes}`)
-  console.log(`🕒 Finished at: ${new Date(endTime).toISOString()} (Duration: ${duration} ms)`)
+  log(`\n[done] Finished seeding likes for ${selectedUsers.length} users.`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
+  log(`[note] Total Likes Created: ${totalLikes}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
+  log(`[time] Finished at: ${convertISO8601ToFormatted(new Date(endTime).toISOString())} (Duration: ${duration} ms)`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
+  await closeLogger()
   process.exit(0)
 }
 
 seedLikes().catch(err => {
-  console.error('❌ Likes seeding failed:', err)
+  (async () => {
+    log(`Likes seeding failed: ${err}`, 'error', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  process.exit(1)
+    await closeLogger()
+    process.exit(1)
+  })()
 })

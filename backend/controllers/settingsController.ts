@@ -7,9 +7,12 @@ import { AuthRequest } from '../types/AuthRequest'
 import { resSuccess, resError } from '../utils/response'
 
 
-// (For GET) Get user settings.
 export const getUserSettings = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
 
   try {
     const settings = await UserSettings.findOne({ where: { userId } })
@@ -29,9 +32,12 @@ export const getUserSettings = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For PATCH) Update user settings.
 export const updateUserSettings = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
 
   const { uiTheme, notificationsEnabled, customNote } = req.body
 
@@ -63,3 +69,4 @@ export const updateUserSettings = async (req: AuthRequest, res: Response) => {
     return
   }
 }
+

@@ -3,20 +3,14 @@
 // ====================< IMPORTS: REACT >=================================
 import { useRoutes, useLocation } from 'react-router-dom'
 
-// ====================< IMPORTS: LAYOUT >================================
-
 // ====================< IMPORTS: PAGES >=================================
 import CreatePost from '@/pages/CreatePost/CreatePost'
 
 // ====================< IMPORTS: COMPONENTS >============================
-import FullPageLoader from '@/components/Loading/FullPageLoader'
-
-// ====================< IMPORTS: TYPES >=================================
+import FullPageLoader from '@/components/loading/FullPageLoader'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useUser } from '@/hooks/useUser'
-
-// ====================< IMPORTS: UTILS >=================================
 
 // ====================< IMPORTS: OTHER >=================================
 import { useRoutesConfig } from '@/config/routesConfig'
@@ -41,6 +35,7 @@ export default function App() {
   }
 
 
+  // Render app.
   return (
     <>
       {routeElements}

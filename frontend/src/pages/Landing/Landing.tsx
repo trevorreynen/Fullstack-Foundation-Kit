@@ -7,6 +7,7 @@
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
+import { Box, Typography } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -20,15 +21,14 @@
 
 
 export default function Landing() {
+  // Render landing page.
   return (
-    <div className='Landing'>
+    <Box>
 
 
-      <div className='content'>
-        <p>Hello! This is the Landing Page!</p>
-      </div>
+      <Typography>This is the landing page!</Typography>
 
 
-    </div>
+    </Box>
   )
 }

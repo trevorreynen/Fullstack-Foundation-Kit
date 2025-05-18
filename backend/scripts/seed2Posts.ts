@@ -4,60 +4,59 @@
 import { faker } from '@faker-js/faker'
 import { sequelize } from '../config/database'
 import { User, Post } from '../models'
+import { convertISO8601ToFormatted } from './seeder-utils/usefulFunctions'
+import { initLogger, log, closeLogger } from '../utils/logger'
 
 
 // ==============================< CONFIG >===============================
-// Number of posts per user
-const minPosts = 5
-const maxPosts = 15
+initLogger('timestamp', 'seed2Posts', './Logs-Seeders')
+
+// Number of posts per user.
+const minPosts = 10
+const maxPosts = 40
 
 // Post title length (in sentences).
-// Assume 1 sentence = ~5.5 and 2 = ~12.
-const minTitleSentences = 5
-const maxTitleSentences = 12
+const minTitleSentences = 1
+const maxTitleSentences = 3
 
-// Paragraph config (post body)
+// Paragraph config (post body).
 const minParagraphs = 2
 const maxParagraphs = 5
-const minSentencesPerParagraph = 2
-const maxSentencesPerParagraph = 5
+const minSentencesPerParagraph = 3
+const maxSentencesPerParagraph = 8
 
-// % chance a post gets edited
+// % chance a post gets edited.
 const percentPostBecomesEdited = 0.2
 
 // Date randomize config.
 const dateA = new Date('2020-01-01T00:00:00')
-const dateB = new Date('2025-05-03T23:59:59')
-
+const dateB = new Date('2025-05-11T23:59:59')
 
 // =========================< MAIN FUNCTION(S) >==========================
 async function seedPosts() {
   const startTime = Date.now()
-  console.log(`🚀 Starting post seeding at: ${new Date(startTime).toISOString()}`)
+  log(`[start] Starting post seeding at: ${convertISO8601ToFormatted(new Date(startTime).toISOString())}`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  await sequelize.sync()
+  await sequelize.authenticate()
 
   const users = await User.findAll()
   if (!users.length) {
-    throw new Error('No users found. Run seedUsers.ts first.')
+    throw new Error('[error] No users found. Run seedUsers.ts first.')
   }
 
   let totalPostsCreated = 0
 
   for (const user of users) {
     const numPosts = faker.number.int({ min: minPosts, max: maxPosts })
-    console.log(`📝 Creating ${numPosts} posts for user ${user.username || user.id}...`)
+    log(`Creating ${numPosts} posts for user ${user.username || user.id}...`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
     for (let i = 0; i < numPosts; i++) {
-      const title = faker.lorem.sentence({ min: minTitleSentences, max: maxTitleSentences }).slice(0, 100)
+      const title = faker.lorem.sentences(faker.number.int({ min: minTitleSentences, max: maxTitleSentences })).slice(0, 100)
 
       const numParagraphs = faker.number.int({ min: minParagraphs, max: maxParagraphs })
       const content = Array.from({ length: numParagraphs }, () => {
         const sentenceCount = faker.number.int({ min: minSentencesPerParagraph, max: maxSentencesPerParagraph })
-
-        return Array.from({ length: sentenceCount }, () =>
-          faker.lorem.sentence({ min: 6, max: 14 })  // Cleaner English-like sentences
-        ).join(' ')
+        return faker.lorem.sentences(sentenceCount)
       }).join('\n\n')
 
       const createdAt = faker.date.between({ from: dateA, to: dateB })
@@ -79,14 +78,18 @@ async function seedPosts() {
   const endTime = Date.now()
   const duration = endTime - startTime
 
-  console.log(`✅ Finished seeding ${totalPostsCreated} posts for ${users.length} users.`)
-  console.log(`🕒 Finished at: ${new Date(endTime).toISOString()} (Duration: ${duration} ms)`)
+  log(`[success] Finished seeding ${totalPostsCreated} posts for ${users.length} users.`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
+  log(`[time] Finished at: ${convertISO8601ToFormatted(new Date(endTime).toISOString())} (Duration: ${duration} ms)`, 'log', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
+  await closeLogger()
   process.exit(0)
 }
 
 seedPosts().catch((err) => {
-  console.error('❌ Post seeding failed:', err)
+  (async () => {
+    log(`Post seeding failed: ${err}`, 'error', undefined, { showDate: true, showTime: true, showAmPm: true }, { showDate: true, showTime: true, showAmPm: true })
 
-  process.exit(1)
+    await closeLogger()
+    process.exit(1)
+  })()
 })

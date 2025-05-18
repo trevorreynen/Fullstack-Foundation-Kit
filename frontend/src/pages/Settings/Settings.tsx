@@ -1,49 +1,119 @@
 // import Settings from '@/pages/Settings/Settings'
 
 // ====================< IMPORTS: REACT >=================================
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
 // ====================< IMPORTS: PAGES >=================================
 
 // ====================< IMPORTS: COMPONENTS >============================
-import SettingsTabs from '@/components/Settings/SettingsTabs/SettingsTabs'
-import ThemeSettings from '@/components/Settings/ThemeSettings/ThemeSettings'
-import ProfileImageSettings from '@/components/Settings/ProfileImageSettings/ProfileImageSettings'
-import NotificationSettings from '@/components/Settings/NotificationSettings/NotificationSettings'
-import UserNotes from '@/components/Settings/UserNotes/UserNotes'
+import { Box, Divider, Tab, Tabs, Typography } from '@mui/material'
+import AccountSettings from '@/components/settings/AccountSettings'
+import NotificationSettings from '@/components/settings/NotificationSettings'
+import ProfileImageSettings from '@/components/settings/ProfileImageSettings'
+import ThemeSettings from '@/components/settings/ThemeSettings'
+import UserNotes from '@/components/settings/UserNotes'
+import FullPageLoader from '@/components/loading/FullPageLoader'
 
 // ====================< IMPORTS: TYPES >=================================
-import { TABS, Tab } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
 // ====================< IMPORTS: UTILS >=================================
+import { api } from '@/utils/api'
 
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-import './Settings.scss'
+
+
+function TabPanel({ children, value, index }: { children: React.ReactNode, value: number, index: number }) {
+  return value === index ? <Box sx={{ mt: 3 }}>{children}</Box> : null
+}
 
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState<Tab>('Theme')
+  // Local tab state.
+  const [activeTab, setActiveTab] = useState(0)
+
+  // Local loading state.
+  const [loading, setLoading] = useState(true)
+
+  // Local settings state.
+  const [settings, setSettings] = useState<{
+    theme: string
+    notificationsEnabled: boolean
+    customNote: string
+  } | null>(null)
+
+  // Fetch settings on load
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await api('/settings', { method: 'GET' })
+        setSettings(res.data)
+      } catch (err) {
+        console.error('Failed to fetch settings:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSettings()
+  }, [])
+
+  // Handle changing tab.
+  const handleTabChange = (_: any, newValue: number) => {
+    setActiveTab(newValue)
+  }
+
+  // Handle loading and invalid settings fallbacks.
+  if (loading || !settings) {
+    return <FullPageLoader />
+  }
 
 
+  // Render settings page.
   return (
-    <div className='Settings'>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: { xs: '95%', sm: '85%', md: '70%', lg: '65%' },
+        px: { xs: 0, sm: 2 }, py: { xs: 1, sm: 2 },
+        mx: 'auto'
+      }}
+    >
 
 
-      <SettingsTabs tabs={TABS} activeTab={activeTab} onTabClick={setActiveTab} />
-      <div className='settings-panel'>
-        {activeTab === 'Theme' && <ThemeSettings />}
-        {activeTab === 'Profile Icon' && <ProfileImageSettings />}
-        {activeTab === 'Notifications' && <NotificationSettings />}
-        {activeTab === 'Notes' && <UserNotes />}
-      </div>
+      <Typography variant='h5' fontWeight={600} sx={{ mb: 2 }}>Settings</Typography>
+
+      <Divider />
+
+      <Tabs
+        value={activeTab}
+        onChange={handleTabChange}
+        variant='scrollable'
+        scrollButtons='auto'
+        sx={{ mt: 2 }}
+      >
+        <Tab label='Account' />
+        <Tab label='Profile Image' />
+        <Tab label='Notifications' />
+        <Tab label='Theme' />
+        <Tab label='Notes' />
+      </Tabs>
+
+      <Divider />
+
+      <TabPanel value={activeTab} index={0}><AccountSettings /></TabPanel>
+      <TabPanel value={activeTab} index={1}><ProfileImageSettings /></TabPanel>
+      <TabPanel value={activeTab} index={2}><NotificationSettings initialNotifications={settings?.notificationsEnabled ?? true} /></TabPanel>
+      <TabPanel value={activeTab} index={3}><ThemeSettings /></TabPanel>
+      <TabPanel value={activeTab} index={4}><UserNotes initialNote={settings.customNote} /></TabPanel>
 
 
-    </div>
+    </Box>
   )
 }

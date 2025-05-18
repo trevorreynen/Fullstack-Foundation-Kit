@@ -11,7 +11,7 @@ export interface User {
   id: number
   username: string
   email: string
-  profileIconUrl: string | null
+  profileIconKey: string | null
 }
 
 
@@ -37,7 +37,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token')
     const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user')
 
-    // 1️⃣ If we have both token & stored user, hydrate immediately
+    // If we have both token & stored user, hydrate immediately.
     if (token && storedUser) {
       try {
         setUser(JSON.parse(storedUser))
@@ -50,13 +50,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    // 2️⃣ No token? nothing to fetch
     if (!token) {
       setLoading(false)
       return
     }
 
-    // 3️⃣ We have a token but no stored user: validate it
+    // We have a token but no stored user: validate it
     api('/auth/me', { method: 'GET' })
       .then((me: User) => {
         setUser(me)

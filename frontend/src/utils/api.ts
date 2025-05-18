@@ -9,7 +9,11 @@ interface ApiOptions {
   body?: any
   headers?: Record<string, string>
   queryParams?: Record<string, string | number | boolean>
-  query?: Record<string, string | number | boolean> // alias for queryParams for consistency
+  query?: Record<string, string | number | boolean>
+}
+
+interface ApiError extends Error {
+  data?: any
 }
 
 
@@ -47,8 +51,9 @@ export async function api(endpoint: string, { method, body, headers = {}, queryP
   const data = isJson ? await response.json() : await response.text()
 
   if (!response.ok) {
-    const errMsg = typeof data === 'string' ? data : data?.error || `Request failed: ${response.status}`
-    throw new Error(errMsg)
+    const err = new Error(typeof data === 'string' ? data : data?.error?.message) as ApiError
+    err.data = data
+    throw err
   }
 
   return data

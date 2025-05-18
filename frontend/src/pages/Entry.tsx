@@ -11,19 +11,9 @@ import MuiThemeWrapper from '@/layouts/MuiThemeWrapper'
 // ====================< IMPORTS: PAGES >=================================
 import App from '@/pages/App'
 
-// ====================< IMPORTS: COMPONENTS >============================
-
-// ====================< IMPORTS: TYPES >=================================
-
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { GlobalUIProvider } from '@/contexts/GlobalUIContext'
 import { UserProvider } from '@/contexts/UserContext'
-
-// ====================< IMPORTS: UTILS >=================================
-
-// ====================< IMPORTS: OTHER >=================================
-
-// ====================< IMPORTS: STYLES >================================
 
 
 const root = document.getElementById('root')

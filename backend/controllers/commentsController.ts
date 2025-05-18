@@ -1,17 +1,23 @@
 // ./backend/routes/comments.ts
 
 // Imports
+import { Sequelize } from 'sequelize'
 import { Request, Response } from 'express'
-import { Post, Comment, Like } from '../models'
+import { User, Post, Comment, Like } from '../models'
 import { AuthRequest } from '../types/AuthRequest'
 import { resSuccess, resError } from '../utils/response'
 import { buildQueryOptions } from '../utils/queryUtils'
 import { buildPaginatedResponse } from '../utils/pagination'
+import { log } from '../utils/logger'
 
 
-// (For POST) Create comment.
 export const createComment = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const { postId, content } = req.body
   if (!postId || !content) {
     resError(400, res, 'MISSING_REQUIRED_FIELDS')
@@ -32,9 +38,13 @@ export const createComment = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For PATCH) Edit comment.
 export const editComment = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const commentId = parseInt(req.params.commentId, 10)
   const { content } = req.body
 
@@ -59,10 +69,13 @@ export const editComment = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For DELETE) Delete comment.
 export const deleteComment = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
   const commentId = parseInt(req.params.commentId, 10)
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
 
   try {
     const comment = await Comment.findByPk(commentId)
@@ -79,6 +92,25 @@ export const deleteComment = async (req: AuthRequest, res: Response) => {
       return
     }
 
+    // Log the comment itself.
+    log(`[deleteComment] Deleting Comment ID: ${comment.id}`, 'info')
+    log(`[deleteComment] -> Comment: ${JSON.stringify(comment.toJSON(), null, 2)}`, 'log')
+
+    // Log likes on the comment.
+    const commentLikes = await Like.findAll({ where: { commentId } })
+    log(`[deleteComment] -> Likes on Comment: ${JSON.stringify(commentLikes.map(l => l.toJSON()), null, 2)}`, 'log')
+
+    // If its a top-level comment (not a reply), also log child replies + their likes.
+    if (comment.parentCommentId === null) {
+      const replies = await Comment.findAll({ where: { parentCommentId: comment.id } })
+      log(`[deleteComment] -> Replies: ${JSON.stringify(replies.map(r => r.toJSON()), null, 2)}`, 'log')
+
+      const replyIds = replies.map(r => r.id)
+      const replyLikes = await Like.findAll({ where: { commentId: replyIds } })
+      log(`[deleteComment] -> Likes on Replies: ${JSON.stringify(replyLikes.map(l => l.toJSON()), null, 2)}`, 'log')
+    }
+
+    // Delete comment.
     await comment.destroy()
 
     resSuccess(res)
@@ -92,7 +124,6 @@ export const deleteComment = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For GET) Get comment count by post Id.
 export const getCommentCountByPostId = async (req: Request, res: Response) => {
   const { postId } = req.params
 
@@ -110,8 +141,13 @@ export const getCommentCountByPostId = async (req: Request, res: Response) => {
 }
 
 
-// (For GET) Get comments by post Id.
-export const getCommentsForPost = async (req: Request, res: Response) => {
+export const getCommentsForPost = async (req: AuthRequest, res: Response) => {
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const postId = req.params.postId
 
   try {
@@ -151,7 +187,19 @@ export const getCommentsForPost = async (req: Request, res: Response) => {
           as: 'replies',
           separate: true,
           required: false,
-          order: [['createdAt', 'ASC']]
+          order: [['createdAt', 'ASC']],
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: ['id', 'username', 'profileIconKey']
+            }
+          ]
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'profileIconKey']
         }
       ],
     })
@@ -159,12 +207,22 @@ export const getCommentsForPost = async (req: Request, res: Response) => {
     // Step 5: Add like counts manually
     for (const comment of topLevelComments) {
       const likeCount = await Like.count({ where: { commentId: comment.id } })
-      ;(comment as any).likeCount = likeCount
+      ;(comment as any).dataValues.likeCount = likeCount
+
+      if (userId) {
+        const liked = await Like.findOne({ where: { commentId: comment.id, userId } })
+        ;(comment as any).dataValues.likedByUser = !!liked
+      }
 
       const replies = (comment as any).replies || []
       for (const reply of replies) {
         const replyLikeCount = await Like.count({ where: { commentId: reply.id } })
-        ;(reply as any).likeCount = replyLikeCount
+        ;(reply as any).dataValues.likeCount = replyLikeCount
+
+        if (userId) {
+          const likedReply = await Like.findOne({ where: { commentId: reply.id, userId } })
+          ;(reply as any).dataValues.likedByUser = !!likedReply
+        }
       }
     }
 
@@ -186,11 +244,14 @@ export const getCommentsForPost = async (req: Request, res: Response) => {
 }
 
 
-// (For POST) Reply to a comment.
 export const createReply = async (req: AuthRequest, res: Response) => {
-  const { postId, parentCommentId, content } = req.body
-  const userId = req.user!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
 
+  const { postId, parentCommentId, content } = req.body
   if (!postId || !parentCommentId || !content?.trim()) {
     resError(400, res, 'MISSING_REQUIRED_FIELDS')
     return
@@ -224,6 +285,70 @@ export const createReply = async (req: AuthRequest, res: Response) => {
     console.error(err)
 
     resError(500, res, 'ERROR_CREATING_REPLY')
+    return
+  }
+}
+
+
+export const getUserComments = async (req: Request, res: Response) => {
+  const { username } = req.params
+  const rawSearchableFields = req.query.searchableFields as string | undefined
+  const parsedSearchableFields: string[] = rawSearchableFields ? JSON.parse(rawSearchableFields) : []
+  const { page, pageSize, options } = buildQueryOptions(req, parsedSearchableFields)
+
+  try {
+    const user = await User.findOne({ where: { username } })
+    if (!user) {
+      resError(404, res, 'USER_NOT_FOUND')
+      return
+    }
+
+    const userId = user.id
+
+    options.where = {
+      ...(options.where || {}),
+      userId
+    }
+
+    options.include = [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'username', 'profileIconKey']
+      },
+      {
+        model: Post,
+        as: 'post',
+        attributes: ['id', 'title']
+      }
+    ]
+
+    options.attributes = {
+      include: [
+        [
+          Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM Likes
+            WHERE Likes.commentId = Comment.id
+          )`),
+          'likeCount'
+        ]
+      ]
+    }
+
+    options.group = ['Comment.id', 'user.id', 'post.id']
+
+    const { count, rows } = await Comment.findAndCountAll(options)
+
+    const total = Array.isArray(count) ? count.length : count
+    const data = buildPaginatedResponse(rows, total, page, pageSize)
+
+    resSuccess(res, data)
+    return
+  } catch (err) {
+    console.error(err)
+
+    resError(500, res, 'ERROR_FETCHING_USER_COMMENTS')
     return
   }
 }

@@ -40,7 +40,7 @@ I may revisit this structure in a later branch to demonstrate a more modular pat
 
 ## 📊 Tracking & Feature Overview <a name="tracking-and-feature-overview"></a>
 
-My [detailed project spreadsheet](https://docs.google.com/spreadsheets/d/1C8jvxsDRqb4DzvSESKs9tclEQdRJ9CYKbTXQafrjL4A/edit?usp=sharing) tracks all features, components, models, endpoints, and logic across frontend and backend. This includes:
+My [detailed project spreadsheet](https://docs.google.com/spreadsheets/d/1U4YSO7CYDS4sMRZwCkI9x56IB4E8e_7q37nFvdIfYUA/edit?usp=sharing) tracks all features, components, models, endpoints, and logic across frontend and backend. This includes:
 
 - Frontend: pages, layouts, components, hooks, utils, contexts
 - Backend: models, routes, controllers, middleware, jobs
@@ -60,14 +60,6 @@ This spreadsheet allows me to:
 - Avoid scattered tools or one-off notes
 
 Everything from components, routes, models, and endpoints to feature planning and bug triage is accounted for. Possibly will expand the spreadsheet in the future but for now this works well.
-
-
----
-
-
-## 🧭 Route Overview <a name="route-overview"></a>
-
-A complete list of all defined routes, their layouts, file paths, auth requirements, and usage context can be found in the [📄 Pages / Routes Spreadsheet Section](https://docs.google.com/spreadsheets/d/1C8jvxsDRqb4DzvSESKs9tclEQdRJ9CYKbTXQafrjL4A/edit?gid=1493879846#gid=1493879846&range=L5).
 
 
 ---

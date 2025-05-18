@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 
 // ====================< IMPORTS: COMPONENTS >============================
 import Box from '@mui/material/Box'
-import AuthForm from '@/components/AuthForm/AuthForm'
+import AuthForm from '@/components/auth/AuthForm'
 
 // ====================< IMPORTS: TYPES >=================================
 
@@ -25,13 +25,13 @@ import { api } from '@/utils/api'
 
 
 export default function Login() {
-  // 1. React router navigate hook.
+  // React router navigate hook.
   const navigate = useNavigate()
 
-  // 2. Global user context setter for storing authenticated user data.
+  // Global user context setter to store authenticated user info.
   const { setUser } = useUser()
 
-  // 3. Form submit handler for signing in user via API.
+  // Form submission handler for signing in the user.
   const handleSubmit = async (values: { identifier: string, password: string }, rememberMe: boolean) => {
     try {
       const res = await api('/auth/login', { method: 'POST', body: values })
@@ -41,21 +41,20 @@ export default function Login() {
       storage.setItem('token', token)
       storage.setItem('user', JSON.stringify(user))
 
-      console.log(user)
+      console.log(user) // TODO: Remove console.log.
       setUser(user)
-      navigate('/home')
+      navigate('/explore')
 
       return null
     } catch (err: any) {
-      return err?.message || 'Invalid credentials.'
+      return err.data?.error?.message || 'Invalid credentials.'
     }
   }
 
 
-  // 4. Render login page.
+  // Render login page.
   return (
-    // TODO: Decide to keep or remove custom classes when not using custom style sheets.
-    <Box className='LoginPage' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
 
 
       <AuthForm

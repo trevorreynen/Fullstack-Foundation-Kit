@@ -7,9 +7,13 @@ import { AuthRequest } from '../types/AuthRequest'
 import { resSuccess, resError } from '../utils/response'
 
 
-// (For POST) Toggle a post or comment like on or off.
 export const toggleLike = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const { postId, commentId } = req.body
   if (!postId && !commentId) {
     resError(400, res, 'MISSING_LIKE_TARGET')
@@ -48,7 +52,6 @@ export const toggleLike = async (req: AuthRequest, res: Response) => {
 }
 
 
-// (For GET) Get total likes on post.
 export const getPostLikes = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId, 10)
 
@@ -66,9 +69,13 @@ export const getPostLikes = async (req: Request, res: Response) => {
 }
 
 
-// (For GET) Check if user liked post.
 export const checkUserLikedPost = async (req: AuthRequest, res: Response) => {
-  const userId = req.authUser!.id
+  const userId = req.authUser?.id
+  if (!userId) {
+    resError(401, res, 'UNAUTHORIZED')
+    return
+  }
+
   const postId = parseInt(req.params.postId, 10)
 
   try {
