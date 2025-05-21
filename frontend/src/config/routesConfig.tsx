@@ -51,7 +51,7 @@ const mainLayoutRoutes: RouteObject = {
     { path: 'explore', element: <ProtectedRoute>{withSuspense(Explore)}</ProtectedRoute> },
     { path: 'post/:postId', element: <ProtectedRoute>{withSuspense(ViewPost)}</ProtectedRoute> },
     { path: 'user/:username', element: <ProtectedRoute>{withSuspense(Profile)}</ProtectedRoute> },
-    { path: '*', element: <ProtectedRoute>{withSuspense(Error404)}</ProtectedRoute> },
+    { path: '*', element: withSuspense(Error404) },
   ]
 }
 

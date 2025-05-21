@@ -16,9 +16,9 @@ import LikeBtn from '@/components/shared/LikeBtn'
 import UserAvatar from '@/components/shared/UserAvatar'
 import HoverMenuBtn from '@/components/shared/HoverMenuBtn'
 import PostForm from '@/components/post/PostForm'
-import FullPageLoader from '@/components/loading/FullPageLoader'
 
 // ====================< IMPORTS: TYPES >=================================
+import { FullPostProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useTheme, useMediaQuery } from '@mui/material'
@@ -31,12 +31,6 @@ import { api } from '@/utils/api'
 import { usePostStore } from '@/stores/usePostStore'
 
 // ====================< IMPORTS: STYLES >================================
-
-
-interface FullPostProps {
-  postId: number
-  onCommentClick: () => void
-}
 
 
 export default function FullPost({ postId, onCommentClick }: FullPostProps) {

@@ -16,7 +16,7 @@ import UserAvatar from '@/components/shared/UserAvatar'
 import CommentInput from '@/components/comment/CommentInput'
 
 // ====================< IMPORTS: TYPES >=================================
-import { PostComment } from '@/types'
+import { CommentCardProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useUser } from '@/hooks/useUser'
@@ -32,14 +32,9 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 
-type Props = {
-  comment: PostComment
-  depth?: number
-  highlightId?: number
-}
 
 
-export default function CommentCard({ comment, depth = 0, highlightId }: Props) {
+export default function CommentCard({ comment, depth = 0, highlightId }: CommentCardProps) {
   // Global user context and comment store actions.
   const { user } = useUser()
   const {

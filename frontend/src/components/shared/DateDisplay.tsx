@@ -10,6 +10,7 @@
 import { Box, Tooltip, Typography } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { DateDisplayProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -19,16 +20,6 @@ import { convertISO8601ToFormatted } from '@/utils/usefulFunctions'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-
-
-interface DateDisplayProps {
-  createdAt: string
-  updatedAt?: string | null
-  showLabel?: boolean
-  displayFontSize?: string | number
-  withTooltip?: boolean
-  tooltipFontSize?: string | number
-}
 
 
 export default function DateDisplay({

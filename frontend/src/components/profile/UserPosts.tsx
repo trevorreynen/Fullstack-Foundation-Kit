@@ -13,7 +13,7 @@ import PostCard from '@/components/post/PostCard'
 import PaginationBox from '@/components/shared/PaginationBox'
 
 // ====================< IMPORTS: TYPES >=================================
-import { UserProfile, Post, PaginatedResponse } from '@/types'
+import { UserPostsProps, Post } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -24,12 +24,6 @@ import { api } from '@/utils/api'
 
 // ====================< IMPORTS: STYLES >================================
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-
-
-type UserPostsProps = {
-  user: UserProfile
-  initialData?: PaginatedResponse<Post>
-}
 
 
 export default function UserPosts({ user, initialData }: UserPostsProps) {

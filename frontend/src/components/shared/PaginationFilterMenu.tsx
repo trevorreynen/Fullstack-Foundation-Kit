@@ -1,7 +1,7 @@
 // import PaginationFilterMenu from '@/components/shared/PaginationFilterMenu'
 
 // ====================< IMPORTS: REACT >=================================
-import React, { useState, Dispatch, SetStateAction } from 'react'
+import React, { useState } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
@@ -11,6 +11,7 @@ import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Box, Menu, MenuItem, TextField, IconButton, Typography, Select, FormControl, InputLabel } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { PaginationFilterMenuProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -20,28 +21,6 @@ import { Box, Menu, MenuItem, TextField, IconButton, Typography, Select, FormCon
 
 // ====================< IMPORTS: STYLES >================================
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
-
-
-interface PaginationFilterMenuProps {
-  // Optional external control props
-  sort?: 'ASC' | 'DESC'
-  setSort?: Dispatch<SetStateAction<'ASC' | 'DESC'>>
-
-  sortBy?: string
-  setSortBy?: Dispatch<SetStateAction<string>>
-  sortByOptions?: { label: string; value: string }[]
-
-  search?: string
-  setSearch?: (val: string) => void
-
-  searchField?: string
-  setSearchField?: (val: string) => void
-
-  searchFieldOptions?: { label: string; value: string }[]
-
-  btnSize?: 'small' | 'medium' | 'large'
-  iconSize?: 'small' | 'medium' | 'large'
-}
 
 
 export default function PaginationFilterMenu({

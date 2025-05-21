@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Box, Typography, TextField, Button, Alert } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { UserNotesProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -20,11 +21,6 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-
-
-type UserNotesProps = {
-  initialNote: string
-}
 
 
 export default function UserNotes({ initialNote }: UserNotesProps) {

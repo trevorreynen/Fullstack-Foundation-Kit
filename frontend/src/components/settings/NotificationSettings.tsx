@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Box, Typography, FormControlLabel, Switch, Button, Alert } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { NotificationSettingsProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -20,11 +21,6 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-
-
-type NotificationSettingsProps = {
-  initialNotifications: boolean
-}
 
 
 export default function NotificationSettings({ initialNotifications }: NotificationSettingsProps) {

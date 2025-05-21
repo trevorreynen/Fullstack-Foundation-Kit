@@ -10,6 +10,7 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { CommentBtnProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -19,15 +20,6 @@ import { Box, IconButton, Stack, Typography } from '@mui/material'
 
 // ====================< IMPORTS: STYLES >================================
 import ModeCommentIcon from '@mui/icons-material/ModeComment'
-
-
-interface CommentBtnProps {
-  commentCount: number
-  onClick: (e: React.MouseEvent) => void
-  countPlacement: 'right' | 'bottom'
-  btnSize?: 'small' | 'medium' | 'large'
-  iconSize?: 'small' | 'medium' | 'large'
-}
 
 
 export default function CommentBtn({ commentCount, onClick, countPlacement, btnSize, iconSize }: CommentBtnProps) {

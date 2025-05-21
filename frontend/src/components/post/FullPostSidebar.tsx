@@ -12,6 +12,7 @@ import CommentCard from '@/components/comment/CommentCard'
 import CommentInput from '@/components/comment/CommentInput'
 
 // ====================< IMPORTS: TYPES >=================================
+import { FullPostSidebarProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -26,12 +27,6 @@ import { useCommentStore } from '@/stores/useCommentStore'
 import CloseIcon from '@mui/icons-material/Close'
 
 
-interface FullPostSidebarProps {
-  onClose: () => void
-  highlightId?: number
-}
-
-
 export default function FullPostSidebar({ onClose, highlightId }: FullPostSidebarProps) {
   // Global post list + comment state access.
   const { posts } = usePostStore()
@@ -42,7 +37,7 @@ export default function FullPostSidebar({ onClose, highlightId }: FullPostSideba
 
   // Loading state fallback.
   if (!post) {
-    return <div>Post not found.</div> // TODO: Add skeleton
+    return <div>Post not found.</div>
   }
 
 

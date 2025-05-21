@@ -1,7 +1,7 @@
 // import ThemeSettings from '@/components/settings/ThemeSettings'
 
 // ====================< IMPORTS: REACT >=================================
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 

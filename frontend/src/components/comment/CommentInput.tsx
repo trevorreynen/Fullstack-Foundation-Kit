@@ -12,6 +12,7 @@ import { Box, Stack, TextField, Button, Typography } from '@mui/material'
 import UserAvatar from '@/components/shared/UserAvatar'
 
 // ====================< IMPORTS: TYPES >=================================
+import { CommentInputProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useUser } from '@/hooks/useUser'
@@ -21,16 +22,6 @@ import { useUser } from '@/hooks/useUser'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-
-
-type CommentInputProps = {
-  mode: 'comment' | 'reply'
-  onSubmit: (text: string) => void
-  replyingToUsername?: string
-  autoFocus?: boolean
-  submitLabel?: string
-  onCancel?: () => void
-}
 
 
 export default function CommentInput({

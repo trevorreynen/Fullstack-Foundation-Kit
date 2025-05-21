@@ -13,7 +13,7 @@ import ProfileCommentCard from '@/components/profile/ProfileCommentCard'
 import PaginationBox from '@/components/shared/PaginationBox'
 
 // ====================< IMPORTS: TYPES >=================================
-import { UserProfile, PostComment, PaginatedResponse } from '@/types'
+import { UserCommentsProps, PostComment } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -26,10 +26,7 @@ import { api } from '@/utils/api'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 
-type UserCommentsProps = {
-  user: UserProfile
-  initialData?: PaginatedResponse<PostComment>
-}
+
 
 
 export default function UserComments({ user, initialData }: UserCommentsProps) {

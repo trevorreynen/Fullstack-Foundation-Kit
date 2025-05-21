@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { LikeBtnProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useUser } from '@/hooks/useUser'
@@ -23,17 +24,6 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: STYLES >================================
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-
-
-type LikeBtnProps = {
-  type: 'post' | 'comment'
-  targetId: number
-  defaultLiked: boolean
-  defaultLikeCount: number
-  countPlacement: 'right' | 'bottom'
-  btnSize?: 'small' | 'medium' | 'large'
-  iconSize?: 'small' | 'medium' | 'large'
-}
 
 
 export default function LikeBtn({ targetId, type, defaultLiked, defaultLikeCount, countPlacement, btnSize, iconSize }: LikeBtnProps) {

@@ -11,6 +11,7 @@ import { useState, MouseEvent } from 'react'
 import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
+import { HoverMenuBtnProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
@@ -20,22 +21,6 @@ import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 
 // ====================< IMPORTS: STYLES >================================
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-
-
-type HoverMenuBtnOption = {
-  label: string
-  action: 'delete' | 'edit' | 'report'
-  targetType: 'comment' | 'post'
-  targetId: number
-  disabled?: boolean
-}
-
-type HoverMenuBtnProps = {
-  options: HoverMenuBtnOption[]
-  onAction: (action: HoverMenuBtnOption['action'], targetType: HoverMenuBtnOption['targetType'], id: number) => void
-  tooltip?: string
-  disabled?: boolean
-}
 
 
 export default function HoverMenuBtn({ options, onAction, tooltip, disabled }: HoverMenuBtnProps) {

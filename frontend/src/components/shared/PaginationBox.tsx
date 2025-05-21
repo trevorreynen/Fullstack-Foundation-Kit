@@ -1,7 +1,6 @@
 // import PaginationBox from '@/components/shared/PaginationBox'
 
 // ====================< IMPORTS: REACT >=================================
-import { Dispatch, SetStateAction } from 'react'
 
 // ====================< IMPORTS: LAYOUT >================================
 
@@ -12,6 +11,7 @@ import { Paper, FormControl, InputLabel, MenuItem, Pagination, Select, Stack } f
 import PaginationFilterMenu from '@/components/shared/PaginationFilterMenu'
 
 // ====================< IMPORTS: TYPES >=================================
+import { PaginationBoxProps } from '@/types'
 
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 import { useTheme, useMediaQuery } from '@mui/material'
@@ -21,39 +21,6 @@ import { useTheme, useMediaQuery } from '@mui/material'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-
-
-interface PaginationBoxProps {
-  totalPages: number
-  page: number
-  onPageChange: (_: any, value: number) => void
-
-  // Optional: Per-page settings
-  showPerPageSelect?: boolean
-  perPage?: number
-  perPageOptions?: number[]
-  onPerPageChange?: (e: any) => void
-
-  // Optional: Extra sx
-  sx?: object
-
-  // Optional: Filter menu
-  showFilterMenu?: boolean
-  sort?: 'ASC' | 'DESC'
-  setSort?: Dispatch<SetStateAction<'ASC' | 'DESC'>>
-  sortBy?: string
-  setSortBy?: Dispatch<SetStateAction<string>>
-  sortByOptions?: { label: string; value: string }[]
-  search?: string
-  setSearch?: Dispatch<SetStateAction<string>>
-  searchField?: string
-  setSearchField?: Dispatch<SetStateAction<string>>
-  searchFields?: { label: string; value: string }[]
-
-  // Optional: Filter menu button
-  btnSize?: 'small' | 'medium' | 'large'
-  iconSize?: 'small' | 'medium' | 'large'
-}
 
 
 export default function PaginationBox({

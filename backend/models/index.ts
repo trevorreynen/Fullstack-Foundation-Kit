@@ -15,7 +15,7 @@ User.hasOne(UserSettings, { foreignKey: 'userId', as: 'settings', onDelete: 'CAS
 UserSettings.belongsTo(User, { foreignKey: 'userId', as: 'user' })
 
 // User -> Posts (1:M)
-User.hasMany(Post, { foreignKey: 'userId', as: 'posts', onDelete: 'CASCADE'})
+User.hasMany(Post, { foreignKey: 'userId', as: 'posts', onDelete: 'CASCADE' })
 Post.belongsTo(User, { foreignKey: 'userId', as: 'user' })
 
 // User -> Likes (1:M)
@@ -40,7 +40,7 @@ Comment.belongsTo(Post, { foreignKey: 'postId', as: 'post' })
 
 
 // Comment -> Likes (1:M)
-Comment.hasMany(Like, { foreignKey: 'commentId', as:'likes', onDelete: 'CASCADE' })
+Comment.hasMany(Like, { foreignKey: 'commentId', as: 'likes', onDelete: 'CASCADE' })
 Like.belongsTo(Comment, { foreignKey: 'commentId', as: 'comments' })
 
 // Comment -> Comment (1:M)

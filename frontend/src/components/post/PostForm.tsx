@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Stack } from '@mui/material'
 
 // ====================< IMPORTS: TYPES >=================================
-
+import { PostFormProps } from '@/types'
 // ====================< IMPORTS: CONTEXTS/HOOKS >========================
 
 // ====================< IMPORTS: UTILS >=================================
@@ -20,21 +20,6 @@ import { api } from '@/utils/api'
 // ====================< IMPORTS: OTHER >=================================
 
 // ====================< IMPORTS: STYLES >================================
-
-
-type PostFormMode = 'create' | 'edit'
-
-type PostFormProps = {
-  mode: PostFormMode
-  initialTitle?: string
-  initialContent?: string
-  postId?: number // only needed for edit mode
-  open: boolean
-  onCancel: () => void
-  onSuccess: () => void
-  dialogTitle?: string
-  submitLabel?: string
-}
 
 
 export default function PostForm({
