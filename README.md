@@ -9,7 +9,7 @@ It started as a personal challenge: build a real-world template that could serve
 
 
 ## 📑 Table of Contents
-- [🚀 Project Overview](#aproject-overview)
+- [🚀 Project Overview](#project-overview)
 - [📋 Why I Use a Spreadsheet for Tracking & Progress](#why-i-use-spreadsheets)
 - [🧱 Core Features](#core-features)
 - [🎨 Frontend Stack](#frontend-stack)
